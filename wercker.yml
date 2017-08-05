@@ -34,7 +34,7 @@ build:
           export M2SETUP_ADMIN_EMAIL=dummy@example.com
           export M2SETUP_ADMIN_USER=magento2
           export M2SETUP_ADMIN_PASSWORD=magento2
-          export M2SETUP_VERSION=2.1.8
+          export M2SETUP_VERSION=latest
           export M2SETUP_USE_SAMPLE_DATA=false
           export M2SETUP_USE_ARCHIVE=true
           mysqladmin -u$M2SETUP_DB_USER -p"$M2SETUP_DB_PASSWORD" -h$M2SETUP_DB_HOST create $M2SETUP_DB_NAME
