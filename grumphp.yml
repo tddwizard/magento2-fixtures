@@ -1,0 +1,16 @@
+parameters:
+    git_dir: .
+    bin_dir: vendor/bin
+    tasks:
+      composer: []
+      phpcs:
+          standard: 'PSR2'
+          encoding: utf-8
+      phpstan:
+          configuration: phpstan.neon
+      phpparser:
+          visitors:
+              no_exit_statements: ~
+              forbidden_function_calls:
+                  blacklist:
+                      - 'var_dump'
