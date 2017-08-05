@@ -7,8 +7,9 @@ This library is in *alpha* state, that means:
 - everything can still be changed
 
 [![Wercker Status](https://app.wercker.com/status/c69205aea9e9617e027d2aa8d5a1817c/s/master "wercker status")](https://app.wercker.com/project/byKey/c69205aea9e9617e027d2aa8d5a1817c)
+[![Code Climate](https://img.shields.io/codeclimate/github/tddwizard/magento2-fixtures.svg)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
 [![Latest Version](https://img.shields.io/packagist/v/tddwizard/magento2-fixtures.svg)](https://packagist.org/packages/tddwizard/magento2-fixtures)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
 ---
 
