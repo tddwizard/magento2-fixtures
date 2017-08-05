@@ -10,7 +10,7 @@ This library is in *pre-alpha* state, that means:
 
 But since it already greatly improved our own tests and there is high demand, we are excited to share it as preview. A real public repository will follow soon.
 
-[![Wercker Status](https://img.shields.io/wercker/ci/tddwizard/magento2-fixtures.svg "wercker status")](https://app.wercker.com/project/byKey/c69205aea9e9617e027d2aa8d5a1817c)
+[![Wercker Status](https://app.wercker.com/status/c69205aea9e9617e027d2aa8d5a1817c/s/master "wercker status")](https://app.wercker.com/project/byKey/c69205aea9e9617e027d2aa8d5a1817c)
 [![Latest Version](https://img.shields.io/packagist/v/tddwizard/magento2-fixtures.svg)](https://packagist.org/packages/tddwizard/magento2-fixtures)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 
