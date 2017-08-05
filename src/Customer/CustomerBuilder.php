@@ -171,9 +171,10 @@ class CustomerBuilder
             $builder->customer->setEmail(sha1(uniqid('', true)) . '@example.com');
         }
         $addresses = array_map(
-            function(AddressBuilder $addressBuilder) {
+            function (AddressBuilder $addressBuilder) {
                 return $addressBuilder->buildWithoutSave();
-            }, $builder->addressBuilders
+            },
+            $builder->addressBuilders
         );
         $builder->customer->setAddresses($addresses);
         $customer = $builder->saveNewCustomer();

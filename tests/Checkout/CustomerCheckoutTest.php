@@ -32,7 +32,7 @@ class CustomerCheckoutTest extends \PHPUnit_Framework_TestCase
      */
     private $objectManager;
     /**
-     * @var ProductRepositoryInterface\
+     * @var ProductRepositoryInterface
      */
     private $productRepository;
 
@@ -78,5 +78,4 @@ class CustomerCheckoutTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($order->getEntityId(), 'Order should be saved successfully');
         $this->assertNotEmpty($order->getShippingDescription(), 'Order should have a shipping description');
     }
-
 }

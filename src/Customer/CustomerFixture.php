@@ -53,7 +53,8 @@ class CustomerFixture
         return array_map(
             function (AddressInterface $address) {
                 return $address->getId();
-            }, $this->customer->getAddresses()
+            },
+            $this->customer->getAddresses()
         );
     }
 
@@ -81,5 +82,4 @@ class CustomerFixture
         }
         $session->setCustomerId($this->getId());
     }
-
 }

@@ -96,7 +96,8 @@ class ProductBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo Bar', $product->getName());
         $this->assertEquals(Status::STATUS_DISABLED, $product->getStatus());
         $this->assertEquals(Product\Visibility::VISIBILITY_NOT_VISIBLE, $product->getVisibility());
-        $this->assertEquals([1, $secondWebsiteId], $product->getWebsiteIds()); // current website (1) is always added by ProductRepository
+        // current website (1) is always added by ProductRepository
+        $this->assertEquals([1, $secondWebsiteId], $product->getWebsiteIds());
         $this->assertEquals(9.99, $product->getPrice());
         $this->assertEquals(2, $product->getData('tax_class_id'));
         $this->assertFalse(

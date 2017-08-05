@@ -60,8 +60,9 @@ class CustomerCheckout
         $customerShippingAddressId = null,
         $customerBillingAddressId = null,
         $shippingMethodCode = null,
-        $paymentMethodCode = null)
-    {
+        $paymentMethodCode = null
+    ) {
+    
         $this->addressRepository = $addressRepository;
         $this->quoteRepository = $quoteRepository;
         $this->quoteManagement = $quoteManagement;
@@ -139,7 +140,8 @@ class CustomerCheckout
      */
     private function getShippingMethodCode() : string
     {
-        return $this->shippingMethodCode ?? $this->cart->getQuote()->getShippingAddress()->getAllShippingRates()[0]->getCode();
+        return $this->shippingMethodCode
+            ?? $this->cart->getQuote()->getShippingAddress()->getAllShippingRates()[0]->getCode();
     }
 
     /**
@@ -165,14 +167,18 @@ class CustomerCheckout
     private function saveBilling()
     {
         $billingAddress = $this->cart->getQuote()->getBillingAddress();
-        $billingAddress->importCustomerAddressData($this->addressRepository->getById($this->getCustomerShippingAddressId()));
+        $billingAddress->importCustomerAddressData(
+            $this->addressRepository->getById($this->getCustomerShippingAddressId())
+        );
         $billingAddress->save();
     }
 
     private function saveShipping()
     {
         $shippingAddress = $this->cart->getQuote()->getShippingAddress();
-        $shippingAddress->importCustomerAddressData($this->addressRepository->getById($this->getCustomerBillingAddressId()));
+        $shippingAddress->importCustomerAddressData(
+            $this->addressRepository->getById($this->getCustomerBillingAddressId())
+        );
         $shippingAddress->setCollectShippingRates(true);
         $shippingAddress->collectShippingRates();
         $shippingAddress->setShippingMethod($this->getShippingMethodCode());

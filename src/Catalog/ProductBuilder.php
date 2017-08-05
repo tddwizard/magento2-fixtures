@@ -9,9 +9,9 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Api\ProductWebsiteLinkRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Visibility;
-use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
+use Magento\Framework\ObjectManagerInterface;
 
 class ProductBuilder
 {
@@ -191,5 +191,4 @@ class ProductBuilder
         }
         return $product;
     }
-
 }

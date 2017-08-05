@@ -146,5 +146,4 @@ class AddressBuilder
         $builder->address->setRegionId($regionId);
         return $builder;
     }
-
 }

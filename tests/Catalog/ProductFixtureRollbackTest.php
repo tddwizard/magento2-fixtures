@@ -1,6 +1,7 @@
 <?php
 
 namespace TddWizard\Fixtures\Catalog;
+
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -19,7 +20,6 @@ class ProductFixtureRollbackTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->productRepository = Bootstrap::getObjectManager()->create(ProductRepositoryInterface::class);
-        $this->products = [];
     }
 
     public function testRollbackSingleProductFixture()
@@ -51,5 +51,4 @@ class ProductFixtureRollbackTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(NoSuchEntityException::class);
         $this->productRepository->getById($otherProductFixture->getId());
     }
-
 }

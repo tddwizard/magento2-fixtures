@@ -25,5 +25,4 @@ class ProductFixture
     {
         return $this->product->getSku();
     }
-
 }

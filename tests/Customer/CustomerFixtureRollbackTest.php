@@ -20,7 +20,6 @@ class CustomerFixtureRollbackTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->customerRepository = Bootstrap::getObjectManager()->create(CustomerRepositoryInterface::class);
-        $this->customers = [];
     }
 
     public function testRollbackSingleCustomerFixture()
@@ -52,5 +51,4 @@ class CustomerFixtureRollbackTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(NoSuchEntityException::class);
         $this->customerRepository->getById($otherCustomerFixture->getId());
     }
-
 }

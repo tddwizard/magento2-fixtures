@@ -1,6 +1,7 @@
 <?php
 
 namespace TddWizard\Fixtures\Customer;
+
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Customer;
 use Magento\Framework\ObjectManagerInterface;
