@@ -1,6 +1,6 @@
 <?php
 
-namespace TddWizard\Fixtures\Test\Integration;
+namespace TddWizard\Fixtures\Test\Catalog;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;

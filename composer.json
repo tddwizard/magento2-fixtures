@@ -10,6 +10,19 @@
         }
     ],
     "minimum-stability": "stable",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "TddWizard\\Fixtures\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TddWizard\\Fixtures\\": "tests"
+        }
+    },
     "require": {},
     "require-dev": {
         "pds/skeleton": "^1.0"

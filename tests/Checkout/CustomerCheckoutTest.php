@@ -1,6 +1,6 @@
 <?php
 
-namespace TddWizard\Fixtures\Test\Integration;
+namespace TddWizard\Fixtures\Test\Checkout;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
