@@ -1,0 +1,17 @@
+{
+    "name": "tddwizard/magento2-fixtures",
+    "description": "Fixture library for Magento 2 integration tests",
+    "type": "magento2-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabian Schmengler",
+            "email": "fs@integer-net.de"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "require-dev": {
+        "pds/skeleton": "^1.0"
+    }
+}
