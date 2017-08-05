@@ -92,6 +92,62 @@ class CustomerBuilder
         return $builder;
     }
 
+    public function withGroupId($groupId) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setGroupId($groupId);
+        return $builder;
+    }
+
+    public function withStoreId($storeId) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setStoreId($storeId);
+        return $builder;
+    }
+
+    public function withPrefix($prefix) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setPrefix($prefix);
+        return $builder;
+    }
+
+    public function withFirstname($firstname) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setFirstname($firstname);
+        return $builder;
+    }
+
+    public function withMiddlename($middlename) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setMiddlename($middlename);
+        return $builder;
+    }
+
+    public function withLastname($lastname) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setLastname($lastname);
+        return $builder;
+    }
+
+    public function withSuffix($suffix) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setSuffix($suffix);
+        return $builder;
+    }
+
+    public function withTaxvat($taxvat) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setTaxvat($taxvat);
+        return $builder;
+    }
+
     public function withCustomAttributes(array $values) : CustomerBuilder
     {
         $builder = clone $this;

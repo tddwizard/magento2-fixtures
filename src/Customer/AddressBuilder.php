@@ -84,6 +84,41 @@ class AddressBuilder
         return clone $this->address;
     }
 
+    public function withFirstname($firstname) : AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setFirstname($firstname);
+        return $builder;
+    }
+
+    public function withLastname($lastname) : AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setLastname($lastname);
+        return $builder;
+    }
+
+    public function withStreet($street) : AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setStreet((array) $street);
+        return $builder;
+    }
+
+    public function withCompany($company) : AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setCompany($company);
+        return $builder;
+    }
+
+    public function withTelephone($telephone) : AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setTelephone($telephone);
+        return $builder;
+    }
+
     public function withPostcode($postcode) : AddressBuilder
     {
         $builder = clone $this;
