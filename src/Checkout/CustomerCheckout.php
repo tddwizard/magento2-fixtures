@@ -88,17 +88,17 @@ class CustomerCheckout
         );
     }
 
-    public function withCustomerBillingAddressId(int $id) : CustomerCheckout
+    public function withCustomerBillingAddressId(int $addressId) : CustomerCheckout
     {
         $checkout = clone $this;
-        $checkout->customerBillingAddressId = $id;
+        $checkout->customerBillingAddressId = $addressId;
         return $checkout;
     }
 
-    public function withCustomerShippingAddressId(int $id) : CustomerCheckout
+    public function withCustomerShippingAddressId(int $addressId) : CustomerCheckout
     {
         $checkout = clone $this;
-        $checkout->customerShippingAddressId = $id;
+        $checkout->customerShippingAddressId = $addressId;
         return $checkout;
     }
 

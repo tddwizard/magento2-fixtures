@@ -32,7 +32,7 @@ class ProductBuilder
     /**
      * @var ProductWebsiteLinkRepositoryInterface
      */
-    private $productWebsiteLinkRepository;
+    private $websiteLinkRepository;
     /**
      * @var StockItemRepositoryInterface
      */
@@ -40,20 +40,20 @@ class ProductBuilder
     /**
      * @var ProductWebsiteLinkInterfaceFactory
      */
-    private $productWebsiteLinkInterfaceFactory;
+    private $websiteLinkFactory;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
         StockItemRepositoryInterface $stockItemRepository,
-        ProductWebsiteLinkRepositoryInterface $productWebsiteLinkRepository,
-        ProductWebsiteLinkInterfaceFactory $productWebsiteLinkInterfaceFactory,
+        ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
+        ProductWebsiteLinkInterfaceFactory $websiteLinkFactory,
         ProductInterface $product,
         array $websiteIds
     ) {
         $this->productRepository = $productRepository;
-        $this->productWebsiteLinkRepository = $productWebsiteLinkRepository;
+        $this->websiteLinkRepository = $websiteLinkRepository;
         $this->stockItemRepository = $stockItemRepository;
-        $this->productWebsiteLinkInterfaceFactory = $productWebsiteLinkInterfaceFactory;
+        $this->websiteLinkFactory = $websiteLinkFactory;
         $this->product = $product;
         $this->websiteIds = $websiteIds;
     }
@@ -185,9 +185,9 @@ class ProductBuilder
         $product = $builder->productRepository->save($builder->product);
         foreach ($builder->websiteIds as $websiteId) {
             /** @var ProductWebsiteLinkInterface $websiteLink */
-            $websiteLink = $builder->productWebsiteLinkInterfaceFactory->create();
+            $websiteLink = $builder->websiteLinkFactory->create();
             $websiteLink->setWebsiteId($websiteId)->setSku($product->getSku());
-            $builder->productWebsiteLinkRepository->save($websiteLink);
+            $builder->websiteLinkRepository->save($websiteLink);
         }
         return $product;
     }
