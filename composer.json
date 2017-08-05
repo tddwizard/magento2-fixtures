@@ -32,7 +32,7 @@
     "require": {
         "php": "^7.0",
         "magento/framework": "^100.1",
-        "magento/zendframework1": "^1.13",
+        "magento/zendframework1": "^1.12",
         "magento/module-catalog": "^101.0",
         "magento/module-customer": "^100.1",
         "magento/module-checkout": "^100.1"
