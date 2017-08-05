@@ -1,6 +1,6 @@
 <?php
 
-namespace TddWizard\Fixtures\Test\Checkout;
+namespace TddWizard\Fixtures\Checkout;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -8,8 +8,6 @@ use Magento\TestFramework\ObjectManager;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
 use TddWizard\Fixtures\Catalog\ProductFixture;
 use TddWizard\Fixtures\Catalog\ProductFixtureRollback;
-use TddWizard\Fixtures\Checkout\CartBuilder;
-use TddWizard\Fixtures\Checkout\CustomerCheckout;
 use TddWizard\Fixtures\Customer\AddressBuilder;
 use TddWizard\Fixtures\Customer\CustomerBuilder;
 use TddWizard\Fixtures\Customer\CustomerFixture;

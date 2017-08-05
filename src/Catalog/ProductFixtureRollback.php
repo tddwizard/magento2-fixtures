@@ -34,12 +34,14 @@ class ProductFixtureRollback
         );
     }
 
-    public function execute(ProductFixture $productFixture)
+    public function execute(ProductFixture ...$productFixtures)
     {
         $this->registry->unregister('isSecureArea');
         $this->registry->register('isSecureArea', true);
 
-        $this->productRepository->deleteById($productFixture->getSku());
+        foreach ($productFixtures as $productFixture) {
+            $this->productRepository->deleteById($productFixture->getSku());
+        }
 
         $this->registry->unregister('isSecureArea');
     }

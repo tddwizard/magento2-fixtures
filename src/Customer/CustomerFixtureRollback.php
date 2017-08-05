@@ -34,12 +34,14 @@ class CustomerFixtureRollback
         );
     }
 
-    public function execute(CustomerFixture $customerFixture)
+    public function execute(CustomerFixture ...$customerFixtures)
     {
         $this->registry->unregister('isSecureArea');
         $this->registry->register('isSecureArea', true);
 
-        $this->customerRepository->deleteById($customerFixture->getId());
+        foreach ($customerFixtures as $customerFixture) {
+            $this->customerRepository->deleteById($customerFixture->getId());
+        }
 
         $this->registry->unregister('isSecureArea');
     }

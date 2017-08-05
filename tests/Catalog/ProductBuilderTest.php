@@ -1,6 +1,6 @@
 <?php
 
-namespace TddWizard\Fixtures\Test\Catalog;
+namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
@@ -8,9 +8,6 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use TddWizard\Fixtures\Catalog\ProductBuilder;
-use TddWizard\Fixtures\Catalog\ProductFixture;
-use TddWizard\Fixtures\Catalog\ProductFixtureRollback;
 
 /**
  * @magentoAppIsolation enabled
@@ -36,7 +33,7 @@ class ProductBuilderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
-        $this->productRepository = Bootstrap::getObjectManager()->create(ProductRepositoryInterface::class);
+        $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
         $this->products = [];
     }
 
