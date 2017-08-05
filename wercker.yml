@@ -48,8 +48,8 @@ build:
           composer update
           bin/magento module:enable TddWizard_Fixtures
           bin/magento setup:upgrade
-          cp $MODULE_DIR/test/phpunit.xml.dist /srv/www/dev/tests/integration/phpunit.xml
-          cp $MODULE_DIR/test/install-config-mysql.php /srv/www/dev/tests/integration/etc/
+          cp $MODULE_DIR/tests/phpunit.xml.dist /srv/www/dev/tests/integration/phpunit.xml
+          cp $MODULE_DIR/tests/install-config-mysql.php /srv/www/dev/tests/integration/etc/
           sed -i -e "s/DB_HOST/$M2SETUP_DB_HOST/g" /srv/www/dev/tests/integration/etc/install-config-mysql.php
           sed -i -e "s/DB_USER/$M2SETUP_DB_USER/g" /srv/www/dev/tests/integration/etc/install-config-mysql.php
           sed -i -e "s/DB_PASSWORD/$M2SETUP_DB_PASSWORD/g" /srv/www/dev/tests/integration/etc/install-config-mysql.php
