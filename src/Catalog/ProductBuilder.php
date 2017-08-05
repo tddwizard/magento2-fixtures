@@ -9,6 +9,7 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Api\ProductWebsiteLinkRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Visibility;
+use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 
@@ -73,14 +74,12 @@ class ProductBuilder
         $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
             ->setAttributeSetId(4)
             ->setName('Simple Product')
-            ->setSku('simple-' . sha1(uniqid('', true)))
             ->setPrice(10)
             ->setVisibility(Visibility::VISIBILITY_BOTH)
             ->setStatus(Status::STATUS_ENABLED);
         $product->addData([
             'tax_class_id' => 1,
             'description' => 'Description',
-            'url_key' => $product->getSku()
         ]);
         /** @var StockItemInterface $stockItem */
         $stockItem = $objectManager->create(StockItemInterface::class);
@@ -102,13 +101,68 @@ class ProductBuilder
         );
     }
 
-    public function withPrice($price) : ProductBuilder
+    public function withSku(string $sku) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->setSku($sku);
+        return $builder;
+    }
+
+    public function withName(string $name) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->setName($name);
+        return $builder;
+    }
+
+    public function withStatus(int $status) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->setStatus($status);
+        return $builder;
+    }
+
+    public function withVisibility(int $visibility) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->setVisibility($visibility);
+        return $builder;
+    }
+
+    public function withWebsiteIds(array $websiteIds) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->websiteIds = $websiteIds;
+        return $builder;
+    }
+
+    public function withPrice(float $price) : ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setPrice($price);
         return $builder;
     }
 
+    public function withTaxClassId($taxClassId) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->setData('tax_class_id', $taxClassId);
+        return $builder;
+    }
+
+    public function withIsInStock(bool $inStock) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->getExtensionAttributes()->getStockItem()->setIsInStock($inStock);
+        return $builder;
+    }
+
+    public function withStockQty($qty) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->getExtensionAttributes()->getStockItem()->setQty($qty);
+        return $builder;
+    }
 
     public function withCustomAttributes(array $values) : ProductBuilder
     {
@@ -121,12 +175,19 @@ class ProductBuilder
 
     public function build() : ProductInterface
     {
-        $product = $this->productRepository->save($this->product);
-        foreach ($this->websiteIds as $websiteId) {
+        $builder = clone $this;
+        if (!$builder->product->getSku()) {
+            $builder->product->setSku(sha1(uniqid('', true)));
+        }
+        $builder->product->addData([
+            'url_key' => $builder->product->getSku()
+        ]);
+        $product = $builder->productRepository->save($builder->product);
+        foreach ($builder->websiteIds as $websiteId) {
             /** @var ProductWebsiteLinkInterface $websiteLink */
-            $websiteLink = $this->productWebsiteLinkInterfaceFactory->create();
+            $websiteLink = $builder->productWebsiteLinkInterfaceFactory->create();
             $websiteLink->setWebsiteId($websiteId)->setSku($product->getSku());
-            $this->productWebsiteLinkRepository->save($websiteLink);
+            $builder->productWebsiteLinkRepository->save($websiteLink);
         }
         return $product;
     }
