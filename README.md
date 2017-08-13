@@ -23,6 +23,12 @@ It aims to be:
 - expressive
 - easy to use
 
+## Installation
+
+Install it into your Magento 2 project with composer:
+
+    composer require --dev tddwizard/magento2-fixtures
+
 ## Usage examples:
 
 ### Customer
