@@ -5,12 +5,13 @@ namespace TddWizard\Fixtures\Customer;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  */
-class CustomerFixtureRollbackTest extends \PHPUnit_Framework_TestCase
+class CustomerFixtureRollbackTest extends TestCase
 {
     /**
      * @var CustomerRepositoryInterface

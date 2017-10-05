@@ -12,7 +12,8 @@
     "minimum-stability": "stable",
     "autoload": {
         "files": [
-            "registration.php"
+            "registration.php",
+            "src/phpunit4.php"
         ],
         "psr-4": {
             "TddWizard\\Fixtures\\": "src"

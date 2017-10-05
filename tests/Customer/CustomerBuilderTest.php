@@ -7,12 +7,13 @@ use Magento\Customer\Model\Customer;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  */
-class CustomerBuilderTest extends \PHPUnit_Framework_TestCase
+class CustomerBuilderTest extends TestCase
 {
     /**
      * @var ObjectManagerInterface

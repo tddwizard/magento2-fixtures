@@ -5,6 +5,7 @@ namespace TddWizard\Fixtures\Checkout;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
+use PHPUnit\Framework\TestCase;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
 use TddWizard\Fixtures\Catalog\ProductFixture;
 use TddWizard\Fixtures\Catalog\ProductFixtureRollback;
@@ -16,7 +17,7 @@ use TddWizard\Fixtures\Customer\CustomerFixtureRollback;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CustomerCheckoutTest extends \PHPUnit_Framework_TestCase
+class CustomerCheckoutTest extends TestCase
 {
     /**
      * @var CustomerFixture

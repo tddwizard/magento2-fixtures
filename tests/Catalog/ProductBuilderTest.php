@@ -8,12 +8,13 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  */
-class ProductBuilderTest extends \PHPUnit_Framework_TestCase
+class ProductBuilderTest extends TestCase
 {
     /**
      * @var ObjectManagerInterface
