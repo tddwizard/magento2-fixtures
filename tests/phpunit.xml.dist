@@ -14,7 +14,6 @@
             <directory suffix="Test.php">../../../vendor/tddwizard/magento2-fixtures/tests</directory>
         </testsuite>
     </testsuites>
-    <!-- PHP INI settings and constants definition -->
     <php>
         <includePath>.</includePath>
         <includePath>testsuite</includePath>
@@ -54,4 +53,13 @@
         <listener class="Magento\TestFramework\Event\PhpUnit"/>
         <listener class="Magento\TestFramework\ErrorLog\Listener"/>
     </listeners>
+    <!-- Code coverage report -->
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../../../vendor/tddwizard/magento2-fixtures/src</directory>
+        </whitelist>
+    </filter>    <!-- PHP INI settings and constants definition -->
+    <logging>
+        <log type="coverage-clover" target="/tmp/coverage.xml"/>
+    </logging>
 </phpunit>
