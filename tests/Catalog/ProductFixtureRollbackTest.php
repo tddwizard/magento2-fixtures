@@ -29,7 +29,7 @@ class ProductFixtureRollbackTest extends TestCase
             ProductBuilder::aSimpleProduct()->build()
         );
         ProductFixtureRollback::create()->execute($productFixture);
-        $this->setExpectedException(NoSuchEntityException::class);
+        $this->expectException(NoSuchEntityException::class);
         $this->productRepository->getById($productFixture->getId());
     }
 
@@ -49,7 +49,8 @@ class ProductFixtureRollbackTest extends TestCase
             $productDeleted = true;
         }
         $this->assertTrue($productDeleted, 'First product should be deleted');
-        $this->setExpectedException(NoSuchEntityException::class);
+        $this->expectException(NoSuchEntityException::class);
         $this->productRepository->getById($otherProductFixture->getId());
     }
+
 }

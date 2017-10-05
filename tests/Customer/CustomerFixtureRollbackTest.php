@@ -29,7 +29,7 @@ class CustomerFixtureRollbackTest extends TestCase
             CustomerBuilder::aCustomer()->build()
         );
         CustomerFixtureRollback::create()->execute($customerFixture);
-        $this->setExpectedException(NoSuchEntityException::class);
+        $this->expectException(NoSuchEntityException::class);
         $this->customerRepository->getById($customerFixture->getId());
     }
 
@@ -49,7 +49,7 @@ class CustomerFixtureRollbackTest extends TestCase
             $customerDeleted = true;
         }
         $this->assertTrue($customerDeleted, 'First customer should be deleted');
-        $this->setExpectedException(NoSuchEntityException::class);
+        $this->expectException(NoSuchEntityException::class);
         $this->customerRepository->getById($otherCustomerFixture->getId());
     }
 }
