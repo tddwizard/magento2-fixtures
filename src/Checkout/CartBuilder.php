@@ -51,6 +51,22 @@ class CartBuilder
         return $result;
     }
 
+    /**
+     * Lower-level API to support arbitary products
+     *
+     * @param $sku
+     * @param int $qty
+     * @param $request
+     * @return CartBuilder
+     */
+    public function withProductRequest($sku, $qty = 1, $request = []) : CartBuilder
+    {
+        $result = clone $this;
+        $requestInfo = array_merge(['qty'=> $qty], $request);
+        $result->addToCartRequests[$sku][] = new DataObject($requestInfo);
+        return $result;
+    }
+
     public function build() : Cart
     {
         foreach ($this->addToCartRequests as $sku => $requests) {
