@@ -44,7 +44,6 @@ build:
           composer config repositories.module vcs $MODULE_DIR
           composer config minimum-stability dev
           composer require tddwizard/magento2-fixtures dev-tmp
-          composer require --dev phpunit/phpunit ^5.0 --no-update
           composer update
           bin/magento module:enable TddWizard_Fixtures
           bin/magento setup:upgrade
