@@ -91,6 +91,9 @@ class CategoryBuilder
     public function build() : CategoryInterface
     {
         $builder = clone $this;
+        if (!$builder->category->getData('url_key')) {
+            $builder->category->setData('url_key', sha1(uniqid('', true)));
+        }
 
         $category = $builder->categoryRepository->save($builder->category);
 

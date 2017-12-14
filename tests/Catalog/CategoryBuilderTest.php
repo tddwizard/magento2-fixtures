@@ -91,4 +91,24 @@ class CategoryBuilderTest extends TestCase
             'Product positions'
         );
     }
+
+    public function testMultipleCategories()
+    {
+        $this->categories[0] = new CategoryFixture(
+            CategoryBuilder::topLevelCategory()->build()
+        );
+        $this->categories[1] = new CategoryFixture(
+            CategoryBuilder::topLevelCategory()->build()
+        );
+
+        /** @var Category $category1 */
+        $category1 = $this->categoryRepository->get($this->categories[0]->getId());
+        /** @var Category $category2 */
+        $category2 = $this->categoryRepository->get($this->categories[1]->getId());
+        $this->assertNotEquals(
+            $category1->getUrlKey(),
+            $category2->getUrlKey(),
+            'Categories should be created with different URL keys'
+        );
+    }
 }
