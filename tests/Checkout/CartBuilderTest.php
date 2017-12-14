@@ -39,11 +39,15 @@ class CartBuilderTest extends TestCase
         $this->assertCount(1, $quoteItems, "1 quote item should be added");
         /** @var Item $quoteItem */
         $quoteItem = reset($quoteItems);
+        $serializedBuyRequest = $quoteItem->getOptionByCode('info_buyRequest')->getValue();
+        if (!json_decode($serializedBuyRequest)) {
+            // Magento 2.1 PHP serialization
+            $serializedBuyRequest = json_encode(unserialize($serializedBuyRequest, []));
+        }
         $this->assertJsonStringEqualsJsonString(
             json_encode(['qty' => $qty, 'options' => ['42' => 'foobar']]),
-            $quoteItem->getOptionByCode('info_buyRequest')->getValue(),
+            $serializedBuyRequest,
             "Value of info_buyRequest option should be as configured"
         );
     }
-
 }
