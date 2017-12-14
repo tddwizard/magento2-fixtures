@@ -3,6 +3,7 @@
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\Data\CategoryInterface;
+use Magento\Catalog\Model\Category;
 
 class CategoryFixture
 {
@@ -21,4 +22,10 @@ class CategoryFixture
         return $this->category->getId();
     }
 
+    public function getUrlKey() : string
+    {
+        /** @var Category $category */
+        $category = $this->category;
+        return $category->getUrlKey();
+    }
 }

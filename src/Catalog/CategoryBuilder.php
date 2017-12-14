@@ -50,7 +50,7 @@ class CategoryBuilder
         $this->productLinkFactory = $productLinkFactory;
     }
 
-    public static function topLevelCategory(ObjectManagerInterface $objectManager = null)
+    public static function topLevelCategory(ObjectManagerInterface $objectManager = null) : CategoryBuilder
     {
         if ($objectManager === null) {
             $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -73,13 +73,34 @@ class CategoryBuilder
     /**
      * Assigns products by sku. The keys of the array will be used for the sort position
      *
-     * @param array $skus
+     * @param string[] $skus
      * @return CategoryBuilder
      */
-    public function withProducts(array $skus)
+    public function withProducts(array $skus) : CategoryBuilder
     {
         $builder = clone $this;
         $builder->skus = $skus;
+        return $builder;
+    }
+
+    public function withDescription(string $description) : CategoryBuilder
+    {
+        $builder = clone $this;
+        $builder->category->setCustomAttribute('description', $description);
+        return $builder;
+    }
+
+    public function withName(string $name) : CategoryBuilder
+    {
+        $builder = clone $this;
+        $builder->category->setName($name);
+        return $builder;
+    }
+
+    public function withIsActive(bool $isActive) : CategoryBuilder
+    {
+        $builder = clone $this;
+        $builder->category->setIsActive($isActive);
         return $builder;
     }
 

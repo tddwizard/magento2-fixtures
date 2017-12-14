@@ -70,6 +70,27 @@ class CategoryBuilderTest extends TestCase
         $this->assertContains(1, $category->getStoreIds(), 'Assigned default store id');
         $this->assertEquals('1/2/' . $categoryFixture->getId(), $category->getPath(), 'Category path');
     }
+    public function testCategoryWithSpecificAttributes()
+    {
+        $categoryFixture = new CategoryFixture(
+            CategoryBuilder::topLevelCategory()
+                ->withName('Custom Name')
+                ->withDescription('Custom Description')
+                ->withIsActive(false)
+                ->build()
+        );
+        $this->categories[] = $categoryFixture;
+
+        /** @var Category $category */
+        $category = $this->categoryRepository->get($categoryFixture->getId());
+        $this->assertEquals('0', $category->getIsActive(), 'Category should be inactive');
+        $this->assertEquals('Custom Name', $category->getName(), 'Category name');
+        $this->assertEquals(
+            'Custom Description',
+            $category->getCustomAttribute('description')->getValue(),
+            'Category description'
+        );
+    }
 
     public function testCategoryWithProducts()
     {
