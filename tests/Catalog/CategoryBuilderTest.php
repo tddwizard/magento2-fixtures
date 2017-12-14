@@ -66,7 +66,8 @@ class CategoryBuilderTest extends TestCase
         /** @var Category $category */
         $category = $this->categoryRepository->get($categoryFixture->getId());
         $this->assertEquals('Top Level Category', $category->getName(), 'Category name');
-        $this->assertEquals([0, 1], $category->getStoreIds(), 'Assigned store ids');
+        $this->assertContains(0, $category->getStoreIds(), 'Assigned admin store id');
+        $this->assertContains(1, $category->getStoreIds(), 'Assigned default store id');
         $this->assertEquals('1/2/' . $categoryFixture->getId(), $category->getPath(), 'Category path');
     }
 

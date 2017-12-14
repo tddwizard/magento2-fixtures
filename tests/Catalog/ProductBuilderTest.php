@@ -108,6 +108,77 @@ class ProductBuilderTest extends TestCase
         $this->assertEquals(2.0, $product->getCustomAttribute('cost')->getValue());
     }
 
+    /**
+     * @magentoDataFixture Magento/Catalog/_files/dropdown_attribute.php
+     * @magentoDataFixture Magento/Store/_files/second_store.php
+     */
+    public function testSimpleProductWithStoreSpecificAttributes()
+    {
+        /*
+         * Values from core fixture files
+         */
+        $secondStoreCode = 'fixture_second_store';
+        $userDefinedAttributeCode = 'dropdown_attribute';
+        $userDefinedDefaultValue = 1;
+        $userDefinedStoreValue = 2;
+        // ---
+
+        /** @var StoreManagerInterface $storeManager */
+        $storeManager = $this->objectManager->get(StoreManagerInterface::class);
+        $secondStoreId = $storeManager->getStore($secondStoreCode)->getId();
+        $productFixture = new ProductFixture(
+            ProductBuilder::aSimpleProduct()
+                ->withName('Default Name')
+                ->withName('Store Name', $secondStoreId)
+                ->withStatus(Status::STATUS_DISABLED)
+                ->withStatus(Status::STATUS_ENABLED, $secondStoreId)
+                ->withVisibility(Product\Visibility::VISIBILITY_NOT_VISIBLE)
+                ->withVisibility(Product\Visibility::VISIBILITY_IN_CATALOG, $secondStoreId)
+                ->withCustomAttributes(
+                    [
+                        $userDefinedAttributeCode => $userDefinedDefaultValue
+                    ]
+                )
+                ->withCustomAttributes(
+                    [
+                        $userDefinedAttributeCode => $userDefinedStoreValue
+                    ],
+                    $secondStoreId
+                )
+                ->build()
+        );
+        $this->products[] = $productFixture;
+        /** @var Product $product */
+        $product = $this->productRepository->getById($productFixture->getId());
+        $this->assertEquals('Default Name', $product->getName(), 'Default name');
+        $this->assertEquals(Status::STATUS_DISABLED, $product->getStatus(), 'Default status');
+        $this->assertEquals(
+            Product\Visibility::VISIBILITY_NOT_VISIBLE,
+            $product->getVisibility(),
+            'Default visibility'
+        );
+        $this->assertEquals(
+            $userDefinedDefaultValue,
+            $product->getCustomAttribute($userDefinedAttributeCode)->getValue(),
+            'Default custom attribute'
+        );
+
+        /** @var Product $product */
+        $productInStore = $this->productRepository->getById($productFixture->getId(), false, $secondStoreId);
+        $this->assertEquals('Store Name', $productInStore->getName(), 'Store specific name');
+        $this->assertEquals(Status::STATUS_ENABLED, $productInStore->getStatus(), 'Store specific status');
+        $this->assertEquals(
+            Product\Visibility::VISIBILITY_IN_CATALOG,
+            $productInStore->getVisibility(),
+            'Store specific visibility'
+        );
+        $this->assertEquals(
+            $userDefinedStoreValue,
+            $productInStore->getCustomAttribute($userDefinedAttributeCode)->getValue(),
+            'Store specific custom attribute'
+        );
+    }
+
     public function testRandomSkuOnBuild()
     {
         $builder = ProductBuilder::aSimpleProduct();

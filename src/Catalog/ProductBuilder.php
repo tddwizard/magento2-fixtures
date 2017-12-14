@@ -7,6 +7,7 @@ use Magento\Catalog\Api\Data\ProductWebsiteLinkInterface;
 use Magento\Catalog\Api\Data\ProductWebsiteLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Api\ProductWebsiteLinkRepositoryInterface;
+use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
@@ -19,12 +20,14 @@ class ProductBuilder
      * @var ProductInterface
      */
     private $product;
-
     /**
      * @var ProductRepositoryInterface
      */
     private $productRepository;
-
+    /**
+     * @var mixed[][]
+     */
+    private $storeSpecificValues = [];
     /**
      * @var int[]
      */
@@ -48,7 +51,8 @@ class ProductBuilder
         ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
         ProductWebsiteLinkInterfaceFactory $websiteLinkFactory,
         ProductInterface $product,
-        array $websiteIds
+        array $websiteIds,
+        array $storeSpecificValues
     ) {
         $this->productRepository = $productRepository;
         $this->websiteLinkRepository = $websiteLinkRepository;
@@ -56,6 +60,7 @@ class ProductBuilder
         $this->websiteLinkFactory = $websiteLinkFactory;
         $this->product = $product;
         $this->websiteIds = $websiteIds;
+        $this->storeSpecificValues = $storeSpecificValues;
     }
 
     public function __clone()
@@ -97,7 +102,8 @@ class ProductBuilder
             $objectManager->create(ProductWebsiteLinkRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkInterfaceFactory::class),
             $product,
-            [1]
+            [1],
+            []
         );
     }
 
@@ -108,24 +114,36 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withName(string $name) : ProductBuilder
+    public function withName(string $name, $storeId = null) : ProductBuilder
     {
         $builder = clone $this;
-        $builder->product->setName($name);
+        if ($storeId) {
+            $builder->storeSpecificValues[$storeId]['name'] = $name;
+        } else {
+            $builder->product->setName($name);
+        }
         return $builder;
     }
 
-    public function withStatus(int $status) : ProductBuilder
+    public function withStatus(int $status, $storeId = null) : ProductBuilder
     {
         $builder = clone $this;
-        $builder->product->setStatus($status);
+        if ($storeId) {
+            $builder->storeSpecificValues[$storeId]['status'] = $status;
+        } else {
+            $builder->product->setStatus($status);
+        }
         return $builder;
     }
 
-    public function withVisibility(int $visibility) : ProductBuilder
+    public function withVisibility(int $visibility, $storeId = null) : ProductBuilder
     {
         $builder = clone $this;
-        $builder->product->setVisibility($visibility);
+        if ($storeId) {
+            $builder->storeSpecificValues[$storeId]['visibility'] = $visibility;
+        } else {
+            $builder->product->setVisibility($visibility);
+        }
         return $builder;
     }
 
@@ -164,11 +182,15 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withCustomAttributes(array $values) : ProductBuilder
+    public function withCustomAttributes(array $values, $storeId = null) : ProductBuilder
     {
         $builder = clone $this;
         foreach ($values as $code => $value) {
-            $builder->product->setCustomAttribute($code, $value);
+            if ($storeId) {
+                $builder->storeSpecificValues[$storeId][$code] = $value;
+            } else {
+                $builder->product->setCustomAttribute($code, $value);
+            }
         }
         return $builder;
     }
@@ -189,6 +211,13 @@ class ProductBuilder
             $websiteLink = $builder->websiteLinkFactory->create();
             $websiteLink->setWebsiteId($websiteId)->setSku($product->getSku());
             $builder->websiteLinkRepository->save($websiteLink);
+        }
+        foreach ($builder->storeSpecificValues as $storeId => $values) {
+            /** @var Product $storeProduct */
+            $storeProduct = clone $product;
+            $storeProduct->setStoreId($storeId);
+            $storeProduct->addData($values);
+            $storeProduct->save();
         }
         return $product;
     }
