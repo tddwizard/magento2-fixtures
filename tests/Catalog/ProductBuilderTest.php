@@ -110,7 +110,7 @@ class ProductBuilderTest extends TestCase
 
     /**
      * @magentoDataFixture Magento/Catalog/_files/dropdown_attribute.php
-     * @magentoDataFixture Magento/Store/_files/second_store.php
+     * @magentoDataFixture Magento/Store/_files/second_website_with_two_stores.php
      */
     public function testSimpleProductWithStoreSpecificAttributes()
     {
@@ -151,7 +151,7 @@ class ProductBuilderTest extends TestCase
         /** @var Product $product */
         $product = $this->productRepository->getById($productFixture->getId());
         $this->assertEquals('Default Name', $product->getName(), 'Default name');
-        $this->assertEquals(Status::STATUS_DISABLED, $product->getStatus(), 'Default status');
+        $this->assertEquals(Status::STATUS_DISABLED, $product->getStatus(), 'Default status should be disabled');
         $this->assertEquals(
             Product\Visibility::VISIBILITY_NOT_VISIBLE,
             $product->getVisibility(),
@@ -166,7 +166,7 @@ class ProductBuilderTest extends TestCase
         /** @var Product $product */
         $productInStore = $this->productRepository->getById($productFixture->getId(), false, $secondStoreId);
         $this->assertEquals('Store Name', $productInStore->getName(), 'Store specific name');
-        $this->assertEquals(Status::STATUS_ENABLED, $productInStore->getStatus(), 'Store specific status');
+        $this->assertEquals(Status::STATUS_ENABLED, $productInStore->getStatus(), 'Store specific status should be enabled');
         $this->assertEquals(
             Product\Visibility::VISIBILITY_IN_CATALOG,
             $productInStore->getVisibility(),

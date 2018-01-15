@@ -118,18 +118,24 @@ class ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
-            $builder->storeSpecificValues[$storeId]['name'] = $name;
+            $builder->storeSpecificValues[$storeId][ProductInterface::NAME] = $name;
         } else {
             $builder->product->setName($name);
         }
         return $builder;
     }
 
+    /**
+     * @param int $status
+     * @param int|null $storeId Pass store ID to set value for specific store.
+     *                          Attention: Status is configured per website, will affect all stores of the same website
+     * @return ProductBuilder
+     */
     public function withStatus(int $status, $storeId = null) : ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
-            $builder->storeSpecificValues[$storeId]['status'] = $status;
+            $builder->storeSpecificValues[$storeId][ProductInterface::STATUS] = $status;
         } else {
             $builder->product->setStatus($status);
         }
@@ -140,7 +146,7 @@ class ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
-            $builder->storeSpecificValues[$storeId]['visibility'] = $visibility;
+            $builder->storeSpecificValues[$storeId][ProductInterface::VISIBILITY] = $visibility;
         } else {
             $builder->product->setVisibility($visibility);
         }
