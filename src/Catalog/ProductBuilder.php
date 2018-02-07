@@ -107,6 +107,15 @@ class ProductBuilder
         );
     }
 
+    public function withData(array $data) : ProductBuilder
+    {
+        $builder = clone $this;
+
+        $builder->product->addData($data);
+
+        return $builder;
+    }
+
     public function withSku(string $sku) : ProductBuilder
     {
         $builder = clone $this;
