@@ -51,6 +51,13 @@ class CartBuilder
         return $result;
     }
 
+    public function withReservedOrderId($orderId) : CartBuilder
+    {
+        $result = clone $this;
+        $result->cart->getQuote()->setReservedOrderId($orderId);
+        return $result;
+    }
+
     /**
      * Lower-level API to support arbitary products
      *
