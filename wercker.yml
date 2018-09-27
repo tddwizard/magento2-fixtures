@@ -39,7 +39,7 @@ build:
           export M2SETUP_USE_ARCHIVE=true
           mysqladmin -u$M2SETUP_DB_USER -p"$M2SETUP_DB_PASSWORD" -h$M2SETUP_DB_HOST create $M2SETUP_DB_NAME
           /usr/local/bin/mage-setup
-          cd /srv/www
+          cd /var/www/html
           composer config http-basic.repo.magento.com $MAGENTO_REPO_PUBLIC_KEY $MAGENTO_REPO_PRIVATE_KEY
           composer config repositories.module vcs $MODULE_DIR
           composer config minimum-stability dev
@@ -47,11 +47,11 @@ build:
           composer update
           bin/magento module:enable TddWizard_Fixtures
           bin/magento setup:upgrade
-          cp $MODULE_DIR/tests/phpunit.xml.dist /srv/www/dev/tests/integration/phpunit.xml
-          cp $MODULE_DIR/tests/install-config-mysql.php /srv/www/dev/tests/integration/etc/
-          sed -i -e "s/DB_HOST/$M2SETUP_DB_HOST/g" /srv/www/dev/tests/integration/etc/install-config-mysql.php
-          sed -i -e "s/DB_USER/$M2SETUP_DB_USER/g" /srv/www/dev/tests/integration/etc/install-config-mysql.php
-          sed -i -e "s/DB_PASSWORD/$M2SETUP_DB_PASSWORD/g" /srv/www/dev/tests/integration/etc/install-config-mysql.php
-          sed -i -e "s/DB_NAME/$M2SETUP_DB_NAME/g" /srv/www/dev/tests/integration/etc/install-config-mysql.php
-          cd /srv/www/dev/tests/integration
+          cp $MODULE_DIR/tests/phpunit.xml.dist /var/www/html/dev/tests/integration/phpunit.xml
+          cp $MODULE_DIR/tests/install-config-mysql.php /var/www/html/dev/tests/integration/etc/
+          sed -i -e "s/DB_HOST/$M2SETUP_DB_HOST/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
+          sed -i -e "s/DB_USER/$M2SETUP_DB_USER/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
+          sed -i -e "s/DB_PASSWORD/$M2SETUP_DB_PASSWORD/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
+          sed -i -e "s/DB_NAME/$M2SETUP_DB_NAME/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
+          cd /var/www/html/dev/tests/integration
           php ../../../vendor/phpunit/phpunit/phpunit
