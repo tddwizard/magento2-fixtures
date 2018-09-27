@@ -1,4 +1,4 @@
-box: mageinferno/magento2-php:7.0.8-fpm-3
+box: mageinferno/magento2-php:7.1-fpm-0
 services:
   - id: integernet/mysql_ci:5.6
     env:
