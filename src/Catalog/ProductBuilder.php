@@ -19,7 +19,7 @@ class ProductBuilder
     /**
      * @var ProductInterface
      */
-    private $product;
+    protected $product;
     /**
      * @var ProductRepositoryInterface
      */
@@ -96,7 +96,7 @@ class ProductBuilder
             $product->getExtensionAttributes()->setStockItem($stockItem)
         );
 
-        return new self(
+        return new static(
             $objectManager->create(ProductRepositoryInterface::class),
             $objectManager->create(StockItemRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkRepositoryInterface::class),
