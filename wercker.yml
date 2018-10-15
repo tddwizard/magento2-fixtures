@@ -16,7 +16,7 @@ build:
           while ! nc -q 1 $MYSQL_CI_PORT_3306_TCP_ADDR $MYSQL_CI_PORT_3306_TCP_PORT </dev/null; do echo -n . && sleep 3; done
     - script:
         name: set up test system
-        code: build/install-magento.sh 2.2.6
+        code: build/install-magento.sh 2.2.4
     - script:
         name: run integration tests
         code: build/integration-tests.sh
