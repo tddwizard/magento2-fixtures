@@ -99,6 +99,13 @@ class CustomerBuilder
         return $builder;
     }
 
+    public function withWebsiteId($websiteId) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setWebsiteId($websiteId);
+        return $builder;
+    }
+
     public function withStoreId($storeId) : CustomerBuilder
     {
         $builder = clone $this;

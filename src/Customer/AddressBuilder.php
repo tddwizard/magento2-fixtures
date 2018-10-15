@@ -84,6 +84,13 @@ class AddressBuilder
         return clone $this->address;
     }
 
+    public function withPrefix($prefix) : AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setPrefix($prefix);
+        return $builder;
+    }
+
     public function withFirstname($firstname) : AddressBuilder
     {
         $builder = clone $this;
