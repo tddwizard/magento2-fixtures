@@ -1,4 +1,4 @@
-box: mageinferno/magento2-php:7.1-fpm-0
+box: meanbee/magento2-php:7.1-cli
 services:
   - id: integernet/mysql_ci:5.6
     env:
@@ -15,43 +15,9 @@ build:
         code: |
           while ! nc -q 1 $MYSQL_CI_PORT_3306_TCP_ADDR $MYSQL_CI_PORT_3306_TCP_PORT </dev/null; do echo -n . && sleep 3; done
     - script:
-        name: set up and run integration tests
-        code: |
-          set -e
-          set -x
-          echo memory_limit=-1 >> /usr/local/etc/php/php.ini
-          git checkout -b tmp
-          git add -A
-          git commit --allow-empty -m "tmp"
-          export MODULE_DIR=`pwd`
-          export M2SETUP_DB_HOST=$MYSQL_CI_PORT_3306_TCP_ADDR
-          export M2SETUP_DB_USER=root
-          export M2SETUP_DB_PASSWORD=$MYSQL_CI_ENV_MYSQL_ROOT_PASSWORD
-          export M2SETUP_DB_NAME=magento
-          export M2SETUP_BASE_URL=http://m2.localhost:8000/
-          export M2SETUP_ADMIN_FIRSTNAME=Admin
-          export M2SETUP_ADMIN_LASTNAME=User
-          export M2SETUP_ADMIN_EMAIL=dummy@example.com
-          export M2SETUP_ADMIN_USER=magento2
-          export M2SETUP_ADMIN_PASSWORD=magento2
-          export M2SETUP_VERSION=latest
-          export M2SETUP_USE_SAMPLE_DATA=false
-          export M2SETUP_USE_ARCHIVE=true
-          mysqladmin -u$M2SETUP_DB_USER -p"$M2SETUP_DB_PASSWORD" -h$M2SETUP_DB_HOST create $M2SETUP_DB_NAME
-          /usr/local/bin/mage-setup
-          cd /var/www/html
-          composer config http-basic.repo.magento.com $MAGENTO_REPO_PUBLIC_KEY $MAGENTO_REPO_PRIVATE_KEY
-          composer config repositories.module vcs $MODULE_DIR
-          composer config minimum-stability dev
-          composer require tddwizard/magento2-fixtures dev-tmp
-          composer update
-          bin/magento module:enable TddWizard_Fixtures
-          bin/magento setup:upgrade
-          cp $MODULE_DIR/tests/phpunit.xml.dist /var/www/html/dev/tests/integration/phpunit.xml
-          cp $MODULE_DIR/tests/install-config-mysql.php /var/www/html/dev/tests/integration/etc/
-          sed -i -e "s/DB_HOST/$M2SETUP_DB_HOST/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
-          sed -i -e "s/DB_USER/$M2SETUP_DB_USER/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
-          sed -i -e "s/DB_PASSWORD/$M2SETUP_DB_PASSWORD/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
-          sed -i -e "s/DB_NAME/$M2SETUP_DB_NAME/g" /var/www/html/dev/tests/integration/etc/install-config-mysql.php
-          cd /var/www/html/dev/tests/integration
-          php ../../../vendor/phpunit/phpunit/phpunit
+        name: set up test system
+        code: build/install-magento.sh 2.2.6
+    - script:
+        name: run integration tests
+        code: build/integration-tests.sh
+
