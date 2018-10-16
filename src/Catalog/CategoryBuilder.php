@@ -70,6 +70,30 @@ class CategoryBuilder
         );
     }
 
+    public static function childCategoryOf(
+        CategoryFixture $parent,
+        ObjectManagerInterface $objectManager = null
+    ): CategoryBuilder
+    {
+        if ($objectManager === null) {
+            $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+        }
+        /** @var CategoryInterface $category */
+        $category = $objectManager->create(CategoryInterface::class);
+
+        $category->setName('Child Category');
+        $category->setIsActive(true);
+        $category->setParentId($parent->getId());
+
+        return new self(
+            $objectManager->create(CategoryRepositoryInterface::class),
+            $objectManager->create(CategoryLinkRepositoryInterface::class),
+            $objectManager->create(CategoryProductLinkInterfaceFactory::class),
+            $category,
+            []
+        );
+    }
+
     /**
      * Assigns products by sku. The keys of the array will be used for the sort position
      *
@@ -94,6 +118,13 @@ class CategoryBuilder
     {
         $builder = clone $this;
         $builder->category->setName($name);
+        return $builder;
+    }
+
+    public function withUrlKey(string $urlKey) : CategoryBuilder
+    {
+        $builder = clone $this;
+        $builder->category->setData('url_key', $urlKey);
         return $builder;
     }
 
