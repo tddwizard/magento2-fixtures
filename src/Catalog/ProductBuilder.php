@@ -15,6 +15,9 @@ use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Indexer\Model\IndexerFactory;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class ProductBuilder
 {
     /**
