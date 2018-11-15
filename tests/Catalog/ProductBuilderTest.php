@@ -95,6 +95,7 @@ class ProductBuilderTest extends TestCase
         /** @var Product $product */
         $product = $this->productRepository->getById($productFixture->getId());
         $this->assertEquals('foobar', $product->getSku());
+        $this->assertEquals('foobar', $product->getUrlKey(), 'URL key should equal SKU if not set otherwise');
         $this->assertEquals('Foo Bar', $product->getName());
         $this->assertEquals(Status::STATUS_DISABLED, $product->getStatus());
         $this->assertEquals(Product\Visibility::VISIBILITY_NOT_VISIBLE, $product->getVisibility());
