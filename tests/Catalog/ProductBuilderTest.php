@@ -5,6 +5,7 @@ namespace TddWizard\Fixtures\Catalog;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -194,5 +195,18 @@ class ProductBuilderTest extends TestCase
         $this->assertRegExp('/[0-9a-f]{32}/', $otherProductFixture->getSku());
         $this->assertNotEquals($productFixture->getSku(), $otherProductFixture->getSku());
         $this->products[] = $otherProductFixture;
+    }
+
+    public function testProductCanBeLoadedWithCollection()
+    {
+        $productFixture = new ProductFixture(
+            ProductBuilder::aSimpleProduct()->build()
+        );
+        $this->products[] = $productFixture;
+        /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
+        $searchCriteriaBuilder = $this->objectManager->create(SearchCriteriaBuilder::class);
+        $searchCriteriaBuilder->addFilter('sku', $productFixture->getSku());
+        $productsFromCollection = $this->productRepository->getList($searchCriteriaBuilder->create())->getItems();
+        $this->assertCount(1, $productsFromCollection, 'The product should be able to be loaded from collection');
     }
 }
