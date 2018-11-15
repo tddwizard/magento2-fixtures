@@ -13,6 +13,7 @@ use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Indexer\Model\IndexerFactory;
 
 class ProductBuilder
 {
@@ -44,12 +45,17 @@ class ProductBuilder
      * @var ProductWebsiteLinkInterfaceFactory
      */
     private $websiteLinkFactory;
+    /**
+     * @var IndexerFactory
+     */
+    private $indexerFactory;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
         StockItemRepositoryInterface $stockItemRepository,
         ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
         ProductWebsiteLinkInterfaceFactory $websiteLinkFactory,
+        IndexerFactory $indexerFactory,
         ProductInterface $product,
         array $websiteIds,
         array $storeSpecificValues
@@ -58,6 +64,7 @@ class ProductBuilder
         $this->websiteLinkRepository = $websiteLinkRepository;
         $this->stockItemRepository = $stockItemRepository;
         $this->websiteLinkFactory = $websiteLinkFactory;
+        $this->indexerFactory = $indexerFactory;
         $this->product = $product;
         $this->websiteIds = $websiteIds;
         $this->storeSpecificValues = $storeSpecificValues;
@@ -101,6 +108,7 @@ class ProductBuilder
             $objectManager->create(StockItemRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkInterfaceFactory::class),
+            $objectManager->create(IndexerFactory::class),
             $product,
             [1],
             []
@@ -234,6 +242,7 @@ class ProductBuilder
             $storeProduct->addData($values);
             $storeProduct->save();
         }
+        $this->indexerFactory->create()->load('cataloginventory_stock')->reindexRow($product->getId());
         return $product;
     }
 }
