@@ -228,9 +228,7 @@ class ProductBuilder
         if (!$builder->product->getSku()) {
             $builder->product->setSku(sha1(uniqid('', true)));
         }
-        $builder->product->addData([
-            'url_key' => $builder->product->getSku()
-        ]);
+        $builder->product->setCustomAttribute('url_key', $builder->product->getSku());
         $product = $builder->productRepository->save($builder->product);
         foreach ($builder->websiteIds as $websiteId) {
             /** @var ProductWebsiteLinkInterface $websiteLink */
