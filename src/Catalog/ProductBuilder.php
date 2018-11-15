@@ -208,6 +208,13 @@ class ProductBuilder
         return $builder;
     }
 
+    public function withWeight($weight) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->setWeight($weight);
+        return $builder;
+    }
+
     public function withCustomAttributes(array $values, $storeId = null) : ProductBuilder
     {
         $builder = clone $this;

@@ -84,6 +84,7 @@ class ProductBuilderTest extends TestCase
                 ->withTaxClassId(2)
                 ->withIsInStock(false)
                 ->withStockQty(-1)
+                ->withWeight(10)
                 ->withCustomAttributes(
                     [
                         'cost' => 2.0
@@ -94,20 +95,22 @@ class ProductBuilderTest extends TestCase
         $this->products[] = $productFixture;
         /** @var Product $product */
         $product = $this->productRepository->getById($productFixture->getId());
-        $this->assertEquals('foobar', $product->getSku());
+        $this->assertEquals('foobar', $product->getSku(), 'sku');
         $this->assertEquals('foobar', $product->getUrlKey(), 'URL key should equal SKU if not set otherwise');
-        $this->assertEquals('Foo Bar', $product->getName());
-        $this->assertEquals(Status::STATUS_DISABLED, $product->getStatus());
-        $this->assertEquals(Product\Visibility::VISIBILITY_NOT_VISIBLE, $product->getVisibility());
+        $this->assertEquals('Foo Bar', $product->getName(), 'name');
+        $this->assertEquals(Status::STATUS_DISABLED, $product->getStatus(), 'status');
+        $this->assertEquals(Product\Visibility::VISIBILITY_NOT_VISIBLE, $product->getVisibility(), 'visibility');
         // current website (1) is always added by ProductRepository
-        $this->assertEquals([1, $secondWebsiteId], $product->getWebsiteIds());
-        $this->assertEquals(9.99, $product->getPrice());
-        $this->assertEquals(2, $product->getData('tax_class_id'));
+        $this->assertEquals([1, $secondWebsiteId], $product->getWebsiteIds(), 'website ids');
+        $this->assertEquals(9.99, $product->getPrice(), 'price');
+        $this->assertEquals(10, $product->getWeight(), 'weight');
+        $this->assertEquals(2, $product->getData('tax_class_id'), 'tax class id');
         $this->assertFalse(
-            $product->getExtensionAttributes()->getStockItem()->getIsInStock()
+            $product->getExtensionAttributes()->getStockItem()->getIsInStock(),
+            'in stock'
         );
-        $this->assertEquals(-1, $product->getExtensionAttributes()->getStockItem()->getQty());
-        $this->assertEquals(2.0, $product->getCustomAttribute('cost')->getValue());
+        $this->assertEquals(-1, $product->getExtensionAttributes()->getStockItem()->getQty(), 'stock qty');
+        $this->assertEquals(2.0, $product->getCustomAttribute('cost')->getValue(), 'custom attribute "cost"');
     }
 
     /**
