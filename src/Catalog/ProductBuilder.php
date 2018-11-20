@@ -17,6 +17,7 @@ use Magento\Indexer\Model\IndexerFactory;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.UnusedPrivateField)
  */
 class ProductBuilder
 {
