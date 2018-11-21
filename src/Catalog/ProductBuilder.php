@@ -17,6 +17,7 @@ use Magento\Indexer\Model\IndexerFactory;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.UnusedPrivateField)
  */
 class ProductBuilder
 {
@@ -36,6 +37,10 @@ class ProductBuilder
      * @var int[]
      */
     private $websiteIds = [];
+    /**
+     * @var int[]
+     */
+    private $categoryIds = [];
     /**
      * @var ProductWebsiteLinkRepositoryInterface
      */
@@ -180,6 +185,13 @@ class ProductBuilder
         return $builder;
     }
 
+    public function withCategoryIds(array $categoryIds) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->categoryIds = $categoryIds;
+        return $builder;
+    }
+
     public function withPrice(float $price) : ProductBuilder
     {
         $builder = clone $this;
@@ -236,6 +248,7 @@ class ProductBuilder
             $builder->product->setSku(sha1(uniqid('', true)));
         }
         $builder->product->setCustomAttribute('url_key', $builder->product->getSku());
+        $builder->product->setCategoryIds($builder->categoryIds);
         $product = $builder->productRepository->save($builder->product);
         foreach ($builder->websiteIds as $websiteId) {
             /** @var ProductWebsiteLinkInterface $websiteLink */
