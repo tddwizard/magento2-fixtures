@@ -243,46 +243,52 @@ class ProductBuilder
     public function build() : ProductInterface
     {
         try {
-            $builder = clone $this;
-            if (!$builder->product->getSku()) {
-                $builder->product->setSku(sha1(uniqid('', true)));
-            }
-            $builder->product->setCustomAttribute('url_key', $builder->product->getSku());
-            $builder->product->setCategoryIds($builder->categoryIds);
-            $product = $builder->productRepository->save($builder->product);
-            foreach ($builder->websiteIds as $websiteId) {
-                /** @var ProductWebsiteLinkInterface $websiteLink */
-                $websiteLink = $builder->websiteLinkFactory->create();
-                $websiteLink->setWebsiteId($websiteId)->setSku($product->getSku());
-                $builder->websiteLinkRepository->save($websiteLink);
-            }
-            foreach ($builder->storeSpecificValues as $storeId => $values) {
-                /** @var Product $storeProduct */
-                $storeProduct = clone $product;
-                $storeProduct->setStoreId($storeId);
-                $storeProduct->addData($values);
-                $storeProduct->save();
-            }
+            $product = $this->createProduct();
             $this->indexerFactory->create()->load('cataloginventory_stock')->reindexRow($product->getId());
             return $product;
         } catch (\Exception $e) {
-            if ($this->isTransactionException($e))
+            $e->getPrevious();
+            if ($this->isTransactionException($e) || $this->isTransactionException($e->getPrevious()))
             {
                 throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
-            }
-            if ($e->getPrevious() && $this->isTransactionException($e->getPrevious())) {
-                throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
-
             }
             throw $e;
         }
     }
 
-    private function isTransactionException($e)
+    private function createProduct(): ProductInterface
     {
+        $builder = clone $this;
+        if (!$builder->product->getSku()) {
+            $builder->product->setSku(sha1(uniqid('', true)));
+        }
+        $builder->product->setCustomAttribute('url_key', $builder->product->getSku());
+        $builder->product->setCategoryIds($builder->categoryIds);
+        $product = $builder->productRepository->save($builder->product);
+        foreach ($builder->websiteIds as $websiteId) {
+            /** @var ProductWebsiteLinkInterface $websiteLink */
+            $websiteLink = $builder->websiteLinkFactory->create();
+            $websiteLink->setWebsiteId($websiteId)->setSku($product->getSku());
+            $builder->websiteLinkRepository->save($websiteLink);
+        }
+        foreach ($builder->storeSpecificValues as $storeId => $values) {
+            /** @var Product $storeProduct */
+            $storeProduct = clone $product;
+            $storeProduct->setStoreId($storeId);
+            $storeProduct->addData($values);
+            $storeProduct->save();
+        }
+        return $product;
+    }
+
+    private function isTransactionException($exception)
+    {
+        if ($exception === null) {
+            return false;
+        }
         return preg_match(
             '{please retry transaction|DDL statements are not allowed in transactions}i',
-            $e->getMessage()
+            $exception->getMessage()
         );
     }
 }
