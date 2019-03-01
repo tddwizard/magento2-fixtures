@@ -2,7 +2,6 @@
 
 namespace TddWizard\Fixtures\Catalog;
 
-use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Indexer\Model\IndexerFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 
