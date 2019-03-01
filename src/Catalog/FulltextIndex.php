@@ -2,6 +2,7 @@
 
 namespace TddWizard\Fixtures\Catalog;
 
+use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Indexer\Model\IndexerFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 
@@ -25,9 +26,16 @@ class FulltextIndex
         $this->indexerFactory = $indexerFactory;
     }
 
+    public static function configureAsScheduled()
+    {
+        /** @var IndexerRegistry $indexerRegistry */
+        $indexerRegistry = Bootstrap::getObjectManager()->get(IndexerRegistry::class);
+        $indexerRegistry->get('catalogsearch_fulltext')->setScheduled(true);
+    }
+
     public static function ensureTablesAreCreated()
     {
-        if (! self::$created) {
+        if (!self::$created) {
             (new self(Bootstrap::getObjectManager()->create(IndexerFactory::class)))->reindex();
         }
     }
