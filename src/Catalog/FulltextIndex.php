@@ -26,13 +26,6 @@ class FulltextIndex
         $this->indexerFactory = $indexerFactory;
     }
 
-    public static function configureAsScheduled()
-    {
-        /** @var IndexerRegistry $indexerRegistry */
-        $indexerRegistry = Bootstrap::getObjectManager()->get(IndexerRegistry::class);
-        $indexerRegistry->get('catalogsearch_fulltext')->setScheduled(true);
-    }
-
     public static function ensureTablesAreCreated()
     {
         if (!self::$created) {
