@@ -31,8 +31,7 @@ BIN_MAGENTO=magento-command
 mysqladmin -u$M2SETUP_DB_USER -p"$M2SETUP_DB_PASSWORD" -h$M2SETUP_DB_HOST create $M2SETUP_DB_NAME
 DEBUG=true magento-installer
 cd /var/www/magento
-composer config repositories.solr-module vcs $MODULE_DIR
+composer config repositories.module '{"type":"path", "url":"'$MODULE_DIR'", "options":{"symlink":false}}'
 composer config minimum-stability dev
 composer require tddwizard/magento2-fixtures dev-tmp
-composer update
 $BIN_MAGENTO module:enable TddWizard_Fixtures

@@ -27,7 +27,7 @@ class FulltextIndex
 
     public static function ensureTablesAreCreated()
     {
-        if (! self::$created) {
+        if (!self::$created) {
             (new self(Bootstrap::getObjectManager()->create(IndexerFactory::class)))->reindex();
         }
     }

@@ -242,7 +242,22 @@ class ProductBuilder
 
     public function build() : ProductInterface
     {
-        FulltextIndex::ensureTablesAreCreated();
+        try {
+            $product = $this->createProduct();
+            $this->indexerFactory->create()->load('cataloginventory_stock')->reindexRow($product->getId());
+            return $product;
+        } catch (\Exception $e) {
+            $e->getPrevious();
+            if ($this->isTransactionException($e) || $this->isTransactionException($e->getPrevious()))
+            {
+                throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
+            }
+            throw $e;
+        }
+    }
+
+    private function createProduct(): ProductInterface
+    {
         $builder = clone $this;
         if (!$builder->product->getSku()) {
             $builder->product->setSku(sha1(uniqid('', true)));
@@ -263,7 +278,17 @@ class ProductBuilder
             $storeProduct->addData($values);
             $storeProduct->save();
         }
-        $this->indexerFactory->create()->load('cataloginventory_stock')->reindexRow($product->getId());
         return $product;
+    }
+
+    private function isTransactionException($exception)
+    {
+        if ($exception === null) {
+            return false;
+        }
+        return preg_match(
+            '{please retry transaction|DDL statements are not allowed in transactions}i',
+            $exception->getMessage()
+        );
     }
 }
