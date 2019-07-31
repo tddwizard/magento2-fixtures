@@ -9,6 +9,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @magentoDataFixtureBeforeTransaction Magento/Catalog/_files/enable_reindex_schedule.php
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  */
@@ -70,6 +71,29 @@ class CategoryBuilderTest extends TestCase
         $this->assertContains(1, $category->getStoreIds(), 'Assigned default store id');
         $this->assertEquals('1/2/' . $categoryFixture->getId(), $category->getPath(), 'Category path');
     }
+
+    public function testDefaultChildCategory()
+    {
+        $parentCategoryFixture = new CategoryFixture(
+            CategoryBuilder::topLevelCategory()->build()
+        );
+        $this->categories[] = $parentCategoryFixture;
+        $childCategoryFixture = new CategoryFixture(
+            CategoryBuilder::childCategoryOf($parentCategoryFixture)->build()
+        );
+
+        /** @var Category $category */
+        $category = $this->categoryRepository->get($childCategoryFixture->getId());
+        $this->assertEquals('Child Category', $category->getName(), 'Category name');
+        $this->assertContains(0, $category->getStoreIds(), 'Assigned admin store id');
+        $this->assertContains(1, $category->getStoreIds(), 'Assigned default store id');
+        $this->assertEquals(
+            '1/2/' . $parentCategoryFixture->getId() . '/' . $childCategoryFixture->getId(),
+            $category->getPath(),
+            'Category path'
+        );
+    }
+
     public function testCategoryWithSpecificAttributes()
     {
         $categoryFixture = new CategoryFixture(
@@ -77,6 +101,7 @@ class CategoryBuilderTest extends TestCase
                 ->withName('Custom Name')
                 ->withDescription('Custom Description')
                 ->withIsActive(false)
+                ->withUrlKey('my-url-key')
                 ->build()
         );
         $this->categories[] = $categoryFixture;
@@ -85,6 +110,7 @@ class CategoryBuilderTest extends TestCase
         $category = $this->categoryRepository->get($categoryFixture->getId());
         $this->assertEquals('0', $category->getIsActive(), 'Category should be inactive');
         $this->assertEquals('Custom Name', $category->getName(), 'Category name');
+        $this->assertEquals('my-url-key', $category->getUrlKey(), 'Category URL key');
         $this->assertEquals(
             'Custom Description',
             $category->getCustomAttribute('description')->getValue(),

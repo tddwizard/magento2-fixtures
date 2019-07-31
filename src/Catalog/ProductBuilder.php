@@ -13,7 +13,12 @@ use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Indexer\Model\IndexerFactory;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.UnusedPrivateField)
+ */
 class ProductBuilder
 {
     /**
@@ -33,6 +38,10 @@ class ProductBuilder
      */
     private $websiteIds = [];
     /**
+     * @var int[]
+     */
+    private $categoryIds = [];
+    /**
      * @var ProductWebsiteLinkRepositoryInterface
      */
     private $websiteLinkRepository;
@@ -44,12 +53,17 @@ class ProductBuilder
      * @var ProductWebsiteLinkInterfaceFactory
      */
     private $websiteLinkFactory;
+    /**
+     * @var IndexerFactory
+     */
+    private $indexerFactory;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
         StockItemRepositoryInterface $stockItemRepository,
         ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
         ProductWebsiteLinkInterfaceFactory $websiteLinkFactory,
+        IndexerFactory $indexerFactory,
         ProductInterface $product,
         array $websiteIds,
         array $storeSpecificValues
@@ -58,6 +72,7 @@ class ProductBuilder
         $this->websiteLinkRepository = $websiteLinkRepository;
         $this->stockItemRepository = $stockItemRepository;
         $this->websiteLinkFactory = $websiteLinkFactory;
+        $this->indexerFactory = $indexerFactory;
         $this->product = $product;
         $this->websiteIds = $websiteIds;
         $this->storeSpecificValues = $storeSpecificValues;
@@ -101,6 +116,7 @@ class ProductBuilder
             $objectManager->create(StockItemRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkInterfaceFactory::class),
+            $objectManager->create(IndexerFactory::class),
             $product,
             [1],
             []
@@ -169,6 +185,13 @@ class ProductBuilder
         return $builder;
     }
 
+    public function withCategoryIds(array $categoryIds) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->categoryIds = $categoryIds;
+        return $builder;
+    }
+
     public function withPrice(float $price) : ProductBuilder
     {
         $builder = clone $this;
@@ -197,6 +220,13 @@ class ProductBuilder
         return $builder;
     }
 
+    public function withWeight($weight) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->setWeight($weight);
+        return $builder;
+    }
+
     public function withCustomAttributes(array $values, $storeId = null) : ProductBuilder
     {
         $builder = clone $this;
@@ -212,14 +242,28 @@ class ProductBuilder
 
     public function build() : ProductInterface
     {
-        FulltextIndex::ensureTablesAreCreated();
+        try {
+            $product = $this->createProduct();
+            $this->indexerFactory->create()->load('cataloginventory_stock')->reindexRow($product->getId());
+            return $product;
+        } catch (\Exception $e) {
+            $e->getPrevious();
+            if ($this->isTransactionException($e) || $this->isTransactionException($e->getPrevious()))
+            {
+                throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
+            }
+            throw $e;
+        }
+    }
+
+    private function createProduct(): ProductInterface
+    {
         $builder = clone $this;
         if (!$builder->product->getSku()) {
             $builder->product->setSku(sha1(uniqid('', true)));
         }
-        $builder->product->addData([
-            'url_key' => $builder->product->getSku()
-        ]);
+        $builder->product->setCustomAttribute('url_key', $builder->product->getSku());
+        $builder->product->setCategoryIds($builder->categoryIds);
         $product = $builder->productRepository->save($builder->product);
         foreach ($builder->websiteIds as $websiteId) {
             /** @var ProductWebsiteLinkInterface $websiteLink */
@@ -235,5 +279,16 @@ class ProductBuilder
             $storeProduct->save();
         }
         return $product;
+    }
+
+    private function isTransactionException($exception)
+    {
+        if ($exception === null) {
+            return false;
+        }
+        return preg_match(
+            '{please retry transaction|DDL statements are not allowed in transactions}i',
+            $exception->getMessage()
+        );
     }
 }
