@@ -16,4 +16,9 @@ return [
     'admin-email' => \Magento\TestFramework\Bootstrap::ADMIN_EMAIL,
     'admin-firstname' => \Magento\TestFramework\Bootstrap::ADMIN_FIRSTNAME,
     'admin-lastname' => \Magento\TestFramework\Bootstrap::ADMIN_LASTNAME,
+    'amqp-host' => '',
+    'amqp-port' => '',
+    'amqp-user' => '',
+    'amqp-password' => '',
+
 ];
