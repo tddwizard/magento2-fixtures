@@ -99,17 +99,17 @@ class CustomerBuilder
         return $builder;
     }
 
-    public function withWebsiteId($websiteId) : CustomerBuilder
-    {
-        $builder = clone $this;
-        $builder->customer->setWebsiteId($websiteId);
-        return $builder;
-    }
-
     public function withStoreId($storeId) : CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setStoreId($storeId);
+        return $builder;
+    }
+
+    public function withWebsiteId($websiteId) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setWebsiteId($websiteId);
         return $builder;
     }
 
@@ -154,6 +154,14 @@ class CustomerBuilder
         $builder->customer->setTaxvat($taxvat);
         return $builder;
     }
+
+    public function withDob($dob) : CustomerBuilder
+    {
+        $builder = clone $this;
+        $builder->customer->setDob($dob);
+        return $builder;
+    }
+
 
     public function withCustomAttributes(array $values) : CustomerBuilder
     {
