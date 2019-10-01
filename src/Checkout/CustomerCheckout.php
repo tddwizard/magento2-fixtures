@@ -161,7 +161,9 @@ class CustomerCheckout
         $reloadedQuote = $this->quoteRepository->get($this->cart->getQuote()->getId());
         // Collect missing totals, like shipping
         $reloadedQuote->collectTotals();
-        return $this->quoteManagement->submit($reloadedQuote);
+        $order = $this->quoteManagement->submit($reloadedQuote);
+        $this->cart->getCheckoutSession()->clearQuote();
+        return $order;
     }
 
     private function saveBilling()
