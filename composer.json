@@ -13,7 +13,7 @@
     "autoload": {
         "files": [
             "registration.php",
-            "src/phpunit4.php"
+            "tests/etc/phpunit4.php"
         ],
         "psr-4": {
             "TddWizard\\Fixtures\\": "src"
