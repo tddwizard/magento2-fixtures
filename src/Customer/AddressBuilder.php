@@ -2,9 +2,11 @@
 
 namespace TddWizard\Fixtures\Customer;
 
+use Faker\Factory as FakerFactory;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Directory\Model\Region;
 
 /**
  * Builder to be used by fixtures
@@ -15,6 +17,7 @@ class AddressBuilder
      * @var AddressInterface
      */
     private $address;
+
     /**
      * @var AddressRepositoryInterface
      */
@@ -31,32 +34,31 @@ class AddressBuilder
         $this->address = clone $this->address;
     }
 
-    public function withCustomAttributes(array $values) : AddressBuilder
-    {
-        $builder = clone $this;
-        foreach ($values as $code => $value) {
-            $builder->address->setCustomAttribute($code, $value);
-        }
-        return $builder;
-    }
-
-    public static function anAddress(ObjectManagerInterface $objectManager = null) : AddressBuilder
-    {
+    public static function anAddress(
+        ObjectManagerInterface $objectManager = null,
+        string $locale = 'de_DE'
+    ): AddressBuilder {
         if ($objectManager === null) {
             $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         }
+
+        $faker = FakerFactory::create($locale);
+        $countryCode = substr($locale, -2);
+        $regionId = $objectManager->create(Region::class)->loadByName($faker->state, $countryCode)->getId();
+
         /** @var AddressInterface $address */
         $address = $objectManager->create(AddressInterface::class);
         $address
-            ->setTelephone('3468676')
-            ->setPostcode('75477')
-            ->setCountryId('US')
-            ->setCity('CityM')
-            ->setCompany('CompanyName')
-            ->setStreet(['Green str, 67'])
-            ->setLastname('Smith')
-            ->setFirstname('John')
-            ->setRegionId(1);
+            ->setTelephone($faker->phoneNumber)
+            ->setPostcode($faker->postcode)
+            ->setCountryId($countryCode)
+            ->setCity($faker->city)
+            ->setCompany($faker->company)
+            ->setStreet([$faker->streetAddress])
+            ->setLastname($faker->lastName)
+            ->setFirstname($faker->firstName)
+            ->setRegionId($regionId);
+
         return new self($objectManager->create(AddressRepositoryInterface::class), $address);
     }
 
@@ -72,16 +74,6 @@ class AddressBuilder
         $builder = clone $this;
         $builder->address->setIsDefaultBilling(true);
         return $builder;
-    }
-
-    public function build() : AddressInterface
-    {
-        return $this->addressRepository->save($this->address);
-    }
-
-    public function buildWithoutSave() : AddressInterface
-    {
-        return clone $this->address;
     }
 
     public function withPrefix($prefix) : AddressBuilder
@@ -152,5 +144,24 @@ class AddressBuilder
         $builder = clone $this;
         $builder->address->setRegionId($regionId);
         return $builder;
+    }
+
+    public function withCustomAttributes(array $values) : AddressBuilder
+    {
+        $builder = clone $this;
+        foreach ($values as $code => $value) {
+            $builder->address->setCustomAttribute($code, $value);
+        }
+        return $builder;
+    }
+
+    public function build() : AddressInterface
+    {
+        return $this->addressRepository->save($this->address);
+    }
+
+    public function buildWithoutSave() : AddressInterface
+    {
+        return clone $this->address;
     }
 }

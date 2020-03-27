@@ -3,7 +3,6 @@
 namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\Customer;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -148,5 +147,23 @@ class CustomerBuilderTest extends TestCase
         $this->assertEquals('52078', $address->getPostcode());
         $this->assertEquals('Aachen', $address->getCity());
         $this->assertEquals(88, $address->getRegionId());
+    }
+
+    /**
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function testLocalizedAddresses()
+    {
+        $customerFixture = new CustomerFixture(
+            CustomerBuilder::aCustomer()->withAddresses(
+                AddressBuilder::anAddress(null, 'de_DE')->asDefaultBilling(),
+                AddressBuilder::anAddress(null, 'en_US')->asDefaultShipping()
+            )->build()
+        );
+
+        foreach ($this->customerRepository->getById($customerFixture->getId())->getAddresses() as $address) {
+            self::assertSame($address->isDefaultBilling() ? 'DE' : 'US', $address->getCountryId());
+        }
     }
 }
