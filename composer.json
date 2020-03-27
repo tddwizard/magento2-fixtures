@@ -12,8 +12,7 @@
     "minimum-stability": "stable",
     "autoload": {
         "files": [
-            "registration.php",
-            "src/phpunit4.php"
+            "registration.php"
         ],
         "psr-4": {
             "TddWizard\\Fixtures\\": "src"
@@ -32,7 +31,7 @@
     ],
     "require": {
         "php": "^7.2",
-        "magento/framework": "^100.1|^101.0|^102.0",
+        "magento/framework": "^101.0|^102.0",
         "magento/zendframework1": "^1.12",
         "magento/module-catalog": "^101.0|^102.0|^103.0",
         "magento/module-customer": "^100.1|^101.0|^102.0",
