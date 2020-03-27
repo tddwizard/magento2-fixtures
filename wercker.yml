@@ -1,4 +1,4 @@
-box: meanbee/magento2-php:7.1-cli
+box: meanbee/magento2-php:7.2-cli
 services:
   - id: integernet/mysql_ci:5.6
     env:
@@ -16,7 +16,7 @@ build:
           while ! nc -q 1 $MYSQL_CI_PORT_3306_TCP_ADDR $MYSQL_CI_PORT_3306_TCP_PORT </dev/null; do echo -n . && sleep 3; done
     - script:
         name: set up test system
-        code: build/install-magento.sh 2.3.2
+        code: build/install-magento.sh 2.3.4
     - script:
         name: run integration tests
         code: build/integration-tests.sh

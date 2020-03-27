@@ -31,7 +31,7 @@
         }
     ],
     "require": {
-        "php": "^7.0|^7.1",
+        "php": "^7.2",
         "magento/framework": "^100.1|^101.0|^102.0",
         "magento/zendframework1": "^1.12",
         "magento/module-catalog": "^101.0|^102.0|^103.0",
