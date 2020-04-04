@@ -202,10 +202,15 @@ Logged-in customer, products, and cart item quantities will be
 generated internally unless more control is desired:
 
 ```php
-$order = OrderBuilder::anOrder()->withProducts(
-    ProductBuilder::aSimpleProduct()->withSku('foo'),
-    ProductBuilder::aSimpleProduct()->withSku('bar')
-)->build();
+$order = OrderBuilder::anOrder()
+    ->withProducts(
+        // prepare catalog product fixtures
+        ProductBuilder::aSimpleProduct()->withSku('foo'),
+        ProductBuilder::aSimpleProduct()->withSku('bar')
+    )->withCart(
+        // define cart item quantities
+        CartBuilder::forCurrentSession()->withSimpleProduct('foo', 2)->withSimpleProduct('bar', 3)
+    )->build();
 ```
 
 ### Shipment
