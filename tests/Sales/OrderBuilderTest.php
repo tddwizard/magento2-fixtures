@@ -18,9 +18,9 @@ use TddWizard\Fixtures\Customer\CustomerBuilder;
 class OrderBuilderTest extends TestCase
 {
     /**
-     * @var OrderFixture
+     * @var OrderFixture[]
      */
-    private $orderFixture;
+    private $orderFixtures;
 
     /**
      * @var OrderRepositoryInterface
@@ -40,7 +40,7 @@ class OrderBuilderTest extends TestCase
      */
     protected function tearDown()
     {
-        OrderFixtureRollback::create()->execute($this->orderFixture);
+        OrderFixtureRollback::create()->execute(...$this->orderFixtures);
 
         parent::tearDown();
     }
@@ -55,12 +55,13 @@ class OrderBuilderTest extends TestCase
      */
     public function createOrder()
     {
-        $this->orderFixture = new OrderFixture(
+        $orderFixture = new OrderFixture(
             OrderBuilder::anOrder()->build()
         );
+        $this->orderFixtures[] = $orderFixture;
 
-        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($this->orderFixture->getId()));
-        self::assertNotEmpty($this->orderFixture->getOrderItemQtys());
+        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($orderFixture->getId()));
+        self::assertNotEmpty($orderFixture->getOrderItemQtys());
     }
 
     /**
@@ -73,12 +74,13 @@ class OrderBuilderTest extends TestCase
      */
     public function createOrderWithProduct()
     {
-        $this->orderFixture = new OrderFixture(
+        $orderFixture = new OrderFixture(
             OrderBuilder::anOrder()->withProducts(ProductBuilder::aSimpleProduct())->build()
         );
+        $this->orderFixtures[] = $orderFixture;
 
-        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($this->orderFixture->getId()));
-        self::assertCount(1, $this->orderFixture->getOrderItemQtys());
+        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($orderFixture->getId()));
+        self::assertCount(1, $orderFixture->getOrderItemQtys());
     }
 
     /**
@@ -91,15 +93,16 @@ class OrderBuilderTest extends TestCase
      */
     public function createOrderWithProducts()
     {
-        $this->orderFixture = new OrderFixture(
+        $orderFixture = new OrderFixture(
             OrderBuilder::anOrder()->withProducts(
                 ProductBuilder::aSimpleProduct()->withSku('foo'),
                 ProductBuilder::aSimpleProduct()->withSku('bar')
             )->build()
         );
+        $this->orderFixtures[] = $orderFixture;
 
-        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($this->orderFixture->getId()));
-        self::assertCount(2, $this->orderFixture->getOrderItemQtys());
+        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($orderFixture->getId()));
+        self::assertCount(2, $orderFixture->getOrderItemQtys());
     }
 
     /**
@@ -117,13 +120,14 @@ class OrderBuilderTest extends TestCase
             ->withEmail($customerEmail)
             ->withAddresses(AddressBuilder::anAddress()->asDefaultBilling()->asDefaultShipping());
 
-        $this->orderFixture = new OrderFixture(
+        $orderFixture = new OrderFixture(
             OrderBuilder::anOrder()->withCustomer($customerBuilder)->build()
         );
+        $this->orderFixtures[] = $orderFixture;
 
-        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($this->orderFixture->getId()));
-        self::assertSame($customerEmail, $this->orderFixture->getCustomerEmail());
-        self::assertNotEmpty($this->orderFixture->getOrderItemQtys());
+        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($orderFixture->getId()));
+        self::assertSame($customerEmail, $orderFixture->getCustomerEmail());
+        self::assertNotEmpty($orderFixture->getOrderItemQtys());
     }
 
     /**
@@ -160,7 +164,7 @@ class OrderBuilderTest extends TestCase
             $cartBuilder = $cartBuilder->withSimpleProduct($sku, $qty);
         }
 
-        $this->orderFixture = new OrderFixture(
+        $orderFixture = new OrderFixture(
             OrderBuilder::anOrder()
                 ->withProducts(...$productBuilders)
                 ->withCustomer($customerBuilder)
@@ -168,11 +172,67 @@ class OrderBuilderTest extends TestCase
                 ->withPaymentMethod($paymentMethod)->withShippingMethod($shippingMethod)
                 ->build()
         );
+        $this->orderFixtures[] = $orderFixture;
 
-        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($this->orderFixture->getId()));
-        self::assertSame($customerEmail, $this->orderFixture->getCustomerEmail());
-        self::assertEmpty(array_diff($cartItems, $this->orderFixture->getOrderItemQtys()));
-        self::assertSame($paymentMethod, $this->orderFixture->getPaymentMethod());
-        self::assertSame($shippingMethod, $this->orderFixture->getShippingMethod());
+        self::assertInstanceOf(OrderInterface::class, $this->orderRepository->get($orderFixture->getId()));
+        self::assertSame($customerEmail, $orderFixture->getCustomerEmail());
+        self::assertEmpty(array_diff($cartItems, $orderFixture->getOrderItemQtys()));
+        self::assertSame($paymentMethod, $orderFixture->getPaymentMethod());
+        self::assertSame($shippingMethod, $orderFixture->getShippingMethod());
+    }
+
+    /**
+     * Create multiple orders. Assert all of them were successfully built.
+     *
+     * @test
+     * @throws \Exception
+     */
+    public function createMultipleOrders()
+    {
+        $shippingMethod = 'flatrate_flatrate';
+
+        // first order, simple
+        $orderFixture = new OrderFixture(
+            OrderBuilder::anOrder()
+                ->withShippingMethod($shippingMethod)
+                ->build()
+        );
+        $this->orderFixtures[] = $orderFixture;
+
+        // second order, with specified cart
+        $cartBuilder = CartBuilder::forCurrentSession();
+        $orderWithCartFixture = new OrderFixture(
+            OrderBuilder::anOrder()
+                ->withShippingMethod($shippingMethod)
+                ->withProducts(ProductBuilder::aSimpleProduct()->withSku('bar'))
+                ->withCart($cartBuilder->withSimpleProduct('bar', 3))
+                ->build()
+        );
+        $this->orderFixtures[] = $orderWithCartFixture;
+
+        // third order, with specified customer
+        $orderWithCustomerFixture = new OrderFixture(
+            OrderBuilder::anOrder()
+                ->withShippingMethod($shippingMethod)
+                ->withCustomer(
+                    CustomerBuilder::aCustomer()
+                        ->withAddresses(
+                            AddressBuilder::anAddress(null, 'de_AT')
+                                ->asDefaultBilling()
+                                ->asDefaultShipping()
+                        )
+                )
+                ->build()
+        );
+        $this->orderFixtures[] = $orderWithCustomerFixture;
+
+        // assert all fixtures were created with separate customers.
+        self::assertCount(3, $this->orderFixtures);
+        self::assertContainsOnlyInstancesOf(OrderFixture::class, $this->orderFixtures);
+
+        $customerIds[$orderFixture->getCustomerId()] = 1;
+        $customerIds[$orderWithCartFixture->getCustomerId()] = 1;
+        $customerIds[$orderWithCustomerFixture->getCustomerId()] = 1;
+        self::assertCount(3, $customerIds);
     }
 }
