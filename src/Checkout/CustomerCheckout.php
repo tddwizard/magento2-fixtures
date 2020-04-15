@@ -62,7 +62,7 @@ class CustomerCheckout
         $shippingMethodCode = null,
         $paymentMethodCode = null
     ) {
-    
+
         $this->addressRepository = $addressRepository;
         $this->quoteRepository = $quoteRepository;
         $this->quoteManagement = $quoteManagement;
@@ -170,7 +170,7 @@ class CustomerCheckout
     {
         $billingAddress = $this->cart->getQuote()->getBillingAddress();
         $billingAddress->importCustomerAddressData(
-            $this->addressRepository->getById($this->getCustomerShippingAddressId())
+            $this->addressRepository->getById($this->getCustomerBillingAddressId())
         );
         $billingAddress->save();
     }
@@ -179,7 +179,7 @@ class CustomerCheckout
     {
         $shippingAddress = $this->cart->getQuote()->getShippingAddress();
         $shippingAddress->importCustomerAddressData(
-            $this->addressRepository->getById($this->getCustomerBillingAddressId())
+            $this->addressRepository->getById($this->getCustomerShippingAddressId())
         );
         $shippingAddress->setCollectShippingRates(true);
         $shippingAddress->collectShippingRates();
