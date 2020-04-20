@@ -235,4 +235,50 @@ class OrderBuilderTest extends TestCase
         $customerIds[$orderWithCustomerFixture->getCustomerId()] = 1;
         self::assertCount(3, $customerIds);
     }
+
+    /**
+     * Create orders for faker addresses with either state or province. Assert both types have a `region_id` assigned.
+     *
+     * @test
+     * @throws \Exception
+     */
+    public function createIntlOrders()
+    {
+        $atLocale = 'de_AT';
+        $atOrder = OrderBuilder::anOrder()
+            ->withCustomer(
+                CustomerBuilder::aCustomer()->withAddresses(
+                    AddressBuilder::anAddress(null, $atLocale)->asDefaultBilling()->asDefaultShipping()
+                )
+            )
+            ->build();
+        $this->orderFixtures[] = new OrderFixture($atOrder);
+
+        $usLocale = 'en_US';
+        $usOrder = OrderBuilder::anOrder()
+            ->withCustomer(
+                CustomerBuilder::aCustomer()->withAddresses(
+                    AddressBuilder::anAddress(null, $usLocale)->asDefaultBilling()->asDefaultShipping()
+                )
+            )
+            ->build();
+        $this->orderFixtures[] = new OrderFixture($usOrder);
+
+        $caLocale = 'en_CA';
+        $caOrder = OrderBuilder::anOrder()
+            ->withCustomer(
+                CustomerBuilder::aCustomer()->withAddresses(
+                    AddressBuilder::anAddress(null, $caLocale)->asDefaultBilling()->asDefaultShipping()
+                )
+            )
+            ->build();
+        $this->orderFixtures[] = new OrderFixture($caOrder);
+
+        self::assertSame(substr($atLocale, 3, 4), $atOrder->getBillingAddress()->getCountryId());
+        self::assertNotEmpty($atOrder->getBillingAddress()->getRegionId());
+        self::assertSame(substr($usLocale, 3, 4), $usOrder->getBillingAddress()->getCountryId());
+        self::assertNotEmpty($usOrder->getBillingAddress()->getRegionId());
+        self::assertSame(substr($caLocale, 3, 4), $caOrder->getBillingAddress()->getCountryId());
+        self::assertNotEmpty($caOrder->getBillingAddress()->getRegionId());
+    }
 }
