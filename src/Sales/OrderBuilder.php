@@ -138,6 +138,10 @@ class OrderBuilder
             $checkout = $checkout->withPaymentMethodCode($builder->paymentMethod);
         }
 
-        return $checkout->placeOrder();
+        $order = $checkout->placeOrder();
+
+        $customerFixture->logout();
+
+        return $order;
     }
 }

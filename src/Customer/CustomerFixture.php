@@ -82,4 +82,14 @@ class CustomerFixture
         }
         $session->setCustomerId($this->getId());
     }
+
+    public function logout(Session $session = null)
+    {
+        if ($session === null) {
+            $objectManager = Bootstrap::getObjectManager();
+            $session = $objectManager->get(Session::class);
+        }
+
+        $session->logout();
+    }
 }
