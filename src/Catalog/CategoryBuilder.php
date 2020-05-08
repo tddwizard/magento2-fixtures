@@ -4,6 +4,8 @@ namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\CategoryLinkRepositoryInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Model\Category;
+use \Magento\Catalog\Model\ResourceModel\Category as CategoryResource;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\Data\CategoryProductLinkInterface;
 use Magento\Catalog\Api\Data\CategoryProductLinkInterfaceFactory;
@@ -22,6 +24,11 @@ class CategoryBuilder
     private $categoryRepository;
 
     /**
+     * @var CategoryResource
+     */
+    private $categoryResource;
+
+    /**
      * @var CategoryLinkRepositoryInterface
      */
     private $categoryLinkRepository;
@@ -38,12 +45,14 @@ class CategoryBuilder
 
     public function __construct(
         CategoryRepositoryInterface $categoryRepository,
+        CategoryResource $categoryResource,
         CategoryLinkRepositoryInterface $categoryLinkRepository,
         CategoryProductLinkInterfaceFactory $productLinkFactory,
         CategoryInterface $category,
         array $skus
     ) {
         $this->categoryRepository = $categoryRepository;
+        $this->categoryResource = $categoryResource;
         $this->categoryLinkRepository = $categoryLinkRepository;
         $this->category = $category;
         $this->skus = $skus;
@@ -60,9 +69,11 @@ class CategoryBuilder
 
         $category->setName('Top Level Category');
         $category->setIsActive(true);
+        $category->setPath('1/2');
 
         return new self(
             $objectManager->create(CategoryRepositoryInterface::class),
+            $objectManager->create(CategoryResource::class),
             $objectManager->create(CategoryLinkRepositoryInterface::class),
             $objectManager->create(CategoryProductLinkInterfaceFactory::class),
             $category,
@@ -83,10 +94,11 @@ class CategoryBuilder
 
         $category->setName('Child Category');
         $category->setIsActive(true);
-        $category->setParentId($parent->getId());
+        $category->setPath($parent->getCategory()->getPath());
 
         return new self(
             $objectManager->create(CategoryRepositoryInterface::class),
+            $objectManager->create(CategoryResource::class),
             $objectManager->create(CategoryLinkRepositoryInterface::class),
             $objectManager->create(CategoryProductLinkInterfaceFactory::class),
             $category,
@@ -147,16 +159,20 @@ class CategoryBuilder
             $builder->category->setData('url_key', sha1(uniqid('', true)));
         }
 
-        $category = $builder->categoryRepository->save($builder->category);
+        // Save with global scope if not specified otherwise
+        if ($builder->category instanceof Category && !$builder->category->hasData('store_id')) {
+            $builder->category->setStoreId(0);
+        }
+        $builder->categoryResource->save($builder->category);
 
         foreach ($builder->skus as $position => $sku) {
             /** @var CategoryProductLinkInterface $productLink */
             $productLink = $builder->productLinkFactory->create();
             $productLink->setSku($sku);
             $productLink->setPosition($position);
-            $productLink->setCategoryId($category->getId());
+            $productLink->setCategoryId($builder->category->getId());
             $builder->categoryLinkRepository->save($productLink);
         }
-        return $category;
+        return $builder->category;
     }
 }

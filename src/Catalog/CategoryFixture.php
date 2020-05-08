@@ -12,6 +12,14 @@ class CategoryFixture
      */
     private $category;
 
+    /**
+     * @return CategoryInterface
+     */
+    public function getCategory(): CategoryInterface
+    {
+        return $this->category;
+    }
+
     public function __construct(CategoryInterface $category)
     {
         $this->category = $category;
