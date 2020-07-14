@@ -86,6 +86,7 @@ class ProductBuilderTest extends TestCase
                 ->withIsInStock(false)
                 ->withStockQty(-1)
                 ->withWeight(10)
+                ->withBackorders(2)
                 ->withCustomAttributes(
                     [
                         'cost' => 2.0
@@ -111,6 +112,7 @@ class ProductBuilderTest extends TestCase
             'in stock'
         );
         $this->assertEquals(-1, $product->getExtensionAttributes()->getStockItem()->getQty(), 'stock qty');
+        $this->assertEquals(2, $product->getExtensionAttributes()->getStockItem()->getBackorders(), 'stock backorders');
         $this->assertEquals(2.0, $product->getCustomAttribute('cost')->getValue(), 'custom attribute "cost"');
     }
 

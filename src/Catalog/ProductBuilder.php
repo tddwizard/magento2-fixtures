@@ -220,6 +220,13 @@ class ProductBuilder
         return $builder;
     }
 
+    public function withBackorders($backorders) : ProductBuilder
+    {
+        $builder = clone $this;
+        $builder->product->getExtensionAttributes()->getStockItem()->setBackorders($backorders);
+        return $builder;
+    }
+
     public function withWeight($weight) : ProductBuilder
     {
         $builder = clone $this;
