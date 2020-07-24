@@ -3,8 +3,10 @@
 namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
+use Magento\TestFramework\Helper\Bootstrap;
 
 class CustomerFixtureRollback
 {
@@ -23,10 +25,10 @@ class CustomerFixtureRollback
         $this->customerRepository = $customerRepository;
     }
 
-    public static function create(ObjectManagerInterface $objectManager = null)
+    public static function create(ObjectManagerInterface $objectManager = null): CustomerFixtureRollback
     {
         if ($objectManager === null) {
-            $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+            $objectManager = Bootstrap::getObjectManager();
         }
         return new self(
             $objectManager->get(Registry::class),
@@ -34,7 +36,11 @@ class CustomerFixtureRollback
         );
     }
 
-    public function execute(CustomerFixture ...$customerFixtures)
+    /**
+     * @param CustomerFixture ...$customerFixtures
+     * @throws LocalizedException
+     */
+    public function execute(CustomerFixture ...$customerFixtures): void
     {
         $this->registry->unregister('isSecureArea');
         $this->registry->register('isSecureArea', true);

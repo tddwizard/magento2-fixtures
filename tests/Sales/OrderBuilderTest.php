@@ -2,6 +2,7 @@
 
 namespace TddWizard\Fixtures\Sales;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -27,7 +28,7 @@ class OrderBuilderTest extends TestCase
      */
     private $orderRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,10 +36,9 @@ class OrderBuilderTest extends TestCase
     }
 
     /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws LocalizedException
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         OrderFixtureRollback::create()->execute(...$this->orderFixtures);
 

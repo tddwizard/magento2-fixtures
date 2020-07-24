@@ -3,7 +3,6 @@
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\Data\ProductWebsiteLinkInterface;
 use Magento\Catalog\Api\Data\ProductWebsiteLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Api\ProductWebsiteLinkRepositoryInterface;
@@ -14,6 +13,7 @@ use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Indexer\Model\IndexerFactory;
+use Magento\TestFramework\Helper\Bootstrap;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -22,41 +22,49 @@ use Magento\Indexer\Model\IndexerFactory;
 class ProductBuilder
 {
     /**
-     * @var ProductInterface
-     */
-    protected $product;
-    /**
      * @var ProductRepositoryInterface
      */
     private $productRepository;
-    /**
-     * @var mixed[][]
-     */
-    private $storeSpecificValues = [];
-    /**
-     * @var int[]
-     */
-    private $websiteIds = [];
-    /**
-     * @var int[]
-     */
-    private $categoryIds = [];
-    /**
-     * @var ProductWebsiteLinkRepositoryInterface
-     */
-    private $websiteLinkRepository;
+
     /**
      * @var StockItemRepositoryInterface
      */
     private $stockItemRepository;
+
+    /**
+     * @var ProductWebsiteLinkRepositoryInterface
+     */
+    private $websiteLinkRepository;
+
     /**
      * @var ProductWebsiteLinkInterfaceFactory
      */
     private $websiteLinkFactory;
+
     /**
      * @var IndexerFactory
      */
     private $indexerFactory;
+
+    /**
+     * @var ProductInterface|Product
+     */
+    protected $product;
+
+    /**
+     * @var int[]
+     */
+    private $websiteIds;
+
+    /**
+     * @var mixed[][]
+     */
+    private $storeSpecificValues;
+
+    /**
+     * @var int[]
+     */
+    private $categoryIds = [];
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -83,30 +91,32 @@ class ProductBuilder
         $this->product = clone $this->product;
     }
 
-    public static function aSimpleProduct(ObjectManagerInterface $objectManager = null) : ProductBuilder
+    public static function aSimpleProduct(ObjectManagerInterface $objectManager = null): ProductBuilder
     {
         if ($objectManager === null) {
-            $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+            $objectManager = Bootstrap::getObjectManager();
         }
-        /** @var ProductInterface $product */
+        /** @var ProductInterface|Product $product */
         $product = $objectManager->create(ProductInterface::class);
 
-        $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
-            ->setAttributeSetId(4)
-            ->setName('Simple Product')
-            ->setPrice(10)
-            ->setVisibility(Visibility::VISIBILITY_BOTH)
-            ->setStatus(Status::STATUS_ENABLED);
-        $product->addData([
-            'tax_class_id' => 1,
-            'description' => 'Description',
-        ]);
+        $product->setTypeId(Product\Type::TYPE_SIMPLE)
+                ->setAttributeSetId(4)
+                ->setName('Simple Product')
+                ->setPrice(10)
+                ->setVisibility(Visibility::VISIBILITY_BOTH)
+                ->setStatus(Status::STATUS_ENABLED);
+        $product->addData(
+            [
+                'tax_class_id' => 1,
+                'description' => 'Description',
+            ]
+        );
         /** @var StockItemInterface $stockItem */
         $stockItem = $objectManager->create(StockItemInterface::class);
         $stockItem->setManageStock(true)
-            ->setQty(100)
-            ->setIsQtyDecimal(false)
-            ->setIsInStock(true);
+                  ->setQty(100)
+                  ->setIsQtyDecimal(false)
+                  ->setIsInStock(true);
         $product->setExtensionAttributes(
             $product->getExtensionAttributes()->setStockItem($stockItem)
         );
@@ -123,7 +133,7 @@ class ProductBuilder
         );
     }
 
-    public function withData(array $data) : ProductBuilder
+    public function withData(array $data): ProductBuilder
     {
         $builder = clone $this;
 
@@ -132,14 +142,14 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withSku(string $sku) : ProductBuilder
+    public function withSku(string $sku): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setSku($sku);
         return $builder;
     }
 
-    public function withName(string $name, $storeId = null) : ProductBuilder
+    public function withName(string $name, $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -156,7 +166,7 @@ class ProductBuilder
      *                          Attention: Status is configured per website, will affect all stores of the same website
      * @return ProductBuilder
      */
-    public function withStatus(int $status, $storeId = null) : ProductBuilder
+    public function withStatus(int $status, $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -167,7 +177,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withVisibility(int $visibility, $storeId = null) : ProductBuilder
+    public function withVisibility(int $visibility, $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -178,56 +188,56 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withWebsiteIds(array $websiteIds) : ProductBuilder
+    public function withWebsiteIds(array $websiteIds): ProductBuilder
     {
         $builder = clone $this;
         $builder->websiteIds = $websiteIds;
         return $builder;
     }
 
-    public function withCategoryIds(array $categoryIds) : ProductBuilder
+    public function withCategoryIds(array $categoryIds): ProductBuilder
     {
         $builder = clone $this;
         $builder->categoryIds = $categoryIds;
         return $builder;
     }
 
-    public function withPrice(float $price) : ProductBuilder
+    public function withPrice(float $price): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setPrice($price);
         return $builder;
     }
 
-    public function withTaxClassId($taxClassId) : ProductBuilder
+    public function withTaxClassId($taxClassId): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setData('tax_class_id', $taxClassId);
         return $builder;
     }
 
-    public function withIsInStock(bool $inStock) : ProductBuilder
+    public function withIsInStock(bool $inStock): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->getExtensionAttributes()->getStockItem()->setIsInStock($inStock);
         return $builder;
     }
 
-    public function withStockQty($qty) : ProductBuilder
+    public function withStockQty($qty): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->getExtensionAttributes()->getStockItem()->setQty($qty);
         return $builder;
     }
 
-    public function withWeight($weight) : ProductBuilder
+    public function withWeight($weight): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setWeight($weight);
         return $builder;
     }
 
-    public function withCustomAttributes(array $values, $storeId = null) : ProductBuilder
+    public function withCustomAttributes(array $values, $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         foreach ($values as $code => $value) {
@@ -240,7 +250,11 @@ class ProductBuilder
         return $builder;
     }
 
-    public function build() : ProductInterface
+    /**
+     * @return ProductInterface
+     * @throws \Exception
+     */
+    public function build(): ProductInterface
     {
         try {
             $product = $this->createProduct();
@@ -248,14 +262,17 @@ class ProductBuilder
             return $product;
         } catch (\Exception $e) {
             $e->getPrevious();
-            if ($this->isTransactionException($e) || $this->isTransactionException($e->getPrevious()))
-            {
+            if ($this->isTransactionException($e) || $this->isTransactionException($e->getPrevious())) {
                 throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
             }
             throw $e;
         }
     }
 
+    /**
+     * @return ProductInterface
+     * @throws \Exception
+     */
     private function createProduct(): ProductInterface
     {
         $builder = clone $this;
@@ -263,10 +280,9 @@ class ProductBuilder
             $builder->product->setSku(sha1(uniqid('', true)));
         }
         $builder->product->setCustomAttribute('url_key', $builder->product->getSku());
-        $builder->product->setCategoryIds($builder->categoryIds);
+        $builder->product->setData('category_ids', $builder->categoryIds);
         $product = $builder->productRepository->save($builder->product);
         foreach ($builder->websiteIds as $websiteId) {
-            /** @var ProductWebsiteLinkInterface $websiteLink */
             $websiteLink = $builder->websiteLinkFactory->create();
             $websiteLink->setWebsiteId($websiteId)->setSku($product->getSku());
             $builder->websiteLinkRepository->save($websiteLink);
@@ -281,7 +297,7 @@ class ProductBuilder
         return $product;
     }
 
-    private function isTransactionException($exception)
+    private function isTransactionException($exception): bool
     {
         if ($exception === null) {
             return false;

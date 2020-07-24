@@ -2,6 +2,7 @@
 
 namespace TddWizard\Fixtures\Sales;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\InvoiceRepositoryInterface;
@@ -26,7 +27,7 @@ class InvoiceBuilderTest extends TestCase
      */
     private $invoiceRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,10 +35,9 @@ class InvoiceBuilderTest extends TestCase
     }
 
     /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws LocalizedException
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         OrderFixtureRollback::create()->execute($this->orderFixture);
 

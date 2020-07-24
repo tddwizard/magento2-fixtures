@@ -19,7 +19,7 @@ class ProductFixtureRollbackTest extends TestCase
      */
     private $productRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->productRepository = Bootstrap::getObjectManager()->create(ProductRepositoryInterface::class);
     }
@@ -53,5 +53,4 @@ class ProductFixtureRollbackTest extends TestCase
         $this->expectException(NoSuchEntityException::class);
         $this->productRepository->getById($otherProductFixture->getId());
     }
-
 }
