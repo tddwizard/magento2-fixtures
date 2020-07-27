@@ -18,7 +18,7 @@ class CustomerFixtureRollbackTest extends TestCase
      */
     private $customerRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->customerRepository = Bootstrap::getObjectManager()->create(CustomerRepositoryInterface::class);
     }

@@ -2,9 +2,6 @@
 
 namespace TddWizard\Fixtures\Checkout;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
 use TddWizard\Fixtures\Catalog\ProductFixture;
@@ -28,19 +25,8 @@ class CustomerCheckoutTest extends TestCase
      */
     private $productFixture;
 
-    /**
-     * @var ObjectManager
-     */
-    private $objectManager;
-    /**
-     * @var ProductRepositoryInterface
-     */
-    private $productRepository;
-
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->objectManager = Bootstrap::getObjectManager();
-        $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
         $this->customerFixture = new CustomerFixture(
             CustomerBuilder::aCustomer()
                 ->withAddresses(
@@ -54,12 +40,11 @@ class CustomerCheckoutTest extends TestCase
                 ->build()
         );
     }
-    protected function tearDown()
+    protected function tearDown(): void
     {
         CustomerFixtureRollback::create()->execute($this->customerFixture);
         ProductFixtureRollback::create()->execute($this->productFixture);
     }
-
 
     /**
      * @magentoAppIsolation enabled

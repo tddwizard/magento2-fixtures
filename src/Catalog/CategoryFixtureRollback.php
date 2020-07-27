@@ -3,8 +3,10 @@
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
+use Magento\TestFramework\Helper\Bootstrap;
 
 class CategoryFixtureRollback
 {
@@ -12,6 +14,7 @@ class CategoryFixtureRollback
      * @var Registry
      */
     private $registry;
+
     /**
      * @var CategoryRepositoryInterface
      */
@@ -23,10 +26,10 @@ class CategoryFixtureRollback
         $this->categoryRepository = $categoryRepository;
     }
 
-    public static function create(ObjectManagerInterface $objectManager = null)
+    public static function create(ObjectManagerInterface $objectManager = null): CategoryFixtureRollback
     {
         if ($objectManager === null) {
-            $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+            $objectManager = Bootstrap::getObjectManager();
         }
         return new self(
             $objectManager->get(Registry::class),
@@ -34,7 +37,11 @@ class CategoryFixtureRollback
         );
     }
 
-    public function execute(CategoryFixture ...$categoryFixtures)
+    /**
+     * @param CategoryFixture ...$categoryFixtures
+     * @throws LocalizedException
+     */
+    public function execute(CategoryFixture ...$categoryFixtures): void
     {
         $this->registry->unregister('isSecureArea');
         $this->registry->register('isSecureArea', true);

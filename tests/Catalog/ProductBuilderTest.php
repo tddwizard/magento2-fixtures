@@ -33,14 +33,14 @@ class ProductBuilderTest extends TestCase
      */
     private $productRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
         $this->products = [];
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (! empty($this->products)) {
             foreach ($this->products as $product) {
@@ -172,7 +172,11 @@ class ProductBuilderTest extends TestCase
         /** @var Product $product */
         $productInStore = $this->productRepository->getById($productFixture->getId(), false, $secondStoreId);
         $this->assertEquals('Store Name', $productInStore->getName(), 'Store specific name');
-        $this->assertEquals(Status::STATUS_ENABLED, $productInStore->getStatus(), 'Store specific status should be enabled');
+        $this->assertEquals(
+            Status::STATUS_ENABLED,
+            $productInStore->getStatus(),
+            'Store specific status should be enabled'
+        );
         $this->assertEquals(
             Product\Visibility::VISIBILITY_IN_CATALOG,
             $productInStore->getVisibility(),

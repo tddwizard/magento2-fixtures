@@ -4,7 +4,6 @@ namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Model\Category;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -15,11 +14,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CategoryBuilderTest extends TestCase
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
-
     /**
      * @var CategoryFixture[]
      */
@@ -35,15 +29,14 @@ class CategoryBuilderTest extends TestCase
      */
     private $categoryRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->objectManager = Bootstrap::getObjectManager();
-        $this->categoryRepository = $this->objectManager->create(CategoryRepositoryInterface::class);
+        $this->categoryRepository = Bootstrap::getObjectManager()->create(CategoryRepositoryInterface::class);
         $this->categories = [];
         $this->products = [];
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (!empty($this->categories)) {
             foreach ($this->categories as $product) {
@@ -66,10 +59,18 @@ class CategoryBuilderTest extends TestCase
 
         /** @var Category $category */
         $category = $this->categoryRepository->get($categoryFixture->getId());
-        $this->assertEquals('Top Level Category', $category->getName(), 'Category name');
-        $this->assertContains(0, $category->getStoreIds(), 'Assigned admin store id');
-        $this->assertContains(1, $category->getStoreIds(), 'Assigned default store id');
-        $this->assertEquals('1/2/' . $categoryFixture->getId(), $category->getPath(), 'Category path');
+
+        // store ids are mixed type, normalize first for strict type checking
+        $storeIds = array_map('strval', $category->getStoreIds());
+
+        $this->assertEquals('Top Level Category', $category->getName(), 'Category name does not match expected value.');
+        $this->assertContains('0', $storeIds, 'Admin store ID is not assigned.');
+        $this->assertContains('1', $storeIds, 'Default store ID is not assigned.');
+        $this->assertEquals(
+            '1/2/' . $categoryFixture->getId(),
+            $category->getPath(),
+            'Category path does not match expected value.'
+        );
     }
 
     public function testDefaultChildCategory()
@@ -84,13 +85,17 @@ class CategoryBuilderTest extends TestCase
 
         /** @var Category $category */
         $category = $this->categoryRepository->get($childCategoryFixture->getId());
-        $this->assertEquals('Child Category', $category->getName(), 'Category name');
-        $this->assertContains(0, $category->getStoreIds(), 'Assigned admin store id');
-        $this->assertContains(1, $category->getStoreIds(), 'Assigned default store id');
+
+        // store ids are mixed type, normalize first for strict type checking
+        $storeIds = array_map('strval', $category->getStoreIds());
+
+        $this->assertEquals('Child Category', $category->getName(), 'Category name does not match expected value.');
+        $this->assertContains('0', $storeIds, 'Admin store ID is not assigned.');
+        $this->assertContains('1', $storeIds, 'Default store ID is not assigned.');
         $this->assertEquals(
             '1/2/' . $parentCategoryFixture->getId() . '/' . $childCategoryFixture->getId(),
             $category->getPath(),
-            'Category path'
+            'Category path does not match expected value.'
         );
     }
 

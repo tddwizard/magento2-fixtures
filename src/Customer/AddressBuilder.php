@@ -5,8 +5,10 @@ namespace TddWizard\Fixtures\Customer;
 use Faker\Factory as FakerFactory;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Directory\Model\Region;
+use Magento\TestFramework\Helper\Bootstrap;
 
 /**
  * Builder to be used by fixtures
@@ -39,7 +41,7 @@ class AddressBuilder
         string $locale = 'de_DE'
     ): AddressBuilder {
         if ($objectManager === null) {
-            $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+            $objectManager = Bootstrap::getObjectManager();
         }
 
         $faker = FakerFactory::create($locale);
@@ -69,91 +71,91 @@ class AddressBuilder
         return new self($objectManager->create(AddressRepositoryInterface::class), $address);
     }
 
-    public function asDefaultShipping() : AddressBuilder
+    public function asDefaultShipping(): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setIsDefaultShipping(true);
         return $builder;
     }
 
-    public function asDefaultBilling() : AddressBuilder
+    public function asDefaultBilling(): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setIsDefaultBilling(true);
         return $builder;
     }
 
-    public function withPrefix($prefix) : AddressBuilder
+    public function withPrefix($prefix): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setPrefix($prefix);
         return $builder;
     }
 
-    public function withFirstname($firstname) : AddressBuilder
+    public function withFirstname($firstname): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setFirstname($firstname);
         return $builder;
     }
 
-    public function withLastname($lastname) : AddressBuilder
+    public function withLastname($lastname): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setLastname($lastname);
         return $builder;
     }
 
-    public function withStreet($street) : AddressBuilder
+    public function withStreet($street): AddressBuilder
     {
         $builder = clone $this;
-        $builder->address->setStreet((array) $street);
+        $builder->address->setStreet((array)$street);
         return $builder;
     }
 
-    public function withCompany($company) : AddressBuilder
+    public function withCompany($company): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setCompany($company);
         return $builder;
     }
 
-    public function withTelephone($telephone) : AddressBuilder
+    public function withTelephone($telephone): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setTelephone($telephone);
         return $builder;
     }
 
-    public function withPostcode($postcode) : AddressBuilder
+    public function withPostcode($postcode): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setPostcode($postcode);
         return $builder;
     }
 
-    public function withCity($city) : AddressBuilder
+    public function withCity($city): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setCity($city);
         return $builder;
     }
 
-    public function withCountryId($countryId) : AddressBuilder
+    public function withCountryId($countryId): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setCountryId($countryId);
         return $builder;
     }
 
-    public function withRegionId($regionId) : AddressBuilder
+    public function withRegionId($regionId): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setRegionId($regionId);
         return $builder;
     }
 
-    public function withCustomAttributes(array $values) : AddressBuilder
+    public function withCustomAttributes(array $values): AddressBuilder
     {
         $builder = clone $this;
         foreach ($values as $code => $value) {
@@ -162,12 +164,16 @@ class AddressBuilder
         return $builder;
     }
 
-    public function build() : AddressInterface
+    /**
+     * @return AddressInterface
+     * @throws LocalizedException
+     */
+    public function build(): AddressInterface
     {
         return $this->addressRepository->save($this->address);
     }
 
-    public function buildWithoutSave() : AddressInterface
+    public function buildWithoutSave(): AddressInterface
     {
         return clone $this->address;
     }

@@ -1,8 +1,4 @@
 <?php
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
 
 return [
     'db-host' => 'DB_HOST',
@@ -20,5 +16,4 @@ return [
     'amqp-port' => '',
     'amqp-user' => '',
     'amqp-password' => '',
-
 ];

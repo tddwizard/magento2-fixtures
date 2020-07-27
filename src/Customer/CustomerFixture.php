@@ -5,7 +5,6 @@ namespace TddWizard\Fixtures\Customer;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\Session;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -23,22 +22,22 @@ class CustomerFixture
         $this->customer = $customer;
     }
 
-    public function getDefaultShippingAddressId() : int
+    public function getDefaultShippingAddressId(): int
     {
         return $this->customer->getDefaultShipping();
     }
 
-    public function getDefaultBillingAddressId() : int
+    public function getDefaultBillingAddressId(): int
     {
         return $this->customer->getDefaultBilling();
     }
 
-    public function getOtherAddressId() : int
+    public function getOtherAddressId(): int
     {
         return $this->getNonDefaultAddressIds()[0];
     }
 
-    public function getNonDefaultAddressIds() : array
+    public function getNonDefaultAddressIds(): array
     {
         return array_values(
             array_diff(
@@ -58,22 +57,22 @@ class CustomerFixture
         );
     }
 
-    public function getId() : int
+    public function getId(): int
     {
         return $this->customer->getId();
     }
 
-    public function getConfirmation() : string
+    public function getConfirmation(): string
     {
         return $this->customer->getConfirmation();
     }
 
-    public function getEmail() : string
+    public function getEmail(): string
     {
         return $this->customer->getEmail();
     }
 
-    public function login(Session $session = null)
+    public function login(Session $session = null): void
     {
         if ($session === null) {
             $objectManager = Bootstrap::getObjectManager();
@@ -83,7 +82,7 @@ class CustomerFixture
         $session->setCustomerId($this->getId());
     }
 
-    public function logout(Session $session = null)
+    public function logout(Session $session = null): void
     {
         if ($session === null) {
             $objectManager = Bootstrap::getObjectManager();

@@ -25,16 +25,21 @@ class FulltextIndex
         $this->indexerFactory = $indexerFactory;
     }
 
-    public static function ensureTablesAreCreated()
+    /**
+     * @throws \Throwable
+     */
+    public static function ensureTablesAreCreated(): void
     {
         if (!self::$created) {
             (new self(Bootstrap::getObjectManager()->create(IndexerFactory::class)))->reindex();
         }
     }
 
-    public function reindex()
+    /**
+     * @throws \Throwable
+     */
+    public function reindex(): void
     {
-        /** @var \Magento\Indexer\Model\Indexer $indexer */
         $indexer = $this->indexerFactory->create();
         $indexer->load('catalogsearch_fulltext');
         $indexer->reindexAll();

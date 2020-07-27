@@ -2,6 +2,7 @@
 
 namespace TddWizard\Fixtures\Sales;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
@@ -26,7 +27,7 @@ class CreditmemoBuilderTest extends TestCase
      */
     private $creditmemoRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,10 +35,9 @@ class CreditmemoBuilderTest extends TestCase
     }
 
     /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws LocalizedException
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         OrderFixtureRollback::create()->execute($this->orderFixture);
 

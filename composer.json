@@ -30,21 +30,27 @@
         }
     ],
     "require": {
-        "php": "^7.0",
-        "magento/framework": "^101.0|^102.0",
-        "magento/zendframework1": "^1.12",
-        "magento/module-catalog": "^101.0|^102.0|^103.0",
-        "magento/module-customer": "^100.1|^101.0|^102.0",
-        "magento/module-checkout": "^100.1",
-        "magento/module-indexer": "^100.0",
+        "php": "^7.1",
+        "magento/framework": "^102.0|^103.0",
+        "magento/zendframework1": "^1.14",
+        "magento/module-catalog": "^103.0|^104.0",
+        "magento/module-catalog-inventory": "^100.3",
+        "magento/module-checkout": "^100.3",
+        "magento/module-customer": "^102.0|^103.0",
+        "magento/module-directory": "^100.3",
+        "magento/module-indexer": "^100.3",
+        "magento/module-payment": "^100.3",
+        "magento/module-quote": "^101.1",
+        "magento/module-sales": "^102.0|^103.0",
         "fzaninotto/faker": "^v1.9.0"
-
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.0|^6.0",
+        "ext-json": "*",
+        "magento/module-store": "^101.0",
+        "phpunit/phpunit": "^6.0|^9.0",
         "pds/skeleton": "^1.0",
-        "phpro/grumphp": "^0.11.6",
-        "phpstan/phpstan": "^0.8.0",
+        "phpro/grumphp": "^0.13.0",
+        "phpstan/phpstan": "^0.9.0",
         "squizlabs/php_codesniffer": "^3.0"
     }
 }
