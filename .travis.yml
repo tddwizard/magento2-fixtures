@@ -1,14 +1,12 @@
 os: linux
-dist: trusty
+dist: xenial
 group: edge
 services:
+  - mysql
   - elasticsearch
 addons:
   apt:
     packages:
-      - mysql-server-5.6
-      - mysql-client-core-5.6
-      - mysql-client-5.6
       - postfix
   hosts:
     - magento2.travis
