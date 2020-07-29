@@ -14,7 +14,7 @@ class CartBuilderTest extends TestCase
      */
     private $productFixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->productFixture = new ProductFixture(
             ProductBuilder::aSimpleProduct()->build()

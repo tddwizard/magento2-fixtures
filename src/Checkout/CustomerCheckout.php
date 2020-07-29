@@ -18,34 +18,42 @@ class CustomerCheckout
      * @var AddressRepositoryInterface
      */
     private $addressRepository;
+
     /**
      * @var CartRepositoryInterface
      */
     private $quoteRepository;
+
     /**
      * @var QuoteManagement
      */
     private $quoteManagement;
+
     /**
      * @var PaymentConfig
      */
     private $paymentConfig;
+
     /**
      * @var Cart
      */
     private $cart;
+
     /**
      * @var int|null
      */
     private $customerShippingAddressId;
+
     /**
      * @var int|null
      */
     private $customerBillingAddressId;
+
     /**
      * @var string|null
      */
     private $shippingMethodCode;
+
     /**
      * @var string|null
      */
@@ -74,7 +82,7 @@ class CustomerCheckout
         $this->paymentMethodCode = $paymentMethodCode;
     }
 
-    public static function fromCart(Cart $cart, ObjectManagerInterface $objectManager = null) : CustomerCheckout
+    public static function fromCart(Cart $cart, ObjectManagerInterface $objectManager = null): CustomerCheckout
     {
         if ($objectManager === null) {
             $objectManager = Bootstrap::getObjectManager();
@@ -88,28 +96,28 @@ class CustomerCheckout
         );
     }
 
-    public function withCustomerBillingAddressId(int $addressId) : CustomerCheckout
+    public function withCustomerBillingAddressId(int $addressId): CustomerCheckout
     {
         $checkout = clone $this;
         $checkout->customerBillingAddressId = $addressId;
         return $checkout;
     }
 
-    public function withCustomerShippingAddressId(int $addressId) : CustomerCheckout
+    public function withCustomerShippingAddressId(int $addressId): CustomerCheckout
     {
         $checkout = clone $this;
         $checkout->customerShippingAddressId = $addressId;
         return $checkout;
     }
 
-    public function withShippingMethodCode(string $code) : CustomerCheckout
+    public function withShippingMethodCode(string $code): CustomerCheckout
     {
         $checkout = clone $this;
         $checkout->shippingMethodCode = $code;
         return $checkout;
     }
 
-    public function withPaymentMethodCode(string $code) : CustomerCheckout
+    public function withPaymentMethodCode(string $code): CustomerCheckout
     {
         $checkout = clone $this;
         $checkout->paymentMethodCode = $code;
@@ -119,17 +127,16 @@ class CustomerCheckout
     /**
      * @return int Customer shipping address as configured or try default shipping address
      */
-    private function getCustomerShippingAddressId() : int
+    private function getCustomerShippingAddressId(): int
     {
         return $this->customerShippingAddressId
             ?? $this->cart->getCustomerSession()->getCustomer()->getDefaultShippingAddress()->getId();
     }
 
-
     /**
      * @return int Customer billing address as configured or try default billing address
      */
-    private function getCustomerBillingAddressId() : int
+    private function getCustomerBillingAddressId(): int
     {
         return $this->customerBillingAddressId
             ?? $this->cart->getCustomerSession()->getCustomer()->getDefaultBillingAddress()->getId();
@@ -138,7 +145,7 @@ class CustomerCheckout
     /**
      * @return string Shipping method code as configured, or try first available rate
      */
-    private function getShippingMethodCode() : string
+    private function getShippingMethodCode(): string
     {
         return $this->shippingMethodCode
             ?? $this->cart->getQuote()->getShippingAddress()->getAllShippingRates()[0]->getCode();
@@ -147,12 +154,16 @@ class CustomerCheckout
     /**
      * @return string Payment method code as configured, or try first available method
      */
-    private function getPaymentMethodCode() : string
+    private function getPaymentMethodCode(): string
     {
         return $this->paymentMethodCode ?? array_values($this->paymentConfig->getActiveMethods())[0]->getCode();
     }
 
-    public function placeOrder() : OrderInterface
+    /**
+     * @return OrderInterface
+     * @throws \Exception
+     */
+    public function placeOrder(): OrderInterface
     {
         $this->saveBilling();
         $this->saveShipping();
@@ -166,7 +177,10 @@ class CustomerCheckout
         return $order;
     }
 
-    private function saveBilling()
+    /**
+     * @throws \Exception
+     */
+    private function saveBilling(): void
     {
         $billingAddress = $this->cart->getQuote()->getBillingAddress();
         $billingAddress->importCustomerAddressData(
@@ -175,7 +189,10 @@ class CustomerCheckout
         $billingAddress->save();
     }
 
-    private function saveShipping()
+    /**
+     * @throws \Exception
+     */
+    private function saveShipping(): void
     {
         $shippingAddress = $this->cart->getQuote()->getShippingAddress();
         $shippingAddress->importCustomerAddressData(
@@ -187,7 +204,10 @@ class CustomerCheckout
         $shippingAddress->save();
     }
 
-    private function savePayment()
+    /**
+     * @throws \Exception
+     */
+    private function savePayment(): void
     {
         $payment = $this->cart->getQuote()->getPayment();
         $payment->setMethod($this->getPaymentMethodCode());

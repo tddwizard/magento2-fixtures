@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Indexer\IndexerInterface;
+use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -25,35 +26,38 @@ class IndexerErrorsTest extends TestCase
     public function testHelpfulErrorMessageForFulltextIndexSchedule()
     {
         $this->onlyRunFromMagento('2.3.0');
-
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessageRegExp(
-            '{@magentoDataFixtureBeforeTransaction Magento/Catalog/_files/enable_reindex_schedule.php}'
-        );
-        /** @var StoreManagerInterface $storeManager */
-        $storeManager = Bootstrap::getObjectManager()->get(StoreManagerInterface::class);
-        $secondWebsiteId = $storeManager->getWebsite('test')->getId();
-        ProductBuilder::aSimpleProduct()
-            ->withWebsiteIds([$secondWebsiteId])
-            ->build();
+
+        try {
+            /** @var StoreManagerInterface $storeManager */
+            $storeManager = Bootstrap::getObjectManager()->get(StoreManagerInterface::class);
+            $secondWebsiteId = $storeManager->getWebsite('test')->getId();
+            ProductBuilder::aSimpleProduct()->withWebsiteIds([$secondWebsiteId])->build();
+        } catch (\Exception $exception) {
+            // manual check, there is no common assertion in PHPUnit 6 / PHPUnit 9
+            $this->assertNotFalse(
+                preg_match(
+                    '{@magentoDataFixtureBeforeTransaction Magento/Catalog/_files/enable_reindex_schedule.php}',
+                    $exception->getMessage()
+                )
+            );
+
+            throw $exception;
+        }
     }
 
     public static function disableReindexSchedule()
     {
-        /* @var \Magento\Framework\Indexer\IndexerInterface $model */
-        $model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Framework\Indexer\IndexerRegistry::class
-        )->get('catalogsearch_fulltext');
+        /* @var IndexerInterface $model */
+        $model = Bootstrap::getObjectManager()->get(IndexerRegistry::class)->get('catalogsearch_fulltext');
         self::$indexIsScheduledOrig = $model->isScheduled();
         $model->setScheduled(false);
-
     }
+
     public static function disableReindexScheduleRollback()
     {
-        /* @var \Magento\Framework\Indexer\IndexerInterface $model */
-        $model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Framework\Indexer\IndexerRegistry::class
-        )->get('catalogsearch_fulltext');
+        /* @var IndexerInterface $model */
+        $model = Bootstrap::getObjectManager()->get(IndexerRegistry::class)->get('catalogsearch_fulltext');
         $model->setScheduled(self::$indexIsScheduledOrig);
     }
 

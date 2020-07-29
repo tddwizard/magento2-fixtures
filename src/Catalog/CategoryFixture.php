@@ -25,12 +25,12 @@ class CategoryFixture
         $this->category = $category;
     }
 
-    public function getId() : int
+    public function getId(): int
     {
         return $this->category->getId();
     }
 
-    public function getUrlKey() : string
+    public function getUrlKey(): string
     {
         /** @var Category $category */
         $category = $this->category;

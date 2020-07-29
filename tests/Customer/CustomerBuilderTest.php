@@ -3,6 +3,7 @@
 namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -29,14 +30,14 @@ class CustomerBuilderTest extends TestCase
      */
     private $customerRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->customerRepository = $this->objectManager->create(CustomerRepositoryInterface::class);
         $this->customers = [];
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (! empty($this->customers)) {
             foreach ($this->customers as $customer) {
@@ -150,8 +151,7 @@ class CustomerBuilderTest extends TestCase
     }
 
     /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws LocalizedException
      */
     public function testLocalizedAddresses()
     {

@@ -4,20 +4,16 @@ namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\CategoryLinkRepositoryInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Model\Category;
-use \Magento\Catalog\Model\ResourceModel\Category as CategoryResource;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\Data\CategoryProductLinkInterface;
 use Magento\Catalog\Api\Data\CategoryProductLinkInterfaceFactory;
+use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\ResourceModel\Category as CategoryResource;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\TestFramework\Helper\Bootstrap;
 
 class CategoryBuilder
 {
-    /**
-     * @var CategoryInterface
-     */
-    private $category;
-
     /**
      * @var CategoryRepositoryInterface
      */
@@ -39,9 +35,14 @@ class CategoryBuilder
     private $productLinkFactory;
 
     /**
+     * @var CategoryInterface|Category
+     */
+    private $category;
+
+    /**
      * @var int[]
      */
-    private $skus = [];
+    private $skus;
 
     public function __construct(
         CategoryRepositoryInterface $categoryRepository,
@@ -54,15 +55,15 @@ class CategoryBuilder
         $this->categoryRepository = $categoryRepository;
         $this->categoryResource = $categoryResource;
         $this->categoryLinkRepository = $categoryLinkRepository;
+        $this->productLinkFactory = $productLinkFactory;
         $this->category = $category;
         $this->skus = $skus;
-        $this->productLinkFactory = $productLinkFactory;
     }
 
-    public static function topLevelCategory(ObjectManagerInterface $objectManager = null) : CategoryBuilder
+    public static function topLevelCategory(ObjectManagerInterface $objectManager = null): CategoryBuilder
     {
         if ($objectManager === null) {
-            $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+            $objectManager = Bootstrap::getObjectManager();
         }
         /** @var CategoryInterface $category */
         $category = $objectManager->create(CategoryInterface::class);
@@ -84,10 +85,9 @@ class CategoryBuilder
     public static function childCategoryOf(
         CategoryFixture $parent,
         ObjectManagerInterface $objectManager = null
-    ): CategoryBuilder
-    {
+    ): CategoryBuilder {
         if ($objectManager === null) {
-            $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+            $objectManager = Bootstrap::getObjectManager();
         }
         /** @var CategoryInterface $category */
         $category = $objectManager->create(CategoryInterface::class);
@@ -112,35 +112,35 @@ class CategoryBuilder
      * @param string[] $skus
      * @return CategoryBuilder
      */
-    public function withProducts(array $skus) : CategoryBuilder
+    public function withProducts(array $skus): CategoryBuilder
     {
         $builder = clone $this;
         $builder->skus = $skus;
         return $builder;
     }
 
-    public function withDescription(string $description) : CategoryBuilder
+    public function withDescription(string $description): CategoryBuilder
     {
         $builder = clone $this;
         $builder->category->setCustomAttribute('description', $description);
         return $builder;
     }
 
-    public function withName(string $name) : CategoryBuilder
+    public function withName(string $name): CategoryBuilder
     {
         $builder = clone $this;
         $builder->category->setName($name);
         return $builder;
     }
 
-    public function withUrlKey(string $urlKey) : CategoryBuilder
+    public function withUrlKey(string $urlKey): CategoryBuilder
     {
         $builder = clone $this;
         $builder->category->setData('url_key', $urlKey);
         return $builder;
     }
 
-    public function withIsActive(bool $isActive) : CategoryBuilder
+    public function withIsActive(bool $isActive): CategoryBuilder
     {
         $builder = clone $this;
         $builder->category->setIsActive($isActive);
@@ -152,7 +152,11 @@ class CategoryBuilder
         $this->category = clone $this->category;
     }
 
-    public function build() : CategoryInterface
+    /**
+     * @return CategoryInterface
+     * @throws \Exception
+     */
+    public function build(): CategoryInterface
     {
         $builder = clone $this;
         if (!$builder->category->getData('url_key')) {

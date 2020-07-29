@@ -36,13 +36,13 @@ Install it into your Magento 2 project with composer:
 If you need a customer without specific data, this is all:
 
 ```php
-protected function setUp()
+protected function setUp(): void
 {
   $this->customerFixture = new CustomerFixture(
     CustomerBuilder::aCustomer()->build()
   );
 }
-protected function tearDown()
+protected function tearDown(): void
 {
   CustomerFixtureRollback::create()->execute($this->customerFixture);
 }
@@ -98,7 +98,7 @@ $this->customerFixture->login();
 
 
 
-### Adresses
+### Addresses
 
 Similar to the customer builder you can also configure the address builder with custom attributes:
 
@@ -120,7 +120,7 @@ AddressBuilder::anAddress()
 Product fixtures work similar as customer fixtures:
 
 ```php
-protected function setUp()
+protected function setUp(): void
 {
   $this->productFixture = new ProductFixture(
     ProductBuilder::aSimpleProduct()
@@ -133,7 +133,7 @@ protected function setUp()
       ->build()
   );
 }
-protected function tearDown()
+protected function tearDown(): void
 {
   ProductFixtureRollback::create()->execute($this->productFixture);
 }

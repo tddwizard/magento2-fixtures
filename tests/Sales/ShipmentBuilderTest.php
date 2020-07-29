@@ -2,6 +2,7 @@
 
 namespace TddWizard\Fixtures\Sales;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentTrackInterface;
@@ -27,7 +28,7 @@ class ShipmentBuilderTest extends TestCase
      */
     private $shipmentRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,10 +36,9 @@ class ShipmentBuilderTest extends TestCase
     }
 
     /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws LocalizedException
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         OrderFixtureRollback::create()->execute($this->orderFixture);
 

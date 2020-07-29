@@ -6,6 +6,7 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Model\Cart;
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
@@ -33,7 +34,7 @@ class CartBuilder
         $this->addToCartRequests = [];
     }
 
-    public static function forCurrentSession(ObjectManagerInterface $objectManager = null)
+    public static function forCurrentSession(ObjectManagerInterface $objectManager = null): CartBuilder
     {
         if ($objectManager === null) {
             $objectManager = Bootstrap::getObjectManager();
@@ -44,14 +45,14 @@ class CartBuilder
         );
     }
 
-    public function withSimpleProduct($sku, $qty = 1) : CartBuilder
+    public function withSimpleProduct($sku, $qty = 1): CartBuilder
     {
         $result = clone $this;
         $result->addToCartRequests[$sku][] = new DataObject(['qty' => $qty]);
         return $result;
     }
 
-    public function withReservedOrderId($orderId) : CartBuilder
+    public function withReservedOrderId($orderId): CartBuilder
     {
         $result = clone $this;
         $result->cart->getQuote()->setReservedOrderId($orderId);
@@ -59,25 +60,29 @@ class CartBuilder
     }
 
     /**
-     * Lower-level API to support arbitary products
+     * Lower-level API to support arbitrary products
      *
      * @param $sku
      * @param int $qty
-     * @param $request
+     * @param mixed[] $request
      * @return CartBuilder
      */
-    public function withProductRequest($sku, $qty = 1, $request = []) : CartBuilder
+    public function withProductRequest($sku, $qty = 1, $request = []): CartBuilder
     {
         $result = clone $this;
-        $requestInfo = array_merge(['qty'=> $qty], $request);
+        $requestInfo = array_merge(['qty' => $qty], $request);
         $result->addToCartRequests[$sku][] = new DataObject($requestInfo);
         return $result;
     }
 
-    public function build() : Cart
+    /**
+     * @return Cart
+     * @throws LocalizedException
+     */
+    public function build(): Cart
     {
         foreach ($this->addToCartRequests as $sku => $requests) {
-            /** @var $product \Magento\Catalog\Model\Product */
+            /** @var Product $product */
             $product = $this->productRepository->get($sku);
             foreach ($requests as $requestInfo) {
                 $this->cart->addProduct($product, $requestInfo);

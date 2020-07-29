@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
@@ -23,7 +24,9 @@ Or set the fulltext indexer to "scheduled" before the transaction with:
  */ 
 
 TXT
-            , 0, $previous
+            ,
+            0,
+            $previous
         );
     }
 }
