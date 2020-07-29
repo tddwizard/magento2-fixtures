@@ -98,56 +98,56 @@ class CustomerBuilder
         return $builder;
     }
 
-    public function withGroupId($groupId): CustomerBuilder
+    public function withGroupId(int $groupId): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setGroupId($groupId);
         return $builder;
     }
 
-    public function withStoreId($storeId): CustomerBuilder
+    public function withStoreId(int $storeId): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setStoreId($storeId);
         return $builder;
     }
 
-    public function withWebsiteId($websiteId): CustomerBuilder
+    public function withWebsiteId(int $websiteId): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setWebsiteId($websiteId);
         return $builder;
     }
 
-    public function withPrefix($prefix): CustomerBuilder
+    public function withPrefix(string $prefix): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setPrefix($prefix);
         return $builder;
     }
 
-    public function withFirstname($firstname): CustomerBuilder
+    public function withFirstname(string $firstname): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setFirstname($firstname);
         return $builder;
     }
 
-    public function withMiddlename($middlename): CustomerBuilder
+    public function withMiddlename(string $middlename): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setMiddlename($middlename);
         return $builder;
     }
 
-    public function withLastname($lastname): CustomerBuilder
+    public function withLastname(string $lastname): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setLastname($lastname);
         return $builder;
     }
 
-    public function withSuffix($suffix): CustomerBuilder
+    public function withSuffix(string $suffix): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setSuffix($suffix);
