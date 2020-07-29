@@ -1,0 +1,46 @@
+os: linux
+dist: trusty
+group: edge
+services:
+  - elasticsearch
+addons:
+  apt:
+    packages:
+      - mysql-server-5.6
+      - mysql-client-core-5.6
+      - mysql-client-5.6
+      - postfix
+  hosts:
+    - magento2.travis
+language: php
+jobs:
+  include:
+    - php: 7.3
+      env:
+        - MAGENTO_VERSION=2.3
+        - TEST_SUITE=integration
+    - php: 7.4
+      env:
+        - MAGENTO_VERSION=2.4
+        - TEST_SUITE=integration
+    - php: 7.2
+      env:
+        - MAGENTO_VERSION=2.3
+        - TEST_SUITE=integration
+env:
+  global:
+    - COMPOSER_BIN_DIR=~/bin
+    - COMPOSER_PACKAGE_NAME=tddwizard/magento2-fixtures
+cache:
+  apt: true
+  directories:
+    - $HOME/.composer/cache
+before_script:
+  - |
+    sleep 10
+    ./.travis/before_script.sh
+script: phpunit -c magento2/dev/tests/$TEST_SUITE --coverage-text --coverage-clover=/tmp/coverage.clover
+after_script:
+  - |
+    wget https://scrutinizer-ci.com/ocular.phar
+    php ocular.phar code-coverage:upload --format=php-clover /tmp/coverage.clover
