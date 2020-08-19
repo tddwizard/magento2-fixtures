@@ -3,6 +3,7 @@
 namespace TddWizard\Fixtures\Customer;
 
 use Faker\Factory as FakerFactory;
+use InvalidArgumentException;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -44,30 +45,21 @@ class AddressBuilder
             $objectManager = Bootstrap::getObjectManager();
         }
 
-        $faker = FakerFactory::create($locale);
-        $countryCode = substr($locale, -2);
+        $address = self::prepareFakeAddress($objectManager, $locale);
+        return new self($objectManager->create(AddressRepositoryInterface::class), $address);
+    }
 
-        try {
-            $region = $faker->province;
-        } catch (\InvalidArgumentException $exception) {
-            $region = $faker->state;
+    public static function aCompanyAddress(
+        ObjectManagerInterface $objectManager = null,
+        string $locale = 'de_DE',
+        string $vatId = '1234567890'
+    ): AddressBuilder {
+        if ($objectManager === null) {
+            $objectManager = Bootstrap::getObjectManager();
         }
 
-        $regionId = $objectManager->create(Region::class)->loadByName($region, $countryCode)->getId();
-
-        /** @var AddressInterface $address */
-        $address = $objectManager->create(AddressInterface::class);
-        $address
-            ->setTelephone($faker->phoneNumber)
-            ->setPostcode($faker->postcode)
-            ->setCountryId($countryCode)
-            ->setCity($faker->city)
-            ->setCompany($faker->company)
-            ->setStreet([$faker->streetAddress])
-            ->setLastname($faker->lastName)
-            ->setFirstname($faker->firstName)
-            ->setRegionId($regionId);
-
+        $address = self::prepareFakeAddress($objectManager, $locale);
+        $address->setVatId($vatId);
         return new self($objectManager->create(AddressRepositoryInterface::class), $address);
     }
 
@@ -176,5 +168,36 @@ class AddressBuilder
     public function buildWithoutSave(): AddressInterface
     {
         return clone $this->address;
+    }
+
+    private static function prepareFakeAddress(
+        ObjectManagerInterface $objectManager,
+        string $locale = 'de_DE'
+    ): AddressInterface {
+        $faker = FakerFactory::create($locale);
+        $countryCode = substr($locale, -2);
+
+        try {
+            $region = $faker->province;
+        } catch (InvalidArgumentException $exception) {
+            $region = $faker->state;
+        }
+
+        $regionId = $objectManager->create(Region::class)->loadByName($region, $countryCode)->getId();
+
+        /** @var AddressInterface $address */
+        $address = $objectManager->create(AddressInterface::class);
+        $address
+            ->setTelephone($faker->phoneNumber)
+            ->setPostcode($faker->postcode)
+            ->setCountryId($countryCode)
+            ->setCity($faker->city)
+            ->setCompany($faker->company)
+            ->setStreet([$faker->streetAddress])
+            ->setLastname($faker->lastName)
+            ->setFirstname($faker->firstName)
+            ->setRegionId($regionId);
+
+        return $address;
     }
 }
