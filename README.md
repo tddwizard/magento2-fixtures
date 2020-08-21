@@ -6,10 +6,13 @@ This library is in *alpha* state, that means:
 - nothing is guaranteed to work
 - everything can still be changed
 
-[![Wercker Status](https://app.wercker.com/status/c69205aea9e9617e027d2aa8d5a1817c/s/master "wercker status")](https://app.wercker.com/project/byKey/c69205aea9e9617e027d2aa8d5a1817c)
-[![Code Climate](https://img.shields.io/codeclimate/github/tddwizard/magento2-fixtures.svg)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
-[![Latest Version](https://img.shields.io/packagist/v/tddwizard/magento2-fixtures.svg)](https://packagist.org/packages/tddwizard/magento2-fixtures)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
+
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/tddwizard/magento2-fixtures?style=flat-square)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
 
 ---
 
@@ -262,3 +265,25 @@ $creditmemo = CreditmemoBuilder::forOrder($order)
     ->withItem($barItemId, $barQtyToRefund)
     ->build();
 ```
+## Credits
+
+- [Fabian Schmengler][link-author]
+- [All Contributors][link-contributors]
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.txt) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/tddwizard/magento2-fixtures.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/tddwizard/magento2-fixtures/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/tddwizard/magento2-fixtures?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/tddwizard/magento2-fixtures.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/tddwizard/magento2-fixtures
+[link-travis]: https://travis-ci.org/tddwizard/magento2-fixtures
+[link-scrutinizer]: https://scrutinizer-ci.com/g/tddwizard/magento2-fixtures/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/tddwizard/magento2-fixtures
+[link-author]: https://github.com/schmengler
+[link-contributors]: ../../contributors
+
