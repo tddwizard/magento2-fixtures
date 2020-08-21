@@ -3,7 +3,6 @@ dist: xenial
 group: edge
 services:
   - mysql
-  - elasticsearch
 addons:
   apt:
     packages:
@@ -33,6 +32,11 @@ cache:
   apt: true
   directories:
     - $HOME/.composer/cache
+before_install:
+  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb
+  - sudo dpkg -i --force-confnew elasticsearch-7.6.2-amd64.deb 
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo service elasticsearch restart
 before_script:
   - |
     sleep 10

@@ -12,7 +12,7 @@ This library is in *alpha* state, that means:
 [![Build Status][ico-travis]][link-travis]
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
-[![Code Climate](https://img.shields.io/codeclimate/github/tddwizard/magento2-fixtures.svg)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/tddwizard/magento2-fixtures?style=flat-square)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
 
 ---
 
@@ -277,7 +277,7 @@ The MIT License (MIT). Please see [License File](LICENSE.txt) for more informati
 [ico-version]: https://img.shields.io/packagist/v/tddwizard/magento2-fixtures.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/tddwizard/magento2-fixtures/master.svg?style=flat-square
-[ico-scrutinizer]: https://scrutinizer-ci.com/g/tddwizard/magento2-fixtures/badges/coverage.png?b=master
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/tddwizard/magento2-fixtures?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/tddwizard/magento2-fixtures.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/tddwizard/magento2-fixtures
