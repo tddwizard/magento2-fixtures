@@ -40,7 +40,7 @@ class CategoryBuilder
     private $category;
 
     /**
-     * @var int[]
+     * @var string[]
      */
     private $skus;
 
@@ -65,7 +65,8 @@ class CategoryBuilder
         if ($objectManager === null) {
             $objectManager = Bootstrap::getObjectManager();
         }
-        /** @var CategoryInterface $category */
+        // use interface to reflect DI configuration but assume instance of the real model because we need its methods
+        /** @var Category $category */
         $category = $objectManager->create(CategoryInterface::class);
 
         $category->setName('Top Level Category');
@@ -89,7 +90,8 @@ class CategoryBuilder
         if ($objectManager === null) {
             $objectManager = Bootstrap::getObjectManager();
         }
-        /** @var CategoryInterface $category */
+        // use interface to reflect DI configuration but assume instance of the real model because we need its methods
+        /** @var Category $category */
         $category = $objectManager->create(CategoryInterface::class);
 
         $category->setName('Child Category');

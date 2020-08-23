@@ -35,7 +35,7 @@ class OrderFixture
     /**
      * Obtain `qty_ordered` per order item, indexed with `item_id`.
      *
-     * @return int[]
+     * @return float[]
      */
     public function getOrderItemQtys(): array
     {

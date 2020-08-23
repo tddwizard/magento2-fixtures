@@ -70,7 +70,7 @@ class ShipmentBuilder
     }
 
     public static function forOrder(
-        OrderInterface $order,
+        Order $order,
         ObjectManagerInterface $objectManager = null
     ): ShipmentBuilder {
         if ($objectManager === null) {

@@ -37,7 +37,7 @@ class CreditmemoBuilder
     private $order;
 
     /**
-     * @var int[]
+     * @var float[]
      */
     private $orderItems;
 
@@ -56,7 +56,7 @@ class CreditmemoBuilder
     }
 
     public static function forOrder(
-        OrderInterface $order,
+        Order $order,
         ObjectManagerInterface $objectManager = null
     ): CreditmemoBuilder {
         if ($objectManager === null) {
