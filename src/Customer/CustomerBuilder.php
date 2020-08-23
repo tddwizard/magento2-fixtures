@@ -154,20 +154,24 @@ class CustomerBuilder
         return $builder;
     }
 
-    public function withTaxvat($taxvat): CustomerBuilder
+    public function withTaxvat(string $taxvat): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setTaxvat($taxvat);
         return $builder;
     }
 
-    public function withDob($dob): CustomerBuilder
+    public function withDob(string $dob): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setDob($dob);
         return $builder;
     }
 
+    /**
+     * @param mixed[] $values
+     * @return CustomerBuilder
+     */
     public function withCustomAttributes(array $values): CustomerBuilder
     {
         $builder = clone $this;

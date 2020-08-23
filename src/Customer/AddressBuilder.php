@@ -155,6 +155,10 @@ class AddressBuilder
         return $builder;
     }
 
+    /**
+     * @param mixed[] $values
+     * @return AddressBuilder
+     */
     public function withCustomAttributes(array $values): AddressBuilder
     {
         $builder = clone $this;
