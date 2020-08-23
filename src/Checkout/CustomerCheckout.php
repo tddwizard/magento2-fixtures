@@ -65,10 +65,10 @@ class CustomerCheckout
         QuoteManagement $quoteManagement,
         PaymentConfig $paymentConfig,
         Cart $cart,
-        $customerShippingAddressId = null,
-        $customerBillingAddressId = null,
-        $shippingMethodCode = null,
-        $paymentMethodCode = null
+        int $customerShippingAddressId = null,
+        int $customerBillingAddressId = null,
+        string $shippingMethodCode = null,
+        string $paymentMethodCode = null
     ) {
 
         $this->addressRepository = $addressRepository;

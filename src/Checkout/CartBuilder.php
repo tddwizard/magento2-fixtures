@@ -45,14 +45,14 @@ class CartBuilder
         );
     }
 
-    public function withSimpleProduct($sku, $qty = 1): CartBuilder
+    public function withSimpleProduct(string $sku, float $qty = 1): CartBuilder
     {
         $result = clone $this;
         $result->addToCartRequests[$sku][] = new DataObject(['qty' => $qty]);
         return $result;
     }
 
-    public function withReservedOrderId($orderId): CartBuilder
+    public function withReservedOrderId(string $orderId): CartBuilder
     {
         $result = clone $this;
         $result->cart->getQuote()->setReservedOrderId($orderId);
