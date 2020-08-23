@@ -10,6 +10,7 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\OrderRepository;
 use Magento\TestFramework\Helper\Bootstrap;
 
 class OrderFixtureRollback
@@ -20,7 +21,7 @@ class OrderFixtureRollback
     private $registry;
 
     /**
-     * @var OrderRepositoryInterface
+     * @var OrderRepository
      */
     private $orderRepository;
 
@@ -36,7 +37,7 @@ class OrderFixtureRollback
 
     public function __construct(
         Registry $registry,
-        OrderRepositoryInterface $orderRepository,
+        OrderRepository $orderRepository,
         CustomerRepositoryInterface $customerRepository,
         ProductRepositoryInterface $productRepository
     ) {

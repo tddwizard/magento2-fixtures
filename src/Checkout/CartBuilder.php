@@ -62,7 +62,7 @@ class CartBuilder
     /**
      * Lower-level API to support arbitrary products
      *
-     * @param $sku
+     * @param string $sku
      * @param int $qty
      * @param mixed[] $request
      * @return CartBuilder

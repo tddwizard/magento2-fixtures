@@ -47,7 +47,7 @@ class ProductBuilder
     private $indexerFactory;
 
     /**
-     * @var ProductInterface|Product
+     * @var Product
      */
     protected $product;
 
@@ -72,7 +72,7 @@ class ProductBuilder
         ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
         ProductWebsiteLinkInterfaceFactory $websiteLinkFactory,
         IndexerFactory $indexerFactory,
-        ProductInterface $product,
+        Product $product,
         array $websiteIds,
         array $storeSpecificValues
     ) {
@@ -96,7 +96,7 @@ class ProductBuilder
         if ($objectManager === null) {
             $objectManager = Bootstrap::getObjectManager();
         }
-        /** @var ProductInterface|Product $product */
+        /** @var Product $product */
         $product = $objectManager->create(ProductInterface::class);
 
         $product->setTypeId(Product\Type::TYPE_SIMPLE)

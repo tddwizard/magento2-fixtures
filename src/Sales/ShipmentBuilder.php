@@ -9,6 +9,7 @@ use Magento\Sales\Api\Data\ShipmentItemCreationInterfaceFactory;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterfaceFactory;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\ShipOrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -37,7 +38,7 @@ class ShipmentBuilder
     private $shipmentRepository;
 
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
@@ -56,7 +57,7 @@ class ShipmentBuilder
         ShipmentTrackCreationInterfaceFactory $trackFactory,
         ShipOrderInterface $shipOrder,
         ShipmentRepositoryInterface $shipmentRepository,
-        OrderInterface $order
+        Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->trackFactory = $trackFactory;

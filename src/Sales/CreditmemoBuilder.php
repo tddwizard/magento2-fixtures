@@ -8,6 +8,7 @@ use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\CreditmemoItemCreationInterfaceFactory;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\RefundOrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -31,7 +32,7 @@ class CreditmemoBuilder
     private $creditmemoRepository;
 
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
@@ -44,7 +45,7 @@ class CreditmemoBuilder
         CreditmemoItemCreationInterfaceFactory $itemFactory,
         RefundOrderInterface $refundOrder,
         CreditmemoRepositoryInterface $creditmemoRepository,
-        OrderInterface $order
+        Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->refundOrder = $refundOrder;

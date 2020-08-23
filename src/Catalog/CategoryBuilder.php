@@ -30,12 +30,12 @@ class CategoryBuilder
     private $categoryLinkRepository;
 
     /**
-     * @var CategoryProductLinkInterface
+     * @var CategoryProductLinkInterfaceFactory
      */
     private $productLinkFactory;
 
     /**
-     * @var CategoryInterface|Category
+     * @var Category
      */
     private $category;
 
@@ -49,7 +49,7 @@ class CategoryBuilder
         CategoryResource $categoryResource,
         CategoryLinkRepositoryInterface $categoryLinkRepository,
         CategoryProductLinkInterfaceFactory $productLinkFactory,
-        CategoryInterface $category,
+        Category $category,
         array $skus
     ) {
         $this->categoryRepository = $categoryRepository;
