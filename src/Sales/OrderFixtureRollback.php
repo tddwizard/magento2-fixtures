@@ -12,6 +12,9 @@ use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
+/**
+ * @internal Use OrderFixture::rollback() or OrderFixturePool::rollback() instead
+ */
 class OrderFixtureRollback
 {
     /**
