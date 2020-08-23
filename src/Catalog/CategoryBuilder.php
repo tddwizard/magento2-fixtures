@@ -6,7 +6,6 @@ namespace TddWizard\Fixtures\Catalog;
 use Magento\Catalog\Api\CategoryLinkRepositoryInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
-use Magento\Catalog\Api\Data\CategoryProductLinkInterface;
 use Magento\Catalog\Api\Data\CategoryProductLinkInterfaceFactory;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\ResourceModel\Category as CategoryResource;
@@ -164,24 +163,24 @@ class CategoryBuilder
     }
 
     /**
-     * @return CategoryInterface
+     * @return Category
      * @throws \Exception
      */
-    public function build(): CategoryInterface
+    public function build(): Category
     {
         $builder = clone $this;
+
         if (!$builder->category->getData('url_key')) {
             $builder->category->setData('url_key', sha1(uniqid('', true)));
         }
 
         // Save with global scope if not specified otherwise
-        if ($builder->category instanceof Category && !$builder->category->hasData('store_id')) {
+        if (!$builder->category->hasData('store_id')) {
             $builder->category->setStoreId(0);
         }
         $builder->categoryResource->save($builder->category);
 
         foreach ($builder->skus as $position => $sku) {
-            /** @var CategoryProductLinkInterface $productLink */
             $productLink = $builder->productLinkFactory->create();
             $productLink->setSku($sku);
             $productLink->setPosition($position);

@@ -6,9 +6,9 @@ namespace TddWizard\Fixtures\Sales;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\Data\InvoiceItemCreationInterfaceFactory;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\InvoiceOrderInterface;
 use Magento\Sales\Api\InvoiceRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -32,7 +32,7 @@ class InvoiceBuilder
     private $invoiceRepository;
 
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
@@ -45,7 +45,7 @@ class InvoiceBuilder
         InvoiceItemCreationInterfaceFactory $itemFactory,
         InvoiceOrderInterface $invoiceOrder,
         InvoiceRepositoryInterface $invoiceRepository,
-        OrderInterface $order
+        Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->invoiceOrder = $invoiceOrder;
@@ -56,7 +56,7 @@ class InvoiceBuilder
     }
 
     public static function forOrder(
-        OrderInterface $order,
+        Order $order,
         ObjectManagerInterface $objectManager = null
     ): InvoiceBuilder {
         if ($objectManager === null) {

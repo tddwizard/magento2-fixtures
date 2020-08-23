@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Sales;
 
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentItemCreationInterfaceFactory;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterfaceFactory;

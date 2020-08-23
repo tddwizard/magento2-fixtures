@@ -7,7 +7,6 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\CreditmemoItemCreationInterfaceFactory;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\RefundOrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;

@@ -3,7 +3,7 @@ parameters:
     paths:
         - src
         - tests
-	ignoreErrors:
-		- '#(class|type) Magento\\TestFramework#i'
-		- '#(class|type) Magento\\\S*Factory#i'
-		- '#(method) Magento\\Framework\\Api\\ExtensionAttributesInterface#i'
+    ignoreErrors:
+        - '#(class|type) Magento\\TestFramework#i'
+        - '#(class|type) Magento\\\S*Factory#i'
+        - '#(method) Magento\\Framework\\Api\\ExtensionAttributesInterface#i'
