@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
@@ -117,7 +118,7 @@ class ShipmentBuilder
 
         $tracks = array_map(
             function (string $trackingNumber) {
-                $carrierCode = strtok($this->order->getShippingMethod(), '_');
+                $carrierCode = strtok((string)$this->order->getShippingMethod(), '_');
                 $track = $this->trackFactory->create();
                 $track->setCarrierCode($carrierCode);
                 $track->setTitle($carrierCode);

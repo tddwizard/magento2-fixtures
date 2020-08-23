@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
@@ -27,7 +28,7 @@ class CategoryFixture
 
     public function getId(): int
     {
-        return $this->category->getId();
+        return (int) $this->category->getId();
     }
 
     public function getUrlKey(): string
