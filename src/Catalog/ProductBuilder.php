@@ -333,7 +333,7 @@ class ProductBuilder
         if ($exception === null) {
             return false;
         }
-        return preg_match(
+        return (bool) preg_match(
             '{please retry transaction|DDL statements are not allowed in transactions}i',
             $exception->getMessage()
         );
