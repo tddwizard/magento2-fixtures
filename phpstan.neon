@@ -2,5 +2,4 @@ parameters:
 	ignoreErrors:
 		- '#(class|type) Magento\\TestFramework#i'
 		- '#(class|type) Magento\\\S*Factory#i'
-		- '#(class|type) Magento\\\S*ExtensionInterface#i'
 		- '#(method) Magento\\Framework\\Api\\ExtensionAttributesInterface#i'

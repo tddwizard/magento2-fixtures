@@ -66,6 +66,16 @@ class ProductBuilder
      */
     private $categoryIds = [];
 
+    /**
+     * @param ProductRepositoryInterface $productRepository
+     * @param StockItemRepositoryInterface $stockItemRepository
+     * @param ProductWebsiteLinkRepositoryInterface $websiteLinkRepository
+     * @param ProductWebsiteLinkInterfaceFactory $websiteLinkFactory
+     * @param IndexerFactory $indexerFactory
+     * @param Product $product
+     * @param int[] $websiteIds
+     * @param mixed[] $storeSpecificValues
+     */
     final public function __construct(
         ProductRepositoryInterface $productRepository,
         StockItemRepositoryInterface $stockItemRepository,
@@ -133,6 +143,10 @@ class ProductBuilder
         );
     }
 
+    /**
+     * @param mixed[] $data
+     * @return ProductBuilder
+     */
     public function withData(array $data): ProductBuilder
     {
         $builder = clone $this;
@@ -149,7 +163,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withName(string $name, $storeId = null): ProductBuilder
+    public function withName(string $name, int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -177,7 +191,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withVisibility(int $visibility, $storeId = null): ProductBuilder
+    public function withVisibility(int $visibility, int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -188,6 +202,10 @@ class ProductBuilder
         return $builder;
     }
 
+    /**
+     * @param int[] $websiteIds
+     * @return ProductBuilder
+     */
     public function withWebsiteIds(array $websiteIds): ProductBuilder
     {
         $builder = clone $this;
@@ -195,6 +213,10 @@ class ProductBuilder
         return $builder;
     }
 
+    /**
+     * @param int[] $categoryIds
+     * @return ProductBuilder
+     */
     public function withCategoryIds(array $categoryIds): ProductBuilder
     {
         $builder = clone $this;
@@ -209,7 +231,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withTaxClassId($taxClassId): ProductBuilder
+    public function withTaxClassId(int $taxClassId): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setData('tax_class_id', $taxClassId);
@@ -223,21 +245,26 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withStockQty($qty): ProductBuilder
+    public function withStockQty(float $qty): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->getExtensionAttributes()->getStockItem()->setQty($qty);
         return $builder;
     }
 
-    public function withWeight($weight): ProductBuilder
+    public function withWeight(float $weight): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setWeight($weight);
         return $builder;
     }
 
-    public function withCustomAttributes(array $values, $storeId = null): ProductBuilder
+    /**
+     * @param mixed[] $values
+     * @param int|null $storeId
+     * @return ProductBuilder
+     */
+    public function withCustomAttributes(array $values, int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         foreach ($values as $code => $value) {
@@ -262,7 +289,7 @@ class ProductBuilder
             return $product;
         } catch (\Exception $e) {
             $e->getPrevious();
-            if ($this->isTransactionException($e) || $this->isTransactionException($e->getPrevious())) {
+            if (self::isTransactionException($e) || self::isTransactionException($e->getPrevious())) {
                 throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
             }
             throw $e;
@@ -297,7 +324,11 @@ class ProductBuilder
         return $product;
     }
 
-    private function isTransactionException($exception): bool
+    /**
+     * @param \Throwable|null $exception
+     * @return bool
+     */
+    private static function isTransactionException($exception): bool
     {
         if ($exception === null) {
             return false;

@@ -44,6 +44,14 @@ class CategoryBuilder
      */
     private $skus;
 
+    /**
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param CategoryResource $categoryResource
+     * @param CategoryLinkRepositoryInterface $categoryLinkRepository
+     * @param CategoryProductLinkInterfaceFactory $productLinkFactory
+     * @param Category $category
+     * @param string[] $skus
+     */
     public function __construct(
         CategoryRepositoryInterface $categoryRepository,
         CategoryResource $categoryResource,
