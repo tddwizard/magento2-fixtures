@@ -21,6 +21,9 @@ class ShipmentFixture
         return (int) $this->shipment->getEntityId();
     }
 
+    /**
+     * @return \Magento\Sales\Api\Data\ShipmentTrackInterface[]
+     */
     public function getTracks(): array
     {
         return $this->shipment->getTracks();
