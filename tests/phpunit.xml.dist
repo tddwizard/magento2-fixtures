@@ -14,6 +14,12 @@
             <directory suffix="Test.php">../../../vendor/tddwizard/magento2-fixtures/tests</directory>
         </testsuite>
     </testsuites>
+    <!-- Code coverage filters -->
+    <filter>
+        <whitelist addUncoveredFilesFromWhiteList="true">
+            <directory suffix=".php">../../../vendor/tddwizard/magento2-fixtures/src</directory>
+        </whitelist>
+    </filter>
     <!-- PHP INI settings and constants definition -->
     <php>
         <includePath>.</includePath>
