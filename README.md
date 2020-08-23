@@ -268,18 +268,20 @@ $creditmemo = CreditmemoBuilder::forOrder($order)
 
 ### Fixture pools
 
-To manage multiple fixtures, **fixture pools** have been introduced for products and customers:
+To manage multiple fixtures, **fixture pools** have been introduced for products, categories and customers:
 
 ```
 protected function setUp()
 {
     $this->productFixtures = new ProductFixturePool;
+    $this->categoryFixtures = new CategoryFixturePool;
     $this->customerFixtures = new CustomerFixturePool;
 }
 
 protected function tearDown()
 {
     $this->productFixtures->rollback();
+    $this->categoryFixtures->rollback();
     $this->customerFixtures->rollback();
 }
 
@@ -292,7 +294,17 @@ public function testSomethingWithMultipleProducts()
     $this->productFixtures->get();      // returns ProductFixture object for last added product
     $this->productFixtures->get('foo'); // returns ProductFixture object for product added with specific key 'foo'
     $this->productFixtures->get(0);     // returns ProductFixture object for first product added without specific key (numeric array index)
+}
 
+public function testSomethingWithMultipleCategories()
+{
+    $this->categoryFixtures->add(CategoryBuilder::topLevelCategory()->build());
+    $this->categoryFixtures->add(CategoryBuilder::topLevelCategory()->build(), 'foo');
+    $this->categoryFixtures->add(CategoryBuilder::topLevelCategory()->build());
+
+    $this->categoryFixtures->get();      // returns CategoryFixture object for last added category
+    $this->categoryFixtures->get('foo'); // returns CategoryFixture object for category added with specific key 'foo'
+    $this->categoryFixtures->get(0);     // returns CategoryFixture object for first category added without specific key (numeric array index)
 }
 
 public function testSomethingWithMultipleCustomers()
@@ -304,7 +316,6 @@ public function testSomethingWithMultipleCustomers()
     $this->customerFixtures->get();      // returns CustomerFixture object for last added customer
     $this->customerFixtures->get('foo'); // returns CustomerFixture object for customer added with specific key 'foo'
     $this->customerFixtures->get(0);     // returns CustomerFixture object for first customer added without specific key (numeric array index)
-
 }
 ```
 
