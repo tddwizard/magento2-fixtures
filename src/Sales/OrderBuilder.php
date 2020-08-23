@@ -35,6 +35,10 @@ class OrderBuilder
      */
     private $shippingMethod;
 
+    final public function __construct()
+    {
+    }
+
     /**
      * @var string
      */

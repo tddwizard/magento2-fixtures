@@ -51,7 +51,7 @@ class ShipmentBuilder
      */
     private $trackingNumbers;
 
-    public function __construct(
+    final public function __construct(
         ShipmentItemCreationInterfaceFactory $itemFactory,
         ShipmentTrackCreationInterfaceFactory $trackFactory,
         ShipOrderInterface $shipOrder,

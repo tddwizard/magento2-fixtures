@@ -59,7 +59,7 @@ class CustomerCheckout
      */
     private $paymentMethodCode;
 
-    public function __construct(
+    final public function __construct(
         AddressRepositoryInterface $addressRepository,
         CartRepositoryInterface $quoteRepository,
         QuoteManagement $quoteManagement,

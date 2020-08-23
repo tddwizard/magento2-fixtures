@@ -66,7 +66,7 @@ class ProductBuilder
      */
     private $categoryIds = [];
 
-    public function __construct(
+    final public function __construct(
         ProductRepositoryInterface $productRepository,
         StockItemRepositoryInterface $stockItemRepository,
         ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
