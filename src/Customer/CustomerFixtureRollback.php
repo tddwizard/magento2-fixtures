@@ -8,6 +8,9 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Bootstrap;
 
+/**
+ * @internal Use CustomerFixture::rollback() or CustomerFixturePool::rollback() instead
+ */
 class CustomerFixtureRollback
 {
     /**

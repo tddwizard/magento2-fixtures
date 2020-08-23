@@ -47,7 +47,7 @@ protected function setUp(): void
 }
 protected function tearDown(): void
 {
-  CustomerFixtureRollback::create()->execute($this->customerFixture);
+  $this->customerFixture->rollback();
 }
 ```
 
@@ -138,7 +138,7 @@ protected function setUp(): void
 }
 protected function tearDown(): void
 {
-  ProductFixtureRollback::create()->execute($this->productFixture);
+  $this->productFixture->rollback();
 }
 ```
 

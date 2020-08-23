@@ -25,4 +25,9 @@ class ProductFixture
     {
         return $this->product->getSku();
     }
+
+    public function rollback(): void
+    {
+        ProductFixtureRollback::create()->execute($this);
+    }
 }
