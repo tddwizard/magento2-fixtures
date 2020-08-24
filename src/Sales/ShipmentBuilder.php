@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentItemCreationInterfaceFactory;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterfaceFactory;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\ShipOrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -37,7 +38,7 @@ class ShipmentBuilder
     private $shipmentRepository;
 
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
@@ -51,12 +52,12 @@ class ShipmentBuilder
      */
     private $trackingNumbers;
 
-    public function __construct(
+    final public function __construct(
         ShipmentItemCreationInterfaceFactory $itemFactory,
         ShipmentTrackCreationInterfaceFactory $trackFactory,
         ShipOrderInterface $shipOrder,
         ShipmentRepositoryInterface $shipmentRepository,
-        OrderInterface $order
+        Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->trackFactory = $trackFactory;
@@ -69,7 +70,7 @@ class ShipmentBuilder
     }
 
     public static function forOrder(
-        OrderInterface $order,
+        Order $order,
         ObjectManagerInterface $objectManager = null
     ): ShipmentBuilder {
         if ($objectManager === null) {
@@ -116,7 +117,7 @@ class ShipmentBuilder
 
         $tracks = array_map(
             function (string $trackingNumber) {
-                $carrierCode = strtok($this->order->getShippingMethod(), '_');
+                $carrierCode = strtok((string)$this->order->getShippingMethod(), '_');
                 $track = $this->trackFactory->create();
                 $track->setCarrierCode($carrierCode);
                 $track->setTitle($carrierCode);

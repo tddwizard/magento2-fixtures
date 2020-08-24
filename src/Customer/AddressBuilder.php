@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Customer;
 
@@ -85,76 +86,80 @@ class AddressBuilder
         return $builder;
     }
 
-    public function withPrefix($prefix): AddressBuilder
+    public function withPrefix(string $prefix): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setPrefix($prefix);
         return $builder;
     }
 
-    public function withFirstname($firstname): AddressBuilder
+    public function withFirstname(string $firstname): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setFirstname($firstname);
         return $builder;
     }
 
-    public function withLastname($lastname): AddressBuilder
+    public function withLastname(string $lastname): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setLastname($lastname);
         return $builder;
     }
 
-    public function withStreet($street): AddressBuilder
+    public function withStreet(string $street): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setStreet((array)$street);
         return $builder;
     }
 
-    public function withCompany($company): AddressBuilder
+    public function withCompany(string $company): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setCompany($company);
         return $builder;
     }
 
-    public function withTelephone($telephone): AddressBuilder
+    public function withTelephone(string $telephone): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setTelephone($telephone);
         return $builder;
     }
 
-    public function withPostcode($postcode): AddressBuilder
+    public function withPostcode(string $postcode): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setPostcode($postcode);
         return $builder;
     }
 
-    public function withCity($city): AddressBuilder
+    public function withCity(string $city): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setCity($city);
         return $builder;
     }
 
-    public function withCountryId($countryId): AddressBuilder
+    public function withCountryId(string $countryId): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setCountryId($countryId);
         return $builder;
     }
 
-    public function withRegionId($regionId): AddressBuilder
+    public function withRegionId(int $regionId): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setRegionId($regionId);
         return $builder;
     }
 
+    /**
+     * @param mixed[] $values
+     * @return AddressBuilder
+     */
     public function withCustomAttributes(array $values): AddressBuilder
     {
         $builder = clone $this;

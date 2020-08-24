@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
@@ -6,8 +7,8 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\CreditmemoItemCreationInterfaceFactory;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\RefundOrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -31,20 +32,20 @@ class CreditmemoBuilder
     private $creditmemoRepository;
 
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
     /**
-     * @var int[]
+     * @var float[]
      */
     private $orderItems;
 
-    public function __construct(
+    final public function __construct(
         CreditmemoItemCreationInterfaceFactory $itemFactory,
         RefundOrderInterface $refundOrder,
         CreditmemoRepositoryInterface $creditmemoRepository,
-        OrderInterface $order
+        Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->refundOrder = $refundOrder;
@@ -55,7 +56,7 @@ class CreditmemoBuilder
     }
 
     public static function forOrder(
-        OrderInterface $order,
+        Order $order,
         ObjectManagerInterface $objectManager = null
     ): CreditmemoBuilder {
         if ($objectManager === null) {

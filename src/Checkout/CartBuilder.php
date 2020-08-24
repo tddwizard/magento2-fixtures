@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Checkout;
 
@@ -27,7 +28,7 @@ class CartBuilder
      */
     private $addToCartRequests;
 
-    public function __construct(ProductRepositoryInterface $productRepository, Cart $cart)
+    final public function __construct(ProductRepositoryInterface $productRepository, Cart $cart)
     {
         $this->productRepository = $productRepository;
         $this->cart = $cart;
@@ -45,14 +46,14 @@ class CartBuilder
         );
     }
 
-    public function withSimpleProduct($sku, $qty = 1): CartBuilder
+    public function withSimpleProduct(string $sku, float $qty = 1): CartBuilder
     {
         $result = clone $this;
         $result->addToCartRequests[$sku][] = new DataObject(['qty' => $qty]);
         return $result;
     }
 
-    public function withReservedOrderId($orderId): CartBuilder
+    public function withReservedOrderId(string $orderId): CartBuilder
     {
         $result = clone $this;
         $result->cart->getQuote()->setReservedOrderId($orderId);
@@ -62,7 +63,7 @@ class CartBuilder
     /**
      * Lower-level API to support arbitrary products
      *
-     * @param $sku
+     * @param string $sku
      * @param int $qty
      * @param mixed[] $request
      * @return CartBuilder

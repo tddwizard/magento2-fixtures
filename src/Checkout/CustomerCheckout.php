@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Checkout;
 
@@ -59,16 +60,16 @@ class CustomerCheckout
      */
     private $paymentMethodCode;
 
-    public function __construct(
+    final public function __construct(
         AddressRepositoryInterface $addressRepository,
         CartRepositoryInterface $quoteRepository,
         QuoteManagement $quoteManagement,
         PaymentConfig $paymentConfig,
         Cart $cart,
-        $customerShippingAddressId = null,
-        $customerBillingAddressId = null,
-        $shippingMethodCode = null,
-        $paymentMethodCode = null
+        int $customerShippingAddressId = null,
+        int $customerBillingAddressId = null,
+        string $shippingMethodCode = null,
+        string $paymentMethodCode = null
     ) {
 
         $this->addressRepository = $addressRepository;
@@ -130,7 +131,7 @@ class CustomerCheckout
     private function getCustomerShippingAddressId(): int
     {
         return $this->customerShippingAddressId
-            ?? $this->cart->getCustomerSession()->getCustomer()->getDefaultShippingAddress()->getId();
+            ?? (int) $this->cart->getCustomerSession()->getCustomer()->getDefaultShippingAddress()->getId();
     }
 
     /**
@@ -139,7 +140,7 @@ class CustomerCheckout
     private function getCustomerBillingAddressId(): int
     {
         return $this->customerBillingAddressId
-            ?? $this->cart->getCustomerSession()->getCustomer()->getDefaultBillingAddress()->getId();
+            ?? (int) $this->cart->getCustomerSession()->getCustomer()->getDefaultBillingAddress()->getId();
     }
 
     /**
