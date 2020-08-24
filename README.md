@@ -32,6 +32,11 @@ Install it into your Magento 2 project with composer:
 
     composer require --dev tddwizard/magento2-fixtures
 
+## Requirements
+
+- Magento 2.3 or Magento 2.4
+- PHP 7.3 or 7.4 *(7.1 and 7.2 is allowed via composer for full Magento 2.3 compatibility but not tested anymore)*
+
 ## Usage examples:
 
 ### Customer

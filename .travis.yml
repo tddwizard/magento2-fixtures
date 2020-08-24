@@ -20,10 +20,6 @@ jobs:
       env:
         - MAGENTO_VERSION=2.4
         - TEST_SUITE=integration
-    - php: 7.2
-      env:
-        - MAGENTO_VERSION=2.3
-        - TEST_SUITE=integration
 env:
   global:
     - COMPOSER_BIN_DIR=~/bin
