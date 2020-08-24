@@ -1,17 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 
 class OrderFixture
 {
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
-    public function __construct(OrderInterface $order)
+    public function __construct(Order $order)
     {
         $this->order = $order;
     }
@@ -34,7 +35,7 @@ class OrderFixture
     /**
      * Obtain `qty_ordered` per order item, indexed with `item_id`.
      *
-     * @return int[]
+     * @return float[]
      */
     public function getOrderItemQtys(): array
     {

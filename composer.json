@@ -49,8 +49,8 @@
         "magento/module-store": "^101.0",
         "phpunit/phpunit": "^6.0|^9.0",
         "pds/skeleton": "^1.0",
-        "phpro/grumphp": "^0.13.0",
-        "phpstan/phpstan": "^0.9.0",
+        "phpro/grumphp": "^0.19.0",
+        "phpstan/phpstan": "^0.12.0",
         "squizlabs/php_codesniffer": "^3.0"
     }
 }
