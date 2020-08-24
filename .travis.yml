@@ -41,7 +41,7 @@ before_script:
   - |
     sleep 10
     ./.travis/before_script.sh
-script: phpunit -c magento2/dev/tests/$TEST_SUITE --coverage-text --coverage-clover=/tmp/coverage.clover
+script: phpunit -c magento2/dev/tests/$TEST_SUITE --coverage-text --coverage-clover=/tmp/coverage.clover -vvv --testdox
 after_script:
   - |
     wget https://scrutinizer-ci.com/ocular.phar
