@@ -6,9 +6,8 @@ namespace TddWizard\Fixtures\Customer;
 use Faker\Factory as FakerFactory;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Directory\Model\Region;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -38,13 +37,9 @@ class AddressBuilder
     }
 
     public static function anAddress(
-        ObjectManagerInterface $objectManager = null,
         string $locale = 'de_DE'
     ): AddressBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
-
+        $objectManager = Bootstrap::getObjectManager();
         $faker = FakerFactory::create($locale);
         $countryCode = substr($locale, -2);
 

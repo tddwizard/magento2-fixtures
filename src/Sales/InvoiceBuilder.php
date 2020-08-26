@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\Data\InvoiceItemCreationInterfaceFactory;
 use Magento\Sales\Api\InvoiceOrderInterface;
@@ -56,12 +55,9 @@ class InvoiceBuilder
     }
 
     public static function forOrder(
-        Order $order,
-        ObjectManagerInterface $objectManager = null
+        Order $order
     ): InvoiceBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new static(
             $objectManager->create(InvoiceItemCreationInterfaceFactory::class),
@@ -82,6 +78,18 @@ class InvoiceBuilder
 
     public function build(): InvoiceInterface
     {
+        $invoiceItems = $this->buildInvoiceItems();
+
+        $invoiceId = $this->invoiceOrder->execute($this->order->getEntityId(), false, $invoiceItems);
+
+        return $this->invoiceRepository->get($invoiceId);
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\InvoiceItemCreationInterface[]
+     */
+    private function buildInvoiceItems(): array
+    {
         $invoiceItems = [];
 
         foreach ($this->orderItems as $orderItemId => $qty) {
@@ -90,9 +98,6 @@ class InvoiceBuilder
             $invoiceItem->setQty($qty);
             $invoiceItems[] = $invoiceItem;
         }
-
-        $invoiceId = $this->invoiceOrder->execute($this->order->getEntityId(), false, $invoiceItems);
-
-        return $this->invoiceRepository->get($invoiceId);
+        return $invoiceItems;
     }
 }

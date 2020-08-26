@@ -8,7 +8,6 @@ use Magento\Catalog\Model\Product;
 use Magento\Checkout\Model\Cart;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
 class CartBuilder
@@ -35,11 +34,9 @@ class CartBuilder
         $this->addToCartRequests = [];
     }
 
-    public static function forCurrentSession(ObjectManagerInterface $objectManager = null): CartBuilder
+    public static function forCurrentSession(): CartBuilder
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         return new static(
             $objectManager->create(ProductRepositoryInterface::class),
             $objectManager->create(Cart::class)

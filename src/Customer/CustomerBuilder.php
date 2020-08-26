@@ -5,9 +5,8 @@ namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Encryption\EncryptorInterface as Encryptor;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -59,11 +58,9 @@ class CustomerBuilder
         $this->customer = clone $this->customer;
     }
 
-    public static function aCustomer(ObjectManagerInterface $objectManager = null): CustomerBuilder
+    public static function aCustomer(): CustomerBuilder
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         /** @var CustomerInterface $customer */
         $customer = $objectManager->create(CustomerInterface::class);
         $customer->setWebsiteId(1)

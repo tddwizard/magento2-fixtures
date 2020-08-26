@@ -5,7 +5,6 @@ namespace TddWizard\Fixtures\Checkout;
 
 use Magento\Checkout\Model\Cart;
 use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Payment\Model\Config as PaymentConfig;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
@@ -43,12 +42,12 @@ class CustomerCheckout
     /**
      * @var int|null
      */
-    private $customerShippingAddressId;
+    private $shippingAddressId;
 
     /**
      * @var int|null
      */
-    private $customerBillingAddressId;
+    private $billingAddressId;
 
     /**
      * @var string|null
@@ -66,8 +65,8 @@ class CustomerCheckout
         QuoteManagement $quoteManagement,
         PaymentConfig $paymentConfig,
         Cart $cart,
-        int $customerShippingAddressId = null,
-        int $customerBillingAddressId = null,
+        int $shippingAddressId = null,
+        int $billingAddressId = null,
         string $shippingMethodCode = null,
         string $paymentMethodCode = null
     ) {
@@ -77,17 +76,15 @@ class CustomerCheckout
         $this->quoteManagement = $quoteManagement;
         $this->paymentConfig = $paymentConfig;
         $this->cart = $cart;
-        $this->customerShippingAddressId = $customerShippingAddressId;
-        $this->customerBillingAddressId = $customerBillingAddressId;
+        $this->shippingAddressId = $shippingAddressId;
+        $this->billingAddressId = $billingAddressId;
         $this->shippingMethodCode = $shippingMethodCode;
         $this->paymentMethodCode = $paymentMethodCode;
     }
 
-    public static function fromCart(Cart $cart, ObjectManagerInterface $objectManager = null): CustomerCheckout
+    public static function fromCart(Cart $cart): CustomerCheckout
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         return new static(
             $objectManager->create(AddressRepositoryInterface::class),
             $objectManager->create(CartRepositoryInterface::class),
@@ -100,14 +97,14 @@ class CustomerCheckout
     public function withCustomerBillingAddressId(int $addressId): CustomerCheckout
     {
         $checkout = clone $this;
-        $checkout->customerBillingAddressId = $addressId;
+        $checkout->billingAddressId = $addressId;
         return $checkout;
     }
 
     public function withCustomerShippingAddressId(int $addressId): CustomerCheckout
     {
         $checkout = clone $this;
-        $checkout->customerShippingAddressId = $addressId;
+        $checkout->shippingAddressId = $addressId;
         return $checkout;
     }
 
@@ -130,7 +127,7 @@ class CustomerCheckout
      */
     private function getCustomerShippingAddressId(): int
     {
-        return $this->customerShippingAddressId
+        return $this->shippingAddressId
             ?? (int) $this->cart->getCustomerSession()->getCustomer()->getDefaultShippingAddress()->getId();
     }
 
@@ -139,7 +136,7 @@ class CustomerCheckout
      */
     private function getCustomerBillingAddressId(): int
     {
-        return $this->customerBillingAddressId
+        return $this->billingAddressId
             ?? (int) $this->cart->getCustomerSession()->getCustomer()->getDefaultBillingAddress()->getId();
     }
 
