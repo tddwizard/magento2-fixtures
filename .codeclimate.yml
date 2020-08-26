@@ -5,7 +5,7 @@ engines:
     config:
       languages:
         php:
-          mass_threshold: 32
+          mass_threshold: 36
   fixme:
     enabled: true
   phpmd:
