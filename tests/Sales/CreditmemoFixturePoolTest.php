@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Sales;
 
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
+use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -30,8 +31,8 @@ class CreditmemoFixturePoolTest extends TestCase
 
     public function testLastCreditmemoFixtureReturnedByDefault()
     {
-        $firstCreditmemo = CreditmemoBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
-        $lastCreditmemo = CreditmemoBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
+        $firstCreditmemo = $this->createCreditmemo();
+        $lastCreditmemo = $this->createCreditmemo();
         $this->creditmemoFixtures->add($firstCreditmemo);
         $this->creditmemoFixtures->add($lastCreditmemo);
         $creditmemoFixture = $this->creditmemoFixtures->get();
@@ -46,8 +47,8 @@ class CreditmemoFixturePoolTest extends TestCase
 
     public function testCreditmemoFixtureReturnedByKey()
     {
-        $firstCreditmemo = CreditmemoBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
-        $lastCreditmemo = CreditmemoBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
+        $firstCreditmemo = $this->createCreditmemo();
+        $lastCreditmemo = $this->createCreditmemo();
         $this->creditmemoFixtures->add($firstCreditmemo, 'first');
         $this->creditmemoFixtures->add($lastCreditmemo, 'last');
         $creditmemoFixture = $this->creditmemoFixtures->get('first');
@@ -56,10 +57,22 @@ class CreditmemoFixturePoolTest extends TestCase
 
     public function testExceptionThrownWhenAccessingNonexistingKey()
     {
-        $creditmemo = CreditmemoBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
+        $creditmemo = $this->createCreditmemo();
         $this->creditmemoFixtures->add($creditmemo, 'foo');
         $this->expectException(\OutOfBoundsException::class);
         $this->creditmemoFixtures->get('bar');
     }
 
+    /**
+     * @return CreditmemoInterface
+     * @throws \Exception
+     */
+    private function createCreditmemo(): CreditmemoInterface
+    {
+        static $nextId = 1;
+        /** @var CreditmemoInterface $creditmemo */
+        $creditmemo = Bootstrap::getObjectManager()->create(CreditmemoInterface::class);
+        $creditmemo->setEntityId($nextId++);
+        return $creditmemo;
+    }
 }

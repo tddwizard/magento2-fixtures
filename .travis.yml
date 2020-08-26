@@ -20,6 +20,7 @@ jobs:
       env:
         - MAGENTO_VERSION=2.4
         - TEST_SUITE=integration
+        - COVERAGE=true
 env:
   global:
     - COMPOSER_BIN_DIR=~/bin
@@ -30,15 +31,16 @@ cache:
     - $HOME/.composer/cache
 before_install:
   - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb
-  - sudo dpkg -i --force-confnew elasticsearch-7.6.2-amd64.deb 
+  - sudo dpkg -i --force-confnew elasticsearch-7.6.2-amd64.deb
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo service elasticsearch restart
 before_script:
   - |
     sleep 10
+    [[ $COVERAGE == "true" ]] || phpenv config-rm xdebug.ini
     ./.travis/before_script.sh
-script: phpunit -c magento2/dev/tests/$TEST_SUITE --coverage-text --coverage-clover=/tmp/coverage.clover -vvv --testdox
+script: phpunit -c magento2/dev/tests/$TEST_SUITE `[[ $COVERAGE == "true" ]] && echo "--coverage-text --coverage-clover=/tmp/coverage.clover"`
 after_script:
   - |
-    wget https://scrutinizer-ci.com/ocular.phar
-    php ocular.phar code-coverage:upload --format=php-clover /tmp/coverage.clover
+    [[ $COVERAGE == "true" ]] && wget https://scrutinizer-ci.com/ocular.phar
+    [[ $COVERAGE == "true" ]] && php ocular.phar code-coverage:upload --format=php-clover /tmp/coverage.clover
