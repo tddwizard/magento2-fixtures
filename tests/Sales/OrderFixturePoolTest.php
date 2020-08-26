@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -18,21 +17,16 @@ class OrderFixturePoolTest extends TestCase
      * @var OrderFixturePool
      */
     private $orderFixtures;
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
 
     protected function setUp(): void
     {
         $this->orderFixtures = new OrderFixturePool();
-        $this->orderRepository = Bootstrap::getObjectManager()->create(OrderRepositoryInterface::class);
     }
 
     public function testLastOrderFixtureReturnedByDefault()
     {
-        $firstOrder = OrderBuilder::anOrder()->build();
-        $lastOrder = OrderBuilder::anOrder()->build();
+        $firstOrder = $this->createOrder();
+        $lastOrder = $this->createOrder();
         $this->orderFixtures->add($firstOrder);
         $this->orderFixtures->add($lastOrder);
         $orderFixture = $this->orderFixtures->get();
@@ -47,8 +41,8 @@ class OrderFixturePoolTest extends TestCase
 
     public function testOrderFixtureReturnedByKey()
     {
-        $firstOrder = OrderBuilder::anOrder()->build();
-        $lastOrder = OrderBuilder::anOrder()->build();
+        $firstOrder = $this->createOrder();
+        $lastOrder = $this->createOrder();
         $this->orderFixtures->add($firstOrder, 'first');
         $this->orderFixtures->add($lastOrder, 'last');
         $orderFixture = $this->orderFixtures->get('first');
@@ -57,26 +51,22 @@ class OrderFixturePoolTest extends TestCase
 
     public function testExceptionThrownWhenAccessingNonexistingKey()
     {
-        $order = OrderBuilder::anOrder()->build();
+        $order = $this->createOrder();
         $this->orderFixtures->add($order, 'foo');
         $this->expectException(\OutOfBoundsException::class);
         $this->orderFixtures->get('bar');
     }
 
-    public function testRollbackRemovesOrdersFromPool()
+    /**
+     * @return Order
+     * @throws \Exception
+     */
+    private function createOrder(): Order
     {
-        $order = OrderBuilder::anOrder()->build();
-        $this->orderFixtures->add($order);
-        $this->orderFixtures->rollback();
-        $this->expectException(\OutOfBoundsException::class);
-        $this->orderFixtures->get();
-    }
-    public function testRollbackDeletesOrdersFromDb()
-    {
-        $order = OrderBuilder::anOrder()->build();
-        $this->orderFixtures->add($order);
-        $this->orderFixtures->rollback();
-        $this->expectException(NoSuchEntityException::class);
-        $this->orderRepository->get($order->getId());
+        static $nextId = 1;
+        /** @var Order $order */
+        $order = Bootstrap::getObjectManager()->create(Order::class);
+        $order->setId($nextId++);
+        return $order;
     }
 }

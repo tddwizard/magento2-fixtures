@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -32,8 +33,8 @@ class ProductFixturePoolTest extends TestCase
 
     public function testLastProductFixtureReturnedByDefault()
     {
-        $firstProduct = ProductBuilder::aSimpleProduct()->build();
-        $lastProduct = ProductBuilder::aSimpleProduct()->build();
+        $firstProduct = $this->createProduct();
+        $lastProduct = $this->createProduct();
         $this->productFixtures->add($firstProduct);
         $this->productFixtures->add($lastProduct);
         $productFixture = $this->productFixtures->get();
@@ -48,8 +49,8 @@ class ProductFixturePoolTest extends TestCase
 
     public function testProductFixtureReturnedByKey()
     {
-        $firstProduct = ProductBuilder::aSimpleProduct()->build();
-        $lastProduct = ProductBuilder::aSimpleProduct()->build();
+        $firstProduct = $this->createProduct();
+        $lastProduct = $this->createProduct();
         $this->productFixtures->add($firstProduct, 'first');
         $this->productFixtures->add($lastProduct, 'last');
         $productFixture = $this->productFixtures->get('first');
@@ -58,8 +59,8 @@ class ProductFixturePoolTest extends TestCase
 
     public function testProductFixtureReturnedByNumericKey()
     {
-        $firstProduct = ProductBuilder::aSimpleProduct()->build();
-        $lastProduct = ProductBuilder::aSimpleProduct()->build();
+        $firstProduct = $this->createProduct();
+        $lastProduct = $this->createProduct();
         $this->productFixtures->add($firstProduct);
         $this->productFixtures->add($lastProduct);
         $productFixture = $this->productFixtures->get(0);
@@ -68,7 +69,7 @@ class ProductFixturePoolTest extends TestCase
 
     public function testExceptionThrownWhenAccessingNonexistingKey()
     {
-        $product = ProductBuilder::aSimpleProduct()->build();
+        $product = $this->createProduct();
         $this->productFixtures->add($product, 'foo');
         $this->expectException(\OutOfBoundsException::class);
         $this->productFixtures->get('bar');
@@ -76,7 +77,7 @@ class ProductFixturePoolTest extends TestCase
 
     public function testRollbackRemovesProductsFromPool()
     {
-        $product = ProductBuilder::aSimpleProduct()->build();
+        $product = $this->createProductInDb();
         $this->productFixtures->add($product);
         $this->productFixtures->rollback();
         $this->expectException(\OutOfBoundsException::class);
@@ -84,10 +85,37 @@ class ProductFixturePoolTest extends TestCase
     }
     public function testRollbackDeletesProductsFromDb()
     {
-        $product = ProductBuilder::aSimpleProduct()->build();
+        $product = $this->createProductInDb();
         $this->productFixtures->add($product);
         $this->productFixtures->rollback();
         $this->expectException(NoSuchEntityException::class);
         $this->productRepository->get($product->getSku());
+    }
+
+    /**
+     * Creates a dummy product object
+     *
+     * @return ProductInterface
+     * @throws \Exception
+     */
+    private function createProduct(): ProductInterface
+    {
+        static $nextId = 1;
+        /** @var ProductInterface $product */
+        $product = Bootstrap::getObjectManager()->create(ProductInterface::class);
+        $product->setSku('product-' . $nextId);
+        $product->setId($nextId++);
+        return $product;
+    }
+
+    /**
+     * Uses builder to create a product
+     *
+     * @return ProductInterface
+     * @throws \Exception
+     */
+    private function createProductInDb(): ProductInterface
+    {
+        return ProductBuilder::aSimpleProduct()->build();
     }
 }

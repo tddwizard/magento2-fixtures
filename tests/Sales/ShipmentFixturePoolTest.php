@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
+use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -30,8 +31,8 @@ class ShipmentFixturePoolTest extends TestCase
 
     public function testLastShipmentFixtureReturnedByDefault()
     {
-        $firstShipment = ShipmentBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
-        $lastShipment = ShipmentBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
+        $firstShipment = $this->createShipment();
+        $lastShipment = $this->createShipment();
         $this->shipmentFixtures->add($firstShipment);
         $this->shipmentFixtures->add($lastShipment);
         $shipmentFixture = $this->shipmentFixtures->get();
@@ -46,8 +47,8 @@ class ShipmentFixturePoolTest extends TestCase
 
     public function testShipmentFixtureReturnedByKey()
     {
-        $firstShipment = ShipmentBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
-        $lastShipment = ShipmentBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
+        $firstShipment = $this->createShipment();
+        $lastShipment = $this->createShipment();
         $this->shipmentFixtures->add($firstShipment, 'first');
         $this->shipmentFixtures->add($lastShipment, 'last');
         $shipmentFixture = $this->shipmentFixtures->get('first');
@@ -56,10 +57,22 @@ class ShipmentFixturePoolTest extends TestCase
 
     public function testExceptionThrownWhenAccessingNonexistingKey()
     {
-        $shipment = ShipmentBuilder::forOrder(OrderBuilder::anOrder()->build())->build();
+        $shipment = $this->createShipment();
         $this->shipmentFixtures->add($shipment, 'foo');
         $this->expectException(\OutOfBoundsException::class);
         $this->shipmentFixtures->get('bar');
     }
 
+    /**
+     * @return ShipmentInterface
+     * @throws \Exception
+     */
+    private function createShipment(): ShipmentInterface
+    {
+        static $nextId = 1;
+        /** @var ShipmentInterface $shipment */
+        $shipment = Bootstrap::getObjectManager()->create(ShipmentInterface::class);
+        $shipment->setEntityId($nextId++);
+        return $shipment;
+    }
 }

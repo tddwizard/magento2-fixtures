@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -31,8 +32,8 @@ class CustomerFixturePoolTest extends TestCase
 
     public function testLastCustomerFixtureReturnedByDefault()
     {
-        $firstCustomer = CustomerBuilder::aCustomer()->build();
-        $lastCustomer = CustomerBuilder::aCustomer()->build();
+        $firstCustomer = $this->createCustomer();
+        $lastCustomer = $this->createCustomer();
         $this->customerFixtures->add($firstCustomer);
         $this->customerFixtures->add($lastCustomer);
         $customerFixture = $this->customerFixtures->get();
@@ -47,8 +48,8 @@ class CustomerFixturePoolTest extends TestCase
 
     public function testCustomerFixtureReturnedByKey()
     {
-        $firstCustomer = CustomerBuilder::aCustomer()->build();
-        $lastCustomer = CustomerBuilder::aCustomer()->build();
+        $firstCustomer = $this->createCustomer();
+        $lastCustomer = $this->createCustomer();
         $this->customerFixtures->add($firstCustomer, 'first');
         $this->customerFixtures->add($lastCustomer, 'last');
         $customerFixture = $this->customerFixtures->get('first');
@@ -57,7 +58,7 @@ class CustomerFixturePoolTest extends TestCase
 
     public function testExceptionThrownWhenAccessingNonexistingKey()
     {
-        $customer = CustomerBuilder::aCustomer()->build();
+        $customer = $this->createCustomer();
         $this->customerFixtures->add($customer, 'foo');
         $this->expectException(\OutOfBoundsException::class);
         $this->customerFixtures->get('bar');
@@ -65,7 +66,7 @@ class CustomerFixturePoolTest extends TestCase
 
     public function testRollbackRemovesCustomersFromPool()
     {
-        $customer = CustomerBuilder::aCustomer()->build();
+        $customer = $this->createCustomerInDb();
         $this->customerFixtures->add($customer);
         $this->customerFixtures->rollback();
         $this->expectException(\OutOfBoundsException::class);
@@ -73,10 +74,36 @@ class CustomerFixturePoolTest extends TestCase
     }
     public function testRollbackDeletesCustomersFromDb()
     {
-        $customer = CustomerBuilder::aCustomer()->build();
+        $customer = $this->createCustomerInDb();
         $this->customerFixtures->add($customer);
         $this->customerFixtures->rollback();
         $this->expectException(NoSuchEntityException::class);
         $this->customerRepository->get($customer->getId());
+    }
+
+    /**
+     * Creates a dummy customer object
+     *
+     * @return CustomerInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function createCustomer(): CustomerInterface
+    {
+        static $nextId = 1;
+        /** @var CustomerInterface $customer */
+        $customer = Bootstrap::getObjectManager()->create(CustomerInterface::class);
+        $customer->setId($nextId++);
+        return $customer;
+    }
+
+    /**
+     * Uses builder to create a customer
+     *
+     * @return CustomerInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function createCustomerInDb(): CustomerInterface
+    {
+        return CustomerBuilder::aCustomer()->build();
     }
 }

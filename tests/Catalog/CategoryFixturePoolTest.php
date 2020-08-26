@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Model\Category;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -32,8 +33,8 @@ class CategoryFixturePoolTest extends TestCase
 
     public function testLastCategoryFixtureReturnedByDefault()
     {
-        $firstCategory = CategoryBuilder::topLevelCategory()->build();
-        $lastCategory = CategoryBuilder::topLevelCategory()->build();
+        $firstCategory = $this->createCategory();
+        $lastCategory = $this->createCategory();
         $this->categoryFixtures->add($firstCategory);
         $this->categoryFixtures->add($lastCategory);
         $categoryFixture = $this->categoryFixtures->get();
@@ -48,8 +49,8 @@ class CategoryFixturePoolTest extends TestCase
 
     public function testCategoryFixtureReturnedByKey()
     {
-        $firstCategory = CategoryBuilder::topLevelCategory()->build();
-        $lastCategory = CategoryBuilder::topLevelCategory()->build();
+        $firstCategory = $this->createCategory();
+        $lastCategory = $this->createCategory();
         $this->categoryFixtures->add($firstCategory, 'first');
         $this->categoryFixtures->add($lastCategory, 'last');
         $categoryFixture = $this->categoryFixtures->get('first');
@@ -58,8 +59,8 @@ class CategoryFixturePoolTest extends TestCase
 
     public function testCategoryFixtureReturnedByNumericKey()
     {
-        $firstCategory = CategoryBuilder::topLevelCategory()->build();
-        $lastCategory = CategoryBuilder::topLevelCategory()->build();
+        $firstCategory = $this->createCategory();
+        $lastCategory = $this->createCategory();
         $this->categoryFixtures->add($firstCategory);
         $this->categoryFixtures->add($lastCategory);
         $categoryFixture = $this->categoryFixtures->get(0);
@@ -68,7 +69,7 @@ class CategoryFixturePoolTest extends TestCase
 
     public function testExceptionThrownWhenAccessingNonexistingKey()
     {
-        $category = CategoryBuilder::topLevelCategory()->build();
+        $category = $this->createCategory();
         $this->categoryFixtures->add($category, 'foo');
         $this->expectException(\OutOfBoundsException::class);
         $this->categoryFixtures->get('bar');
@@ -76,7 +77,7 @@ class CategoryFixturePoolTest extends TestCase
 
     public function testRollbackRemovesCategorysFromPool()
     {
-        $category = CategoryBuilder::topLevelCategory()->build();
+        $category = $this->createCategoryInDb();
         $this->categoryFixtures->add($category);
         $this->categoryFixtures->rollback();
         $this->expectException(\OutOfBoundsException::class);
@@ -84,10 +85,36 @@ class CategoryFixturePoolTest extends TestCase
     }
     public function testRollbackDeletesCategorysFromDb()
     {
-        $category = CategoryBuilder::topLevelCategory()->build();
+        $category = $this->createCategoryInDb();
         $this->categoryFixtures->add($category);
         $this->categoryFixtures->rollback();
         $this->expectException(NoSuchEntityException::class);
         $this->categoryRepository->get($category->getId());
+    }
+
+    /**
+     * Creates dummy category object
+     *
+     * @return \Magento\Catalog\Model\Category
+     * @throws \Exception
+     */
+    private function createCategory(): \Magento\Catalog\Model\Category
+    {
+        static $nextId = 1;
+        /** @var Category $category */
+        $category = Bootstrap::getObjectManager()->create(Category::class);
+        $category->setId($nextId++);
+        return $category;
+    }
+
+    /**
+     * Creates category using builder
+     *
+     * @return \Magento\Catalog\Model\Category
+     * @throws \Exception
+     */
+    private function createCategoryInDb(): \Magento\Catalog\Model\Category
+    {
+        return CategoryBuilder::topLevelCategory()->build();
     }
 }
