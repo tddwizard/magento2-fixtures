@@ -37,4 +37,9 @@ class CategoryFixture
         $category = $this->category;
         return $category->getUrlKey();
     }
+
+    public function rollback(): void
+    {
+        CategoryFixtureRollback::create()->execute($this);
+    }
 }

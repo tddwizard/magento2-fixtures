@@ -98,4 +98,9 @@ class CustomerFixture
 
         $session->logout();
     }
+
+    public function rollback(): void
+    {
+        CustomerFixtureRollback::create()->execute($this);
+    }
 }

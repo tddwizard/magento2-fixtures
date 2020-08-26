@@ -32,6 +32,11 @@ Install it into your Magento 2 project with composer:
 
     composer require --dev tddwizard/magento2-fixtures
 
+## Requirements
+
+- Magento 2.3 or Magento 2.4
+- PHP 7.3 or 7.4 *(7.1 and 7.2 is allowed via composer for full Magento 2.3 compatibility but not tested anymore)*
+
 ## Usage examples:
 
 ### Customer
@@ -47,7 +52,7 @@ protected function setUp(): void
 }
 protected function tearDown(): void
 {
-  CustomerFixtureRollback::create()->execute($this->customerFixture);
+  $this->customerFixture->rollback();
 }
 ```
 
@@ -138,7 +143,7 @@ protected function setUp(): void
 }
 protected function tearDown(): void
 {
-  ProductFixtureRollback::create()->execute($this->productFixture);
+  $this->productFixture->rollback();
 }
 ```
 
@@ -265,6 +270,36 @@ $creditmemo = CreditmemoBuilder::forOrder($order)
     ->withItem($barItemId, $barQtyToRefund)
     ->build();
 ```
+
+### Fixture pools
+
+To manage multiple fixtures, **fixture pools** have been introduced for all entities:
+
+Usage demonstrated with the `ProductFixturePool`:
+```
+protected function setUp()
+{
+    $this->productFixtures = new ProductFixturePool;
+}
+
+protected function tearDown()
+{
+    $this->productFixtures->rollback();
+}
+
+public function testSomethingWithMultipleProducts()
+{
+    $this->productFixtures->add(ProductBuilder::aSimpleProduct()->build());
+    $this->productFixtures->add(ProductBuilder::aSimpleProduct()->build(), 'foo');
+    $this->productFixtures->add(ProductBuilder::aSimpleProduct()->build());
+
+    $this->productFixtures->get();      // returns ProductFixture object for last added product
+    $this->productFixtures->get('foo'); // returns ProductFixture object for product added with specific key 'foo'
+    $this->productFixtures->get(0);     // returns ProductFixture object for first product added without specific key (numeric array index)
+}
+
+```
+
 ## Credits
 
 - [Fabian Schmengler][link-author]

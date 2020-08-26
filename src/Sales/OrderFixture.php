@@ -56,4 +56,9 @@ class OrderFixture
     {
         return $this->order->getShippingMethod();
     }
+
+    public function rollback(): void
+    {
+        OrderFixtureRollback::create()->execute($this);
+    }
 }
