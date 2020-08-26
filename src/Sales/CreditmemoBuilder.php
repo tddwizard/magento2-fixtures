@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\CreditmemoItemCreationInterfaceFactory;
@@ -56,12 +55,9 @@ class CreditmemoBuilder
     }
 
     public static function forOrder(
-        Order $order,
-        ObjectManagerInterface $objectManager = null
+        Order $order
     ): CreditmemoBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new static(
             $objectManager->create(CreditmemoItemCreationInterfaceFactory::class),

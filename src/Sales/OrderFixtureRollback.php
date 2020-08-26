@@ -7,7 +7,6 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -51,11 +50,9 @@ class OrderFixtureRollback
         $this->productRepository = $productRepository;
     }
 
-    public static function create(ObjectManagerInterface $objectManager = null): OrderFixtureRollback
+    public static function create(): OrderFixtureRollback
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new self(
             $objectManager->get(Registry::class),

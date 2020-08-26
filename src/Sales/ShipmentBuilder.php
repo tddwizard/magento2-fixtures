@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentItemCreationInterfaceFactory;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterfaceFactory;
@@ -70,12 +69,9 @@ class ShipmentBuilder
     }
 
     public static function forOrder(
-        Order $order,
-        ObjectManagerInterface $objectManager = null
+        Order $order
     ): ShipmentBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new static(
             $objectManager->create(ShipmentItemCreationInterfaceFactory::class),

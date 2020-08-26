@@ -5,7 +5,6 @@ namespace TddWizard\Fixtures\Checkout;
 
 use Magento\Checkout\Model\Cart;
 use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Payment\Model\Config as PaymentConfig;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
@@ -83,11 +82,9 @@ class CustomerCheckout
         $this->paymentMethodCode = $paymentMethodCode;
     }
 
-    public static function fromCart(Cart $cart, ObjectManagerInterface $objectManager = null): CustomerCheckout
+    public static function fromCart(Cart $cart): CustomerCheckout
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         return new static(
             $objectManager->create(AddressRepositoryInterface::class),
             $objectManager->create(CartRepositoryInterface::class),

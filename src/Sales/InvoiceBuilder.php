@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Api\Data\InvoiceItemCreationInterfaceFactory;
 use Magento\Sales\Api\InvoiceOrderInterface;
@@ -56,12 +55,9 @@ class InvoiceBuilder
     }
 
     public static function forOrder(
-        Order $order,
-        ObjectManagerInterface $objectManager = null
+        Order $order
     ): InvoiceBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new static(
             $objectManager->create(InvoiceItemCreationInterfaceFactory::class),

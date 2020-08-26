@@ -12,7 +12,6 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Indexer\Model\IndexerFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 
@@ -102,11 +101,9 @@ class ProductBuilder
         $this->product = clone $this->product;
     }
 
-    public static function aSimpleProduct(ObjectManagerInterface $objectManager = null): ProductBuilder
+    public static function aSimpleProduct(): ProductBuilder
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         /** @var Product $product */
         $product = $objectManager->create(ProductInterface::class);
 

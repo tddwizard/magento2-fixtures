@@ -5,7 +5,6 @@ namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Bootstrap;
 
@@ -29,11 +28,9 @@ class CustomerFixtureRollback
         $this->customerRepository = $customerRepository;
     }
 
-    public static function create(ObjectManagerInterface $objectManager = null): CustomerFixtureRollback
+    public static function create(): CustomerFixtureRollback
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         return new self(
             $objectManager->get(Registry::class),
             $objectManager->get(CustomerRepositoryInterface::class)

@@ -9,7 +9,6 @@ use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\Data\CategoryProductLinkInterfaceFactory;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\ResourceModel\Category as CategoryResource;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
 class CategoryBuilder
@@ -68,11 +67,10 @@ class CategoryBuilder
         $this->skus = $skus;
     }
 
-    public static function topLevelCategory(ObjectManagerInterface $objectManager = null): CategoryBuilder
+    public static function topLevelCategory(): CategoryBuilder
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
+
         // use interface to reflect DI configuration but assume instance of the real model because we need its methods
         /** @var Category $category */
         $category = $objectManager->create(CategoryInterface::class);
@@ -92,12 +90,9 @@ class CategoryBuilder
     }
 
     public static function childCategoryOf(
-        CategoryFixture $parent,
-        ObjectManagerInterface $objectManager = null
+        CategoryFixture $parent
     ): CategoryBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         // use interface to reflect DI configuration but assume instance of the real model because we need its methods
         /** @var Category $category */
         $category = $objectManager->create(CategoryInterface::class);
