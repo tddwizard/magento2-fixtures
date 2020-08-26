@@ -78,6 +78,18 @@ class InvoiceBuilder
 
     public function build(): InvoiceInterface
     {
+        $invoiceItems = $this->buildInvoiceItems();
+
+        $invoiceId = $this->invoiceOrder->execute($this->order->getEntityId(), false, $invoiceItems);
+
+        return $this->invoiceRepository->get($invoiceId);
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\InvoiceItemCreationInterface[]
+     */
+    private function buildInvoiceItems(): array
+    {
         $invoiceItems = [];
 
         foreach ($this->orderItems as $orderItemId => $qty) {
@@ -86,9 +98,6 @@ class InvoiceBuilder
             $invoiceItem->setQty($qty);
             $invoiceItems[] = $invoiceItem;
         }
-
-        $invoiceId = $this->invoiceOrder->execute($this->order->getEntityId(), false, $invoiceItems);
-
-        return $this->invoiceRepository->get($invoiceId);
+        return $invoiceItems;
     }
 }

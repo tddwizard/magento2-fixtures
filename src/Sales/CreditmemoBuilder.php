@@ -90,6 +90,18 @@ class CreditmemoBuilder
             }
         }
 
+        $creditmemoItems = $this->buildCreditmemoItems();
+
+        $creditmemoId = $this->refundOrder->execute($this->order->getEntityId(), $creditmemoItems);
+
+        return $this->creditmemoRepository->get($creditmemoId);
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\CreditmemoItemCreationInterface[]
+     */
+    private function buildCreditmemoItems(): array
+    {
         $creditmemoItems = [];
         foreach ($this->orderItems as $orderItemId => $qty) {
             $creditmemoItem = $this->itemFactory->create();
@@ -97,9 +109,6 @@ class CreditmemoBuilder
             $creditmemoItem->setQty($qty);
             $creditmemoItems[] = $creditmemoItem;
         }
-
-        $creditmemoId = $this->refundOrder->execute($this->order->getEntityId(), $creditmemoItems);
-
-        return $this->creditmemoRepository->get($creditmemoId);
+        return $creditmemoItems;
     }
 }
