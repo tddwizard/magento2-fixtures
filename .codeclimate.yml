@@ -2,10 +2,6 @@
 engines:
   duplication:
     enabled: true
-    config:
-      languages:
-        php:
-          mass_threshold: 36
   fixme:
     enabled: true
   phpmd:
