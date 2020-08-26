@@ -4,7 +4,8 @@ engines:
     enabled: true
     config:
       languages:
-      - php
+        php:
+          mass_threshold: 32
   fixme:
     enabled: true
   phpmd:
