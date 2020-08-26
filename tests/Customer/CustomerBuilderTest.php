@@ -157,8 +157,8 @@ class CustomerBuilderTest extends TestCase
     {
         $customerFixture = new CustomerFixture(
             CustomerBuilder::aCustomer()->withAddresses(
-                AddressBuilder::anAddress(null, 'de_DE')->asDefaultBilling(),
-                AddressBuilder::anAddress(null, 'en_US')->asDefaultShipping()
+                AddressBuilder::anAddress('de_DE')->asDefaultBilling(),
+                AddressBuilder::anAddress('en_US')->asDefaultShipping()
             )->build()
         );
 
