@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 
 class OrderFixturePool
 {
@@ -13,7 +13,7 @@ class OrderFixturePool
      */
     private $orderFixtures = [];
 
-    public function add(OrderInterface $order, string $key = null): void
+    public function add(Order $order, string $key = null): void
     {
         if ($key === null) {
             $this->orderFixtures[] = new OrderFixture($order);
