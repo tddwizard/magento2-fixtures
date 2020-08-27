@@ -9,6 +9,7 @@ use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Directory\Model\Region;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -47,13 +48,10 @@ class AddressBuilder
     }
 
     public static function aCompanyAddress(
-        ObjectManagerInterface $objectManager = null,
         string $locale = 'de_DE',
         string $vatId = '1234567890'
     ): AddressBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         $address = self::prepareFakeAddress($objectManager, $locale);
         $address->setVatId($vatId);

@@ -176,7 +176,7 @@ class CustomerBuilderTest extends TestCase
         $vatId = '1112223334';
         $customerFixture = new CustomerFixture(
             CustomerBuilder::aCustomer()->withAddresses(
-                AddressBuilder::aCompanyAddress(null, 'de_DE', $vatId)->asDefaultBilling()
+                AddressBuilder::aCompanyAddress('de_DE', $vatId)->asDefaultBilling()
             )->build()
         );
 
