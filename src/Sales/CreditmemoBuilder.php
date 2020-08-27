@@ -1,13 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\CreditmemoItemCreationInterfaceFactory;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\RefundOrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -31,20 +31,20 @@ class CreditmemoBuilder
     private $creditmemoRepository;
 
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
     /**
-     * @var int[]
+     * @var float[]
      */
     private $orderItems;
 
-    public function __construct(
+    final public function __construct(
         CreditmemoItemCreationInterfaceFactory $itemFactory,
         RefundOrderInterface $refundOrder,
         CreditmemoRepositoryInterface $creditmemoRepository,
-        OrderInterface $order
+        Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->refundOrder = $refundOrder;
@@ -55,12 +55,9 @@ class CreditmemoBuilder
     }
 
     public static function forOrder(
-        OrderInterface $order,
-        ObjectManagerInterface $objectManager = null
+        Order $order
     ): CreditmemoBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new static(
             $objectManager->create(CreditmemoItemCreationInterfaceFactory::class),
@@ -93,6 +90,18 @@ class CreditmemoBuilder
             }
         }
 
+        $creditmemoItems = $this->buildCreditmemoItems();
+
+        $creditmemoId = $this->refundOrder->execute($this->order->getEntityId(), $creditmemoItems);
+
+        return $this->creditmemoRepository->get($creditmemoId);
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\CreditmemoItemCreationInterface[]
+     */
+    private function buildCreditmemoItems(): array
+    {
         $creditmemoItems = [];
         foreach ($this->orderItems as $orderItemId => $qty) {
             $creditmemoItem = $this->itemFactory->create();
@@ -100,9 +109,6 @@ class CreditmemoBuilder
             $creditmemoItem->setQty($qty);
             $creditmemoItems[] = $creditmemoItem;
         }
-
-        $creditmemoId = $this->refundOrder->execute($this->order->getEntityId(), $creditmemoItems);
-
-        return $this->creditmemoRepository->get($creditmemoId);
+        return $creditmemoItems;
     }
 }

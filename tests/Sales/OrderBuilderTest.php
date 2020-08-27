@@ -217,7 +217,7 @@ class OrderBuilderTest extends TestCase
                 ->withCustomer(
                     CustomerBuilder::aCustomer()
                         ->withAddresses(
-                            AddressBuilder::anAddress(null, 'de_AT')
+                            AddressBuilder::anAddress('de_AT')
                                 ->asDefaultBilling()
                                 ->asDefaultShipping()
                         )
@@ -248,7 +248,7 @@ class OrderBuilderTest extends TestCase
         $atOrder = OrderBuilder::anOrder()
             ->withCustomer(
                 CustomerBuilder::aCustomer()->withAddresses(
-                    AddressBuilder::anAddress(null, $atLocale)->asDefaultBilling()->asDefaultShipping()
+                    AddressBuilder::anAddress($atLocale)->asDefaultBilling()->asDefaultShipping()
                 )
             )
             ->build();
@@ -258,7 +258,7 @@ class OrderBuilderTest extends TestCase
         $usOrder = OrderBuilder::anOrder()
             ->withCustomer(
                 CustomerBuilder::aCustomer()->withAddresses(
-                    AddressBuilder::anAddress(null, $usLocale)->asDefaultBilling()->asDefaultShipping()
+                    AddressBuilder::anAddress($usLocale)->asDefaultBilling()->asDefaultShipping()
                 )
             )
             ->build();
@@ -268,7 +268,7 @@ class OrderBuilderTest extends TestCase
         $caOrder = OrderBuilder::anOrder()
             ->withCustomer(
                 CustomerBuilder::aCustomer()->withAddresses(
-                    AddressBuilder::anAddress(null, $caLocale)->asDefaultBilling()->asDefaultShipping()
+                    AddressBuilder::anAddress($caLocale)->asDefaultBilling()->asDefaultShipping()
                 )
             )
             ->build();

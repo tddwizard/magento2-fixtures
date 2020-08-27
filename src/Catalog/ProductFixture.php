@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
@@ -18,11 +19,16 @@ class ProductFixture
 
     public function getId(): int
     {
-        return $this->product->getId();
+        return (int) $this->product->getId();
     }
 
     public function getSku(): string
     {
         return $this->product->getSku();
+    }
+
+    public function rollback(): void
+    {
+        ProductFixtureRollback::create()->execute($this);
     }
 }

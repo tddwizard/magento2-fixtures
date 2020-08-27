@@ -1,0 +1,46 @@
+os: linux
+dist: xenial
+group: edge
+services:
+  - mysql
+addons:
+  apt:
+    packages:
+      - postfix
+  hosts:
+    - magento2.travis
+language: php
+jobs:
+  include:
+    - php: 7.3
+      env:
+        - MAGENTO_VERSION=2.3
+        - TEST_SUITE=integration
+    - php: 7.4
+      env:
+        - MAGENTO_VERSION=2.4
+        - TEST_SUITE=integration
+        - COVERAGE=true
+env:
+  global:
+    - COMPOSER_BIN_DIR=~/bin
+    - COMPOSER_PACKAGE_NAME=tddwizard/magento2-fixtures
+cache:
+  apt: true
+  directories:
+    - $HOME/.composer/cache
+before_install:
+  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb
+  - sudo dpkg -i --force-confnew elasticsearch-7.6.2-amd64.deb
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo service elasticsearch restart
+before_script:
+  - |
+    sleep 10
+    [[ $COVERAGE == "true" ]] || phpenv config-rm xdebug.ini
+    ./.travis/before_script.sh
+script: phpunit -c magento2/dev/tests/$TEST_SUITE `[[ $COVERAGE == "true" ]] && echo "--coverage-text --coverage-clover=/tmp/coverage.clover"`
+after_script:
+  - |
+    [[ $COVERAGE == "true" ]] && wget https://scrutinizer-ci.com/ocular.phar
+    [[ $COVERAGE == "true" ]] && php ocular.phar code-coverage:upload --format=php-clover /tmp/coverage.clover

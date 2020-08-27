@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
@@ -11,7 +12,6 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Indexer\Model\IndexerFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 
@@ -47,7 +47,7 @@ class ProductBuilder
     private $indexerFactory;
 
     /**
-     * @var ProductInterface|Product
+     * @var Product
      */
     protected $product;
 
@@ -66,13 +66,23 @@ class ProductBuilder
      */
     private $categoryIds = [];
 
-    public function __construct(
+    /**
+     * @param ProductRepositoryInterface $productRepository
+     * @param StockItemRepositoryInterface $stockItemRepository
+     * @param ProductWebsiteLinkRepositoryInterface $websiteLinkRepository
+     * @param ProductWebsiteLinkInterfaceFactory $websiteLinkFactory
+     * @param IndexerFactory $indexerFactory
+     * @param Product $product
+     * @param int[] $websiteIds
+     * @param mixed[] $storeSpecificValues
+     */
+    final public function __construct(
         ProductRepositoryInterface $productRepository,
         StockItemRepositoryInterface $stockItemRepository,
         ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
         ProductWebsiteLinkInterfaceFactory $websiteLinkFactory,
         IndexerFactory $indexerFactory,
-        ProductInterface $product,
+        Product $product,
         array $websiteIds,
         array $storeSpecificValues
     ) {
@@ -91,12 +101,10 @@ class ProductBuilder
         $this->product = clone $this->product;
     }
 
-    public static function aSimpleProduct(ObjectManagerInterface $objectManager = null): ProductBuilder
+    public static function aSimpleProduct(): ProductBuilder
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
-        /** @var ProductInterface|Product $product */
+        $objectManager = Bootstrap::getObjectManager();
+        /** @var Product $product */
         $product = $objectManager->create(ProductInterface::class);
 
         $product->setTypeId(Product\Type::TYPE_SIMPLE)
@@ -133,6 +141,10 @@ class ProductBuilder
         );
     }
 
+    /**
+     * @param mixed[] $data
+     * @return ProductBuilder
+     */
     public function withData(array $data): ProductBuilder
     {
         $builder = clone $this;
@@ -149,7 +161,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withName(string $name, $storeId = null): ProductBuilder
+    public function withName(string $name, int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -177,7 +189,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withVisibility(int $visibility, $storeId = null): ProductBuilder
+    public function withVisibility(int $visibility, int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -188,6 +200,10 @@ class ProductBuilder
         return $builder;
     }
 
+    /**
+     * @param int[] $websiteIds
+     * @return ProductBuilder
+     */
     public function withWebsiteIds(array $websiteIds): ProductBuilder
     {
         $builder = clone $this;
@@ -195,6 +211,10 @@ class ProductBuilder
         return $builder;
     }
 
+    /**
+     * @param int[] $categoryIds
+     * @return ProductBuilder
+     */
     public function withCategoryIds(array $categoryIds): ProductBuilder
     {
         $builder = clone $this;
@@ -209,7 +229,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withTaxClassId($taxClassId): ProductBuilder
+    public function withTaxClassId(int $taxClassId): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setData('tax_class_id', $taxClassId);
@@ -223,28 +243,33 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withStockQty($qty): ProductBuilder
+    public function withStockQty(float $qty): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->getExtensionAttributes()->getStockItem()->setQty($qty);
         return $builder;
     }
 
-    public function withBackorders($backorders) : ProductBuilder
+    public function withBackorders(float $backorders) : ProductBuilder
     {
         $builder = clone $this;
         $builder->product->getExtensionAttributes()->getStockItem()->setBackorders($backorders);
         return $builder;
     }
 
-    public function withWeight($weight): ProductBuilder
+    public function withWeight(float $weight): ProductBuilder
     {
         $builder = clone $this;
         $builder->product->setWeight($weight);
         return $builder;
     }
 
-    public function withCustomAttributes(array $values, $storeId = null): ProductBuilder
+    /**
+     * @param mixed[] $values
+     * @param int|null $storeId
+     * @return ProductBuilder
+     */
+    public function withCustomAttributes(array $values, int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         foreach ($values as $code => $value) {
@@ -269,7 +294,7 @@ class ProductBuilder
             return $product;
         } catch (\Exception $e) {
             $e->getPrevious();
-            if ($this->isTransactionException($e) || $this->isTransactionException($e->getPrevious())) {
+            if (self::isTransactionException($e) || self::isTransactionException($e->getPrevious())) {
                 throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
             }
             throw $e;
@@ -304,12 +329,16 @@ class ProductBuilder
         return $product;
     }
 
-    private function isTransactionException($exception): bool
+    /**
+     * @param \Throwable|null $exception
+     * @return bool
+     */
+    private static function isTransactionException($exception): bool
     {
         if ($exception === null) {
             return false;
         }
-        return preg_match(
+        return (bool) preg_match(
             '{please retry transaction|DDL statements are not allowed in transactions}i',
             $exception->getMessage()
         );

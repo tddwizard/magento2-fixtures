@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentItemCreationInterfaceFactory;
+use Magento\Sales\Api\Data\ShipmentTrackCreationInterface;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterfaceFactory;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\ShipOrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -37,7 +38,7 @@ class ShipmentBuilder
     private $shipmentRepository;
 
     /**
-     * @var OrderInterface
+     * @var Order
      */
     private $order;
 
@@ -51,12 +52,12 @@ class ShipmentBuilder
      */
     private $trackingNumbers;
 
-    public function __construct(
+    final public function __construct(
         ShipmentItemCreationInterfaceFactory $itemFactory,
         ShipmentTrackCreationInterfaceFactory $trackFactory,
         ShipOrderInterface $shipOrder,
         ShipmentRepositoryInterface $shipmentRepository,
-        OrderInterface $order
+        Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->trackFactory = $trackFactory;
@@ -69,12 +70,9 @@ class ShipmentBuilder
     }
 
     public static function forOrder(
-        OrderInterface $order,
-        ObjectManagerInterface $objectManager = null
+        Order $order
     ): ShipmentBuilder {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new static(
             $objectManager->create(ShipmentItemCreationInterfaceFactory::class),
@@ -105,27 +103,8 @@ class ShipmentBuilder
 
     public function build(): ShipmentInterface
     {
-        $shipmentItems = [];
-
-        foreach ($this->orderItems as $orderItemId => $qty) {
-            $shipmentItem = $this->itemFactory->create();
-            $shipmentItem->setOrderItemId($orderItemId);
-            $shipmentItem->setQty($qty);
-            $shipmentItems[] = $shipmentItem;
-        }
-
-        $tracks = array_map(
-            function (string $trackingNumber) {
-                $carrierCode = strtok($this->order->getShippingMethod(), '_');
-                $track = $this->trackFactory->create();
-                $track->setCarrierCode($carrierCode);
-                $track->setTitle($carrierCode);
-                $track->setTrackNumber($trackingNumber);
-
-                return $track;
-            },
-            $this->trackingNumbers
-        );
+        $shipmentItems = $this->buildShipmentItems();
+        $tracks = $this->buildTracks();
 
         $shipmentId = $this->shipOrder->execute(
             $this->order->getEntityId(),
@@ -143,5 +122,40 @@ class ShipmentBuilder
         }
 
         return $shipment;
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\ShipmentTrackCreationInterface[]
+     */
+    private function buildTracks(): array
+    {
+        return array_map(
+            function (string $trackingNumber): ShipmentTrackCreationInterface {
+                $carrierCode = strtok((string)$this->order->getShippingMethod(), '_');
+                $track = $this->trackFactory->create();
+                $track->setCarrierCode($carrierCode);
+                $track->setTitle($carrierCode);
+                $track->setTrackNumber($trackingNumber);
+
+                return $track;
+            },
+            $this->trackingNumbers
+        );
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\ShipmentItemCreationInterface[]
+     */
+    private function buildShipmentItems(): array
+    {
+        $shipmentItems = [];
+
+        foreach ($this->orderItems as $orderItemId => $qty) {
+            $shipmentItem = $this->itemFactory->create();
+            $shipmentItem->setOrderItemId($orderItemId);
+            $shipmentItem->setQty($qty);
+            $shipmentItems[] = $shipmentItem;
+        }
+        return $shipmentItems;
     }
 }

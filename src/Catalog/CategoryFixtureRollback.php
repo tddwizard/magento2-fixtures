@@ -1,13 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Bootstrap;
 
+/**
+ * @internal Use CategoryFixture::rollback() or CategoryFixturePool::rollback() instead
+ */
 class CategoryFixtureRollback
 {
     /**
@@ -26,11 +29,9 @@ class CategoryFixtureRollback
         $this->categoryRepository = $categoryRepository;
     }
 
-    public static function create(ObjectManagerInterface $objectManager = null): CategoryFixtureRollback
+    public static function create(): CategoryFixtureRollback
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         return new self(
             $objectManager->get(Registry::class),
             $objectManager->get(CategoryRepositoryInterface::class)

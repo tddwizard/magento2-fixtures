@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
@@ -34,6 +35,10 @@ class OrderBuilder
      * @var string
      */
     private $shippingMethod;
+
+    final public function __construct()
+    {
+    }
 
     /**
      * @var string

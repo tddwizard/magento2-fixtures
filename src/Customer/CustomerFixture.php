@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Customer;
 
@@ -24,12 +25,12 @@ class CustomerFixture
 
     public function getDefaultShippingAddressId(): int
     {
-        return $this->customer->getDefaultShipping();
+        return (int) $this->customer->getDefaultShipping();
     }
 
     public function getDefaultBillingAddressId(): int
     {
-        return $this->customer->getDefaultBilling();
+        return (int) $this->customer->getDefaultBilling();
     }
 
     public function getOtherAddressId(): int
@@ -37,6 +38,9 @@ class CustomerFixture
         return $this->getNonDefaultAddressIds()[0];
     }
 
+    /**
+     * @return int[]
+     */
     public function getNonDefaultAddressIds(): array
     {
         return array_values(
@@ -47,10 +51,13 @@ class CustomerFixture
         );
     }
 
+    /**
+     * @return int[]
+     */
     public function getAllAddressIds(): array
     {
         return array_map(
-            function (AddressInterface $address) {
+            function (AddressInterface $address): int {
                 return $address->getId();
             },
             $this->customer->getAddresses()
@@ -59,7 +66,7 @@ class CustomerFixture
 
     public function getId(): int
     {
-        return $this->customer->getId();
+        return (int) $this->customer->getId();
     }
 
     public function getConfirmation(): string
@@ -90,5 +97,10 @@ class CustomerFixture
         }
 
         $session->logout();
+    }
+
+    public function rollback(): void
+    {
+        CustomerFixtureRollback::create()->execute($this);
     }
 }

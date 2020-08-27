@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
@@ -21,6 +22,9 @@ class ShipmentFixture
         return (int) $this->shipment->getEntityId();
     }
 
+    /**
+     * @return \Magento\Sales\Api\Data\ShipmentTrackInterface[]
+     */
     public function getTracks(): array
     {
         return $this->shipment->getTracks();

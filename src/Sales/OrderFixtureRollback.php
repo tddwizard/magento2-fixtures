@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
@@ -6,12 +7,15 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\OrderRepository;
 use Magento\TestFramework\Helper\Bootstrap;
 
+/**
+ * @internal Use OrderFixture::rollback() or OrderFixturePool::rollback() instead
+ */
 class OrderFixtureRollback
 {
     /**
@@ -20,7 +24,7 @@ class OrderFixtureRollback
     private $registry;
 
     /**
-     * @var OrderRepositoryInterface
+     * @var OrderRepository
      */
     private $orderRepository;
 
@@ -36,7 +40,7 @@ class OrderFixtureRollback
 
     public function __construct(
         Registry $registry,
-        OrderRepositoryInterface $orderRepository,
+        OrderRepository $orderRepository,
         CustomerRepositoryInterface $customerRepository,
         ProductRepositoryInterface $productRepository
     ) {
@@ -46,11 +50,9 @@ class OrderFixtureRollback
         $this->productRepository = $productRepository;
     }
 
-    public static function create(ObjectManagerInterface $objectManager = null): OrderFixtureRollback
+    public static function create(): OrderFixtureRollback
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
 
         return new self(
             $objectManager->get(Registry::class),

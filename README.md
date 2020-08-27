@@ -6,10 +6,13 @@ This library is in *alpha* state, that means:
 - nothing is guaranteed to work
 - everything can still be changed
 
-[![Wercker Status](https://app.wercker.com/status/c69205aea9e9617e027d2aa8d5a1817c/s/master "wercker status")](https://app.wercker.com/project/byKey/c69205aea9e9617e027d2aa8d5a1817c)
-[![Code Climate](https://img.shields.io/codeclimate/github/tddwizard/magento2-fixtures.svg)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
-[![Latest Version](https://img.shields.io/packagist/v/tddwizard/magento2-fixtures.svg)](https://packagist.org/packages/tddwizard/magento2-fixtures)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
+
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/tddwizard/magento2-fixtures?style=flat-square)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
 
 ---
 
@@ -29,6 +32,11 @@ Install it into your Magento 2 project with composer:
 
     composer require --dev tddwizard/magento2-fixtures
 
+## Requirements
+
+- Magento 2.3 or Magento 2.4
+- PHP 7.3 or 7.4 *(7.1 and 7.2 is allowed via composer for full Magento 2.3 compatibility but not tested anymore)*
+
 ## Usage examples:
 
 ### Customer
@@ -44,7 +52,7 @@ protected function setUp(): void
 }
 protected function tearDown(): void
 {
-  CustomerFixtureRollback::create()->execute($this->customerFixture);
+  $this->customerFixture->rollback();
 }
 ```
 
@@ -135,7 +143,7 @@ protected function setUp(): void
 }
 protected function tearDown(): void
 {
-  ProductFixtureRollback::create()->execute($this->productFixture);
+  $this->productFixture->rollback();
 }
 ```
 
@@ -262,3 +270,55 @@ $creditmemo = CreditmemoBuilder::forOrder($order)
     ->withItem($barItemId, $barQtyToRefund)
     ->build();
 ```
+
+### Fixture pools
+
+To manage multiple fixtures, **fixture pools** have been introduced for all entities:
+
+Usage demonstrated with the `ProductFixturePool`:
+```
+protected function setUp()
+{
+    $this->productFixtures = new ProductFixturePool;
+}
+
+protected function tearDown()
+{
+    $this->productFixtures->rollback();
+}
+
+public function testSomethingWithMultipleProducts()
+{
+    $this->productFixtures->add(ProductBuilder::aSimpleProduct()->build());
+    $this->productFixtures->add(ProductBuilder::aSimpleProduct()->build(), 'foo');
+    $this->productFixtures->add(ProductBuilder::aSimpleProduct()->build());
+
+    $this->productFixtures->get();      // returns ProductFixture object for last added product
+    $this->productFixtures->get('foo'); // returns ProductFixture object for product added with specific key 'foo'
+    $this->productFixtures->get(0);     // returns ProductFixture object for first product added without specific key (numeric array index)
+}
+
+```
+
+## Credits
+
+- [Fabian Schmengler][link-author]
+- [All Contributors][link-contributors]
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.txt) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/tddwizard/magento2-fixtures.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/tddwizard/magento2-fixtures/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/tddwizard/magento2-fixtures?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/tddwizard/magento2-fixtures.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/tddwizard/magento2-fixtures
+[link-travis]: https://travis-ci.org/tddwizard/magento2-fixtures
+[link-scrutinizer]: https://scrutinizer-ci.com/g/tddwizard/magento2-fixtures/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/tddwizard/magento2-fixtures
+[link-author]: https://github.com/schmengler
+[link-contributors]: ../../contributors
+

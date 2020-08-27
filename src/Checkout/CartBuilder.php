@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Checkout;
 
@@ -7,7 +8,6 @@ use Magento\Catalog\Model\Product;
 use Magento\Checkout\Model\Cart;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 
 class CartBuilder
@@ -27,32 +27,30 @@ class CartBuilder
      */
     private $addToCartRequests;
 
-    public function __construct(ProductRepositoryInterface $productRepository, Cart $cart)
+    final public function __construct(ProductRepositoryInterface $productRepository, Cart $cart)
     {
         $this->productRepository = $productRepository;
         $this->cart = $cart;
         $this->addToCartRequests = [];
     }
 
-    public static function forCurrentSession(ObjectManagerInterface $objectManager = null): CartBuilder
+    public static function forCurrentSession(): CartBuilder
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         return new static(
             $objectManager->create(ProductRepositoryInterface::class),
             $objectManager->create(Cart::class)
         );
     }
 
-    public function withSimpleProduct($sku, $qty = 1): CartBuilder
+    public function withSimpleProduct(string $sku, float $qty = 1): CartBuilder
     {
         $result = clone $this;
         $result->addToCartRequests[$sku][] = new DataObject(['qty' => $qty]);
         return $result;
     }
 
-    public function withReservedOrderId($orderId): CartBuilder
+    public function withReservedOrderId(string $orderId): CartBuilder
     {
         $result = clone $this;
         $result->cart->getQuote()->setReservedOrderId($orderId);
@@ -62,7 +60,7 @@ class CartBuilder
     /**
      * Lower-level API to support arbitrary products
      *
-     * @param $sku
+     * @param string $sku
      * @param int $qty
      * @param mixed[] $request
      * @return CartBuilder

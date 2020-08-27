@@ -1,12 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Encryption\EncryptorInterface as Encryptor;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -58,11 +58,9 @@ class CustomerBuilder
         $this->customer = clone $this->customer;
     }
 
-    public static function aCustomer(ObjectManagerInterface $objectManager = null): CustomerBuilder
+    public static function aCustomer(): CustomerBuilder
     {
-        if ($objectManager === null) {
-            $objectManager = Bootstrap::getObjectManager();
-        }
+        $objectManager = Bootstrap::getObjectManager();
         /** @var CustomerInterface $customer */
         $customer = $objectManager->create(CustomerInterface::class);
         $customer->setWebsiteId(1)
@@ -98,76 +96,80 @@ class CustomerBuilder
         return $builder;
     }
 
-    public function withGroupId($groupId): CustomerBuilder
+    public function withGroupId(int $groupId): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setGroupId($groupId);
         return $builder;
     }
 
-    public function withStoreId($storeId): CustomerBuilder
+    public function withStoreId(int $storeId): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setStoreId($storeId);
         return $builder;
     }
 
-    public function withWebsiteId($websiteId): CustomerBuilder
+    public function withWebsiteId(int $websiteId): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setWebsiteId($websiteId);
         return $builder;
     }
 
-    public function withPrefix($prefix): CustomerBuilder
+    public function withPrefix(string $prefix): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setPrefix($prefix);
         return $builder;
     }
 
-    public function withFirstname($firstname): CustomerBuilder
+    public function withFirstname(string $firstname): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setFirstname($firstname);
         return $builder;
     }
 
-    public function withMiddlename($middlename): CustomerBuilder
+    public function withMiddlename(string $middlename): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setMiddlename($middlename);
         return $builder;
     }
 
-    public function withLastname($lastname): CustomerBuilder
+    public function withLastname(string $lastname): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setLastname($lastname);
         return $builder;
     }
 
-    public function withSuffix($suffix): CustomerBuilder
+    public function withSuffix(string $suffix): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setSuffix($suffix);
         return $builder;
     }
 
-    public function withTaxvat($taxvat): CustomerBuilder
+    public function withTaxvat(string $taxvat): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setTaxvat($taxvat);
         return $builder;
     }
 
-    public function withDob($dob): CustomerBuilder
+    public function withDob(string $dob): CustomerBuilder
     {
         $builder = clone $this;
         $builder->customer->setDob($dob);
         return $builder;
     }
 
+    /**
+     * @param mixed[] $values
+     * @return CustomerBuilder
+     */
     public function withCustomAttributes(array $values): CustomerBuilder
     {
         $builder = clone $this;
