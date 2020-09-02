@@ -3,7 +3,10 @@ parameters:
     paths:
         - src
         - tests
+    bootstrapFiles:
+        - vendor/bitexpert/phpstan-magento/autoload.php
     ignoreErrors:
         - '#(class|type) Magento\\TestFramework#i'
-        - '#(class|type) Magento\\\S*Factory#i'
         - '#(method) Magento\\Framework\\Api\\ExtensionAttributesInterface#i'
+includes:
+	- vendor/bitexpert/phpstan-magento/extension.neon
