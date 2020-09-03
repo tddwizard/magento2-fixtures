@@ -4,12 +4,10 @@ namespace TddWizard\Fixtures\Checkout;
 
 use PHPUnit\Framework\TestCase;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
-use TddWizard\Fixtures\Catalog\ProductFixture;
-use TddWizard\Fixtures\Catalog\ProductFixtureRollback;
+use TddWizard\Fixtures\Catalog\ProductFixturePool;
 use TddWizard\Fixtures\Customer\AddressBuilder;
 use TddWizard\Fixtures\Customer\CustomerBuilder;
-use TddWizard\Fixtures\Customer\CustomerFixture;
-use TddWizard\Fixtures\Customer\CustomerFixtureRollback;
+use TddWizard\Fixtures\Customer\CustomerFixturePool;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -17,33 +15,37 @@ use TddWizard\Fixtures\Customer\CustomerFixtureRollback;
 class CustomerCheckoutTest extends TestCase
 {
     /**
-     * @var CustomerFixture
+     * @var CustomerFixturePool
      */
-    private $customerFixture;
+    private $customerFixtures;
     /**
-     * @var ProductFixture
+     * @var ProductFixturePool
      */
-    private $productFixture;
+    private $productFixtures;
 
     protected function setUp(): void
     {
-        $this->customerFixture = new CustomerFixture(
-            CustomerBuilder::aCustomer()
-                ->withAddresses(
-                    AddressBuilder::anAddress()->asDefaultBilling()->asDefaultShipping()
-                )
-                ->build()
+        $this->productFixtures = new ProductFixturePool();
+        $this->customerFixtures = new CustomerFixturePool();
+        $this->customerFixtures->add(
+            CustomerBuilder::aCustomer()->withAddresses(
+                AddressBuilder::anAddress()->asDefaultBilling()->asDefaultShipping()
+            )->build()
         );
-        $this->productFixture = new ProductFixture(
-            ProductBuilder::aSimpleProduct()
-                ->withPrice(10)
-                ->build()
+        $this->productFixtures->add(
+            ProductBuilder::aSimpleProduct()->withPrice(10)->build(),
+            'simple'
+        );
+        $this->productFixtures->add(
+            ProductBuilder::aVirtualProduct()->withPrice(10)->build(),
+            'virtual'
         );
     }
+
     protected function tearDown(): void
     {
-        CustomerFixtureRollback::create()->execute($this->customerFixture);
-        ProductFixtureRollback::create()->execute($this->productFixture);
+        $this->customerFixtures->rollback();
+        $this->productFixtures->rollback();
     }
 
     /**
@@ -52,16 +54,35 @@ class CustomerCheckoutTest extends TestCase
      */
     public function testCreateOrderFromCart()
     {
-        $this->customerFixture->login();
+        $this->customerFixtures->get()->login();
         $checkout = CustomerCheckout::fromCart(
-            CartBuilder::forCurrentSession()
-                ->withSimpleProduct(
-                    $this->productFixture->getSku()
-                )
-                ->build()
+            CartBuilder::forCurrentSession()->withSimpleProduct(
+                $this->productFixtures->get('simple')->getSku()
+            )->build()
         );
         $order = $checkout->placeOrder();
         $this->assertNotEmpty($order->getEntityId(), 'Order should be saved successfully');
         $this->assertNotEmpty($order->getShippingDescription(), 'Order should have a shipping description');
+    }
+
+    /**
+     * @magentoAppIsolation enabled
+     * @magentoAppArea frontend
+     */
+    public function testCreateOrderFromCartWithVirtualProduct()
+    {
+        $this->customerFixtures->get()->login();
+        $checkout = CustomerCheckout::fromCart(
+            CartBuilder::forCurrentSession()->withSimpleProduct(
+                $this->productFixtures->get('virtual')->getSku()
+            )->build()
+        );
+        $order = $checkout->placeOrder();
+        $this->assertNotEmpty($order->getEntityId(), 'Order should be saved successfully');
+        $this->assertEmpty(
+            $order->getExtensionAttributes()->getShippingAssignments(),
+            'Order with virtual product should not have any shipping assignments'
+        );
+        $this->assertEmpty($order->getShippingDescription(), 'Order should not have a shipping description');
     }
 }
