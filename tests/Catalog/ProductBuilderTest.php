@@ -5,6 +5,7 @@ namespace TddWizard\Fixtures\Catalog;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
+use Magento\Catalog\Model\Product\Type;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
@@ -57,6 +58,7 @@ class ProductBuilderTest extends TestCase
         $this->products[] = $productFixture;
         /** @var Product $product */
         $product = $this->productRepository->getById($productFixture->getId());
+        $this->assertEquals(Type::TYPE_SIMPLE, $product->getTypeId());
         $this->assertEquals('Simple Product', $product->getName());
         $this->assertEquals([1], $product->getWebsiteIds());
         $this->assertEquals(1, $product->getData('tax_class_id'));
@@ -112,7 +114,11 @@ class ProductBuilderTest extends TestCase
             'in stock'
         );
         $this->assertEquals(-1, $product->getExtensionAttributes()->getStockItem()->getQty(), 'stock qty');
-        $this->assertEquals(2, $product->getExtensionAttributes()->getStockItem()->getData('backorders'), 'stock backorders');
+        $this->assertEquals(
+            2,
+            $product->getExtensionAttributes()->getStockItem()->getData('backorders'),
+            'stock backorders'
+        );
         $this->assertEquals(2.0, $product->getCustomAttribute('cost')->getValue(), 'custom attribute "cost"');
     }
 
@@ -188,6 +194,23 @@ class ProductBuilderTest extends TestCase
             $userDefinedStoreValue,
             $productInStore->getCustomAttribute($userDefinedAttributeCode)->getValue(),
             'Store specific custom attribute'
+        );
+    }
+
+    public function testDefaultVirtualProduct()
+    {
+        $productFixture = new ProductFixture(
+            ProductBuilder::aVirtualProduct()->build()
+        );
+        $this->products[] = $productFixture;
+        /** @var Product $product */
+        $product = $this->productRepository->getById($productFixture->getId());
+        $this->assertEquals(Type::TYPE_VIRTUAL, $product->getTypeId());
+        $this->assertEquals('Virtual Product', $product->getName());
+        $this->assertEquals([1], $product->getWebsiteIds());
+        $this->assertEquals(1, $product->getData('tax_class_id'));
+        $this->assertTrue(
+            $product->getExtensionAttributes()->getStockItem()->getIsInStock()
         );
     }
 

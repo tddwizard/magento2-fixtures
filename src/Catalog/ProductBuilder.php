@@ -3,17 +3,20 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
+use Exception;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductWebsiteLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Api\ProductWebsiteLinkRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
+use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\Indexer\Model\IndexerFactory;
 use Magento\TestFramework\Helper\Bootstrap;
+use Throwable;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -107,7 +110,7 @@ class ProductBuilder
         /** @var Product $product */
         $product = $objectManager->create(ProductInterface::class);
 
-        $product->setTypeId(Product\Type::TYPE_SIMPLE)
+        $product->setTypeId(Type::TYPE_SIMPLE)
                 ->setAttributeSetId(4)
                 ->setName('Simple Product')
                 ->setPrice(10)
@@ -284,7 +287,7 @@ class ProductBuilder
 
     /**
      * @return ProductInterface
-     * @throws \Exception
+     * @throws Exception
      */
     public function build(): ProductInterface
     {
@@ -292,7 +295,7 @@ class ProductBuilder
             $product = $this->createProduct();
             $this->indexerFactory->create()->load('cataloginventory_stock')->reindexRow($product->getId());
             return $product;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $e->getPrevious();
             if (self::isTransactionException($e) || self::isTransactionException($e->getPrevious())) {
                 throw IndexFailed::becauseInitiallyTriggeredInTransaction($e);
@@ -303,7 +306,7 @@ class ProductBuilder
 
     /**
      * @return ProductInterface
-     * @throws \Exception
+     * @throws Exception
      */
     private function createProduct(): ProductInterface
     {
@@ -330,7 +333,7 @@ class ProductBuilder
     }
 
     /**
-     * @param \Throwable|null $exception
+     * @param Throwable|null $exception
      * @return bool
      */
     private static function isTransactionException($exception): bool
@@ -342,5 +345,13 @@ class ProductBuilder
             '{please retry transaction|DDL statements are not allowed in transactions}i',
             $exception->getMessage()
         );
+    }
+
+    public static function aVirtualProduct(): ProductBuilder
+    {
+        $builder = self::aSimpleProduct();
+        $builder->product->setName('Virtual Product');
+        $builder->product->setTypeId(Type::TYPE_VIRTUAL);
+        return $builder;
     }
 }

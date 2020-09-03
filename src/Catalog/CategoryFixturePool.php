@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\Data\CategoryInterface;
+use function array_values as values;
 
 class CategoryFixturePool
 {
@@ -41,7 +42,7 @@ class CategoryFixturePool
 
     public function rollback(): void
     {
-        CategoryFixtureRollback::create()->execute(...$this->categoryFixtures);
+        CategoryFixtureRollback::create()->execute(...values($this->categoryFixtures));
         $this->categoryFixtures = [];
     }
 }
