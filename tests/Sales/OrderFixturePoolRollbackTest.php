@@ -45,6 +45,15 @@ class OrderFixturePoolRollbackTest extends TestCase
         $this->expectException(\OutOfBoundsException::class);
         $this->orderFixtures->get();
     }
+
+    public function testRollbackWorksWithKeys()
+    {
+        $this->orderFixtures->add(self::$order, 'key');
+        $this->orderFixtures->rollback();
+        $this->expectException(\OutOfBoundsException::class);
+        $this->orderFixtures->get();
+    }
+
     public function testRollbackDeletesOrdersFromDb()
     {
         $this->orderFixtures->add(self::$order);

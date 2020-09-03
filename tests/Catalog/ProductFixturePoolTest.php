@@ -83,6 +83,16 @@ class ProductFixturePoolTest extends TestCase
         $this->expectException(\OutOfBoundsException::class);
         $this->productFixtures->get();
     }
+
+    public function testRollbackWorksWithKeys()
+    {
+        $product = $this->createProductInDb();
+        $this->productFixtures->add($product, 'key');
+        $this->productFixtures->rollback();
+        $this->expectException(\OutOfBoundsException::class);
+        $this->productFixtures->get();
+    }
+
     public function testRollbackDeletesProductsFromDb()
     {
         $product = $this->createProductInDb();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Customer;
 
 use Magento\Customer\Api\Data\CustomerInterface;
+use function array_values as values;
 
 class CustomerFixturePool
 {
@@ -41,7 +42,7 @@ class CustomerFixturePool
 
     public function rollback(): void
     {
-        CustomerFixtureRollback::create()->execute(...$this->customerFixtures);
+        CustomerFixtureRollback::create()->execute(...values($this->customerFixtures));
         $this->customerFixtures = [];
     }
 }

@@ -83,6 +83,16 @@ class CategoryFixturePoolTest extends TestCase
         $this->expectException(\OutOfBoundsException::class);
         $this->categoryFixtures->get();
     }
+
+    public function testRollbackWorksWithKeys()
+    {
+        $category = $this->createCategoryInDb();
+        $this->categoryFixtures->add($category, 'key');
+        $this->categoryFixtures->rollback();
+        $this->expectException(\OutOfBoundsException::class);
+        $this->categoryFixtures->get();
+    }
+
     public function testRollbackDeletesCategorysFromDb()
     {
         $category = $this->createCategoryInDb();

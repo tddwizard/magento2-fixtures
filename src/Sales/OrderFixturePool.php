@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Sales;
 
 use Magento\Sales\Model\Order;
+use function array_values as values;
 
 class OrderFixturePool
 {
@@ -41,7 +42,7 @@ class OrderFixturePool
 
     public function rollback(): void
     {
-        OrderFixtureRollback::create()->execute(...$this->orderFixtures);
+        OrderFixtureRollback::create()->execute(...values($this->orderFixtures));
         $this->orderFixtures = [];
     }
 }
