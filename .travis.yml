@@ -36,7 +36,6 @@ before_install:
   - sudo service elasticsearch restart
 before_script:
   - |
-    sleep 10
     [[ $COVERAGE == "true" ]] || phpenv config-rm xdebug.ini
     ./.travis/before_script.sh
 script: phpunit -c magento2/dev/tests/$TEST_SUITE `[[ $COVERAGE == "true" ]] && echo "--coverage-text --coverage-clover=/tmp/coverage.clover"`

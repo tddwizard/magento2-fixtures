@@ -48,5 +48,7 @@ case $TEST_SUITE in
         sed -i '/amqp/d' etc/install-config-mysql.php
 
         cd ../../..
+        echo "Wait for ElasticSearch on port 9200..."
+        until curl -I -XHEAD localhost:9200; do sleep 1; done
     ;;
 esac
