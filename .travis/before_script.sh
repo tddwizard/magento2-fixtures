@@ -49,6 +49,6 @@ case $TEST_SUITE in
 
         cd ../../..
         echo "Wait for ElasticSearch on port 9200..."
-        until curl -I -XHEAD localhost:9200; do sleep 1; done
+        curl -X GET localhost:9200/_cluster/health?wait_for_status=yellow&timeout=10s
     ;;
 esac
