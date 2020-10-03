@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Sales;
 
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
 use TddWizard\Fixtures\Checkout\CartBuilder;
 use TddWizard\Fixtures\Checkout\CustomerCheckout;
@@ -91,10 +92,10 @@ class OrderBuilder
     }
 
     /**
-     * @return OrderInterface
+     * @return Order
      * @throws \Exception
      */
-    public function build(): OrderInterface
+    public function build(): Order
     {
         $builder = clone $this;
 
