@@ -33,10 +33,9 @@ class InvoiceFixturePool
         if ($key === null) {
             $key = \array_key_last($this->invoiceFixtures);
         }
-        if (!array_key_exists($key, $this->invoiceFixtures)) {
+        if ($key === null || !array_key_exists($key, $this->invoiceFixtures)) {
             throw new \OutOfBoundsException('No matching invoice found in fixture pool');
         }
         return $this->invoiceFixtures[$key];
     }
-
 }

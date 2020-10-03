@@ -28,6 +28,11 @@ composer config repositories.travis_to_test git https://github.com/$TRAVIS_REPO_
 if [ ! -z $TRAVIS_TAG  ]
 then
     composer require ${COMPOSER_PACKAGE_NAME}:${TRAVIS_TAG}
+elif [ ! -z $TRAVIS_PULL_REQUEST_BRANCH ]
+then
+    # For pull requests, use the remote repository
+    composer config repositories.travis_to_test git https://github.com/${TRAVIS_PULL_REQUEST_SLUG}.git
+    composer require ${COMPOSER_PACKAGE_NAME}:dev-${TRAVIS_PULL_REQUEST_BRANCH}\#${TRAVIS_PULL_REQUEST_SHA}
 else
     composer require ${COMPOSER_PACKAGE_NAME}:dev-${TRAVIS_BRANCH}\#${TRAVIS_COMMIT}
 fi

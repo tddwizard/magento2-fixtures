@@ -33,10 +33,9 @@ class ShipmentFixturePool
         if ($key === null) {
             $key = \array_key_last($this->shipmentFixtures);
         }
-        if (!array_key_exists($key, $this->shipmentFixtures)) {
+        if ($key === null || !array_key_exists($key, $this->shipmentFixtures)) {
             throw new \OutOfBoundsException('No matching shipment found in fixture pool');
         }
         return $this->shipmentFixtures[$key];
     }
-
 }

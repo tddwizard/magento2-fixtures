@@ -144,6 +144,14 @@ class ProductBuilder
         );
     }
 
+    public static function aVirtualProduct(): ProductBuilder
+    {
+        $builder = self::aSimpleProduct();
+        $builder->product->setName('Virtual Product');
+        $builder->product->setTypeId(Type::TYPE_VIRTUAL);
+        return $builder;
+    }
+
     /**
      * @param mixed[] $data
      * @return ProductBuilder
@@ -345,13 +353,5 @@ class ProductBuilder
             '{please retry transaction|DDL statements are not allowed in transactions}i',
             $exception->getMessage()
         );
-    }
-
-    public static function aVirtualProduct(): ProductBuilder
-    {
-        $builder = self::aSimpleProduct();
-        $builder->product->setName('Virtual Product');
-        $builder->product->setTypeId(Type::TYPE_VIRTUAL);
-        return $builder;
     }
 }

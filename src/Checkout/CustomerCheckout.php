@@ -9,7 +9,7 @@ use Magento\Payment\Model\Config as PaymentConfig;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteManagement;
-use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 class CustomerCheckout
@@ -158,10 +158,10 @@ class CustomerCheckout
     }
 
     /**
-     * @return OrderInterface
+     * @return Order
      * @throws \Exception
      */
-    public function placeOrder(): OrderInterface
+    public function placeOrder(): Order
     {
         $this->saveBilling();
         $this->saveShipping();
@@ -171,6 +171,10 @@ class CustomerCheckout
         // Collect missing totals, like shipping
         $reloadedQuote->collectTotals();
         $order = $this->quoteManagement->submit($reloadedQuote);
+        if (! $order instanceof Order) {
+            $returnType = is_object($order) ? get_class($order) : gettype($order);
+            throw new \RuntimeException('QuoteManagement::submit() returned ' . $returnType . ' instead of Order');
+        }
         $this->cart->getCheckoutSession()->clearQuote();
         return $order;
     }

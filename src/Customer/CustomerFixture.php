@@ -58,9 +58,9 @@ class CustomerFixture
     {
         return array_map(
             function (AddressInterface $address): int {
-                return $address->getId();
+                return (int)$address->getId();
             },
-            $this->customer->getAddresses()
+            (array)$this->customer->getAddresses()
         );
     }
 
@@ -71,7 +71,7 @@ class CustomerFixture
 
     public function getConfirmation(): string
     {
-        return $this->customer->getConfirmation();
+        return (string)$this->customer->getConfirmation();
     }
 
     public function getEmail(): string

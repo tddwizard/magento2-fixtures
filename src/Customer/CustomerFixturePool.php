@@ -34,7 +34,7 @@ class CustomerFixturePool
         if ($key === null) {
             $key = \array_key_last($this->customerFixtures);
         }
-        if (!array_key_exists($key, $this->customerFixtures)) {
+        if ($key === null || !array_key_exists($key, $this->customerFixtures)) {
             throw new \OutOfBoundsException('No matching customer found in fixture pool');
         }
         return $this->customerFixtures[$key];

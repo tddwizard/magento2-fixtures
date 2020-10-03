@@ -35,7 +35,7 @@ class CategoryFixture
     {
         /** @var Category $category */
         $category = $this->category;
-        return $category->getUrlKey();
+        return (string)$category->getUrlKey();
     }
 
     public function rollback(): void

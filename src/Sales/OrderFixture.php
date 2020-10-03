@@ -41,7 +41,7 @@ class OrderFixture
     {
         $qtys = [];
         foreach ($this->order->getItems() as $item) {
-            $qtys[$item->getItemId()] = $item->getQtyOrdered();
+            $qtys[$item->getItemId()] = (float)$item->getQtyOrdered();
         }
 
         return $qtys;
@@ -49,12 +49,16 @@ class OrderFixture
 
     public function getPaymentMethod(): string
     {
-        return $this->order->getPayment()->getMethod();
+        $payment = $this->order->getPayment();
+        if ($payment === null) {
+            throw new \RuntimeException('Order does not have any payment information');
+        }
+        return (string)$payment->getMethod();
     }
 
     public function getShippingMethod(): string
     {
-        return $this->order->getShippingMethod();
+        return (string)$this->order->getShippingMethod();
     }
 
     public function rollback(): void

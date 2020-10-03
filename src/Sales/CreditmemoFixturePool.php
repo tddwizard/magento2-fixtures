@@ -33,10 +33,9 @@ class CreditmemoFixturePool
         if ($key === null) {
             $key = \array_key_last($this->creditmemoFixtures);
         }
-        if (!array_key_exists($key, $this->creditmemoFixtures)) {
+        if ($key === null || !array_key_exists($key, $this->creditmemoFixtures)) {
             throw new \OutOfBoundsException('No matching creditmemo found in fixture pool');
         }
         return $this->creditmemoFixtures[$key];
     }
-
 }
