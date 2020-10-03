@@ -86,7 +86,7 @@ class CreditmemoBuilder
         // refund items must be explicitly set
         if (empty($this->orderItems)) {
             foreach ($this->order->getItems() as $item) {
-                $this->orderItems[$item->getItemId()] = $item->getQtyOrdered();
+                $this->orderItems[$item->getItemId()] = (float)$item->getQtyOrdered();
             }
         }
 

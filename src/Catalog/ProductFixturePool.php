@@ -34,7 +34,7 @@ class ProductFixturePool
         if ($key === null) {
             $key = \array_key_last($this->productFixtures);
         }
-        if (!array_key_exists($key, $this->productFixtures)) {
+        if ($key === null || !array_key_exists($key, $this->productFixtures)) {
             throw new \OutOfBoundsException('No matching product found in fixture pool');
         }
         return $this->productFixtures[$key];

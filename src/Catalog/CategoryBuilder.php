@@ -99,7 +99,7 @@ class CategoryBuilder
 
         $category->setName('Child Category');
         $category->setIsActive(true);
-        $category->setPath($parent->getCategory()->getPath());
+        $category->setPath((string)$parent->getCategory()->getPath());
 
         return new self(
             $objectManager->create(CategoryRepositoryInterface::class),

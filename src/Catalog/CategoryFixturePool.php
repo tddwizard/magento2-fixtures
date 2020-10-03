@@ -34,7 +34,7 @@ class CategoryFixturePool
         if ($key === null) {
             $key = \array_key_last($this->categoryFixtures);
         }
-        if (!array_key_exists($key, $this->categoryFixtures)) {
+        if ($key === null || !array_key_exists($key, $this->categoryFixtures)) {
             throw new \OutOfBoundsException('No matching category found in fixture pool');
         }
         return $this->categoryFixtures[$key];

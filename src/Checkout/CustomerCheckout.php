@@ -174,7 +174,7 @@ class CustomerCheckout
         $order = $this->quoteManagement->submit($reloadedQuote);
         if (! $order instanceof Order) {
             $returnType = is_object($order) ? get_class($order) : gettype($order);
-            throw new \Exception('QuoteManagement::submit() returned ' . $returnType . ' instead of Order');
+            throw new \RuntimeException('QuoteManagement::submit() returned ' . $returnType . ' instead of Order');
         }
         $this->cart->getCheckoutSession()->clearQuote();
         return $order;

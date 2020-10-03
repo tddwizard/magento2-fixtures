@@ -208,7 +208,7 @@ class CustomerBuilder
          * Magento automatically sets random confirmation key for new account with password.
          * We need to save again with our own confirmation (null for confirmed customer)
          */
-        $customer->setConfirmation($builder->customer->getConfirmation());
+        $customer->setConfirmation((string)$builder->customer->getConfirmation());
         return $builder->customerRepository->save($customer);
     }
 
