@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
 use TddWizard\Fixtures\Checkout\CartBuilder;
