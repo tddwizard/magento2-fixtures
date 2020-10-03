@@ -42,7 +42,7 @@
         "magento/module-payment": "^100.3",
         "magento/module-quote": "^101.1",
         "magento/module-sales": "^102.0|^103.0",
-        "fzaninotto/faker": "^v1.9.0"
+        "fzaninotto/faker": "^1.8.0"
     },
     "require-dev": {
         "ext-json": "*",
