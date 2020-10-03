@@ -1,12 +1,5 @@
 # TddWizard Fixture library
 
-This library is in *alpha* state, that means:
-
-- it's super incomplete
-- nothing is guaranteed to work
-- everything can still be changed
-
-
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
 [![Build Status][ico-travis]][link-travis]
@@ -15,6 +8,10 @@ This library is in *alpha* state, that means:
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/tddwizard/magento2-fixtures?style=flat-square)](https://codeclimate.com/github/tddwizard/magento2-fixtures)
 
 ---
+
+Magento 2 Fixtures by Fabian Schmengler
+
+🧙🏻‍♂ https://tddwizard.com/
 
 ## What is it?
 
