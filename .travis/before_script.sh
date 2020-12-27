@@ -13,7 +13,7 @@ echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' > ~/.phpenv/versions/$(phpenv
 echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 phpenv rehash;
 
-composer selfupdate
+composer selfupdate --1
 
 # clone main magento github repository
 git clone --branch $MAGENTO_VERSION --depth=1 https://github.com/magento/magento2
