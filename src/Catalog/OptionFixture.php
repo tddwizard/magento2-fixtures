@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
+use Magento\Eav\Model\Entity\Attribute\Option as AttributeOption;
+
 /**
  * Class OptionFixture
  */
@@ -10,14 +12,14 @@ class OptionFixture
 {
 
     /**
-     * @var int
-     */
-    private $optionId;
-
-    /**
      * @var string
      */
     private $attributeCode;
+
+    /**
+     * @var AttributeOption
+     */
+    private $option;
 
     /**
      * OptionFixture constructor.
@@ -25,20 +27,10 @@ class OptionFixture
      * @param int $optionId
      * @param string $attributeCode
      */
-    public function __construct(int $optionId, string $attributeCode)
+    public function __construct(AttributeOption $option, string $attributeCode)
     {
-        $this->optionId = $optionId;
         $this->attributeCode = $attributeCode;
-    }
-
-    /**
-     * Get the option ID.
-     *
-     * @return int
-     */
-    public function getOptionId(): int
-    {
-        return $this->optionId;
+        $this->option = $option;
     }
 
     /**
@@ -49,6 +41,16 @@ class OptionFixture
     public function getAttributeCode(): string
     {
         return $this->attributeCode;
+    }
+
+    /**
+     * Get the option.
+     *
+     * @return AttributeOption
+     */
+    public function getOption(): AttributeOption
+    {
+        return $this->option;
     }
 
     /**

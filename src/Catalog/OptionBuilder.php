@@ -7,6 +7,7 @@ use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Eav\Api\AttributeOptionManagementInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterface;
 use Magento\Eav\Api\Data\AttributeOptionLabelInterface;
+use Magento\Eav\Model\Entity\Attribute\Option as AttributeOption;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -23,7 +24,7 @@ class OptionBuilder
     private $attributeOptionManagement;
 
     /**
-     * @var AttributeOptionInterface
+     * @var AttributeOption
      */
     private $option;
 
@@ -41,13 +42,13 @@ class OptionBuilder
      * OptionBuilder constructor.
      *
      * @param AttributeOptionManagementInterface $attributeOptionManagement
-     * @param AttributeOptionInterface $option
+     * @param AttributeOption $option
      * @param AttributeOptionLabelInterface $optionLabel
      * @param string $attributeCode
      */
     public function __construct(
         AttributeOptionManagementInterface $attributeOptionManagement,
-        AttributeOptionInterface $option,
+        AttributeOption $option,
         AttributeOptionLabelInterface $optionLabel,
         string $attributeCode
     ) {
@@ -74,6 +75,9 @@ class OptionBuilder
     public static function anOption(string $attributeCode): OptionBuilder
     {
         $objectManager = Bootstrap::getObjectManager();
+        /** @var AttributeOptionManagementInterface $attributeOptionManagement */
+        $attributeOptionManagement = $objectManager->create(AttributeOptionManagementInterface::class);
+        $items = $attributeOptionManagement->getItems();
 
         /** @var AttributeOptionLabelInterface $optionLabel */
         $optionLabel = $objectManager->create(AttributeOptionLabelInterface::class);
@@ -85,11 +89,11 @@ class OptionBuilder
         $option = $objectManager->create(AttributeOptionInterface::class);
         $option->setLabel($label);
         $option->setStoreLabels([$optionLabel]);
-        $option->setSortOrder(0);
+        $option->setSortOrder(count($items) + 1);
         $option->setIsDefault(false);
 
         return new static(
-            $objectManager->create(AttributeOptionManagementInterface::class),
+            $attributeOptionManagement,
             $option,
             $optionLabel,
             $attributeCode
@@ -106,7 +110,7 @@ class OptionBuilder
     {
         $builder = clone $this;
         $builder->optionLabel->setLabel($label);
-        $builder->option->setStoreLabels([$builder->optionLabel]);
+        $builder->option->setStoreLabels([$builder->optionLabel]); // TODO: handle multistore
         $builder->option->setLabel($label);
 
         return $builder;
@@ -157,7 +161,7 @@ class OptionBuilder
     /**
      * Build the option and apply it to the attribute.
      *
-     * @return int
+     * @return AttributeOption
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\StateException
      */
@@ -172,7 +176,10 @@ class OptionBuilder
             $builder->option
         );
 
-        return $this->getOptionId();
+        $optionId = $this->getOptionId();
+        $builder->option->setId($optionId);
+
+        return $builder->option;
     }
 
     /**

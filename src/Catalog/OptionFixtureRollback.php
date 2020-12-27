@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
-namespace Coffee\FixtureBuilders\Catalog;
-
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Api\AttributeOptionManagementInterface;
 use Magento\Framework\Exception\InputException;
@@ -75,7 +73,7 @@ class OptionFixtureRollback
             $this->attributeOptionManagement->delete(
                 Product::ENTITY,
                 $optionFixture->getAttributeCode(),
-                $optionFixture->getOptionId()
+                $optionFixture->getOption()->getId()
             );
         }
 
