@@ -19,11 +19,13 @@ class IndexerErrorsTest extends TestCase
     private static $indexIsScheduledOrig;
 
     /**
+     * @deprecated the test should be removed in next release, but we should still keep the exception in case this
+     *             happens again
      * @magentoDataFixture Magento/Store/_files/second_website_with_two_stores.php
      */
     public function testHelpfulErrorMessageForFulltextIndexSchedule()
     {
-        $this->onlyRunFromMagento('2.3.0');
+        $this->markTestSkipped('Since Magento 2.3.6 / 2.4.1 these transaction exceptions do not occur anymore');
         $this->expectException(\Exception::class);
 
         try {
@@ -57,14 +59,5 @@ class IndexerErrorsTest extends TestCase
         /* @var IndexerInterface $model */
         $model = Bootstrap::getObjectManager()->get(IndexerRegistry::class)->get('catalogsearch_fulltext');
         $model->setScheduled(self::$indexIsScheduledOrig);
-    }
-
-    private function onlyRunFromMagento($magentoVersion): void
-    {
-        /** @var ProductMetadataInterface $productMetadata */
-        $productMetadata = Bootstrap::getObjectManager()->get(ProductMetadataInterface::class);
-        if (version_compare($productMetadata->getVersion(), $magentoVersion, '<')) {
-            $this->markTestSkipped('Only relevant for Magento >= ' . $magentoVersion . '');
-        }
     }
 }
