@@ -36,7 +36,11 @@ before_install:
   - sudo service elasticsearch restart
 before_script:
   - |
-    [[ $COVERAGE == "true" ]] || phpenv config-rm xdebug.ini
+    if [[ $COVERAGE == "true" ]]; then \
+      pecl install -f xdebug-2.9.8 #see https://github.com/magento/magento2/issues/28961 \
+    else
+      phpenv config-rm xdebug.ini
+    fi
     ./.travis/before_script.sh
 script: phpunit -c magento2/dev/tests/$TEST_SUITE `[[ $COVERAGE == "true" ]] && echo "--coverage-text --coverage-clover=/tmp/coverage.clover"`
 after_script:
