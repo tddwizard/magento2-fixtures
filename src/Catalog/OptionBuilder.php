@@ -21,7 +21,7 @@ class OptionBuilder
     /**
      * @var AttributeOptionManagementInterface
      */
-    private $attributeOptionManagement;
+    private $optionManagement;
 
     /**
      * @var AttributeOption
@@ -41,18 +41,18 @@ class OptionBuilder
     /**
      * OptionBuilder constructor.
      *
-     * @param AttributeOptionManagementInterface $attributeOptionManagement
+     * @param AttributeOptionManagementInterface $optionManagement
      * @param AttributeOption $option
      * @param AttributeOptionLabelInterface $optionLabel
      * @param string $attributeCode
      */
     public function __construct(
-        AttributeOptionManagementInterface $attributeOptionManagement,
+        AttributeOptionManagementInterface $optionManagement,
         AttributeOption $option,
         AttributeOptionLabelInterface $optionLabel,
         string $attributeCode
     ) {
-        $this->attributeOptionManagement = $attributeOptionManagement;
+        $this->optionManagement = $optionManagement;
         $this->option = $option;
         $this->optionLabel = $optionLabel;
         $this->attributeCode = $attributeCode;
@@ -77,9 +77,9 @@ class OptionBuilder
     public static function anOption(string $attributeCode): OptionBuilder
     {
         $objectManager = Bootstrap::getObjectManager();
-        /** @var AttributeOptionManagementInterface $attributeOptionManagement */
-        $attributeOptionManagement = $objectManager->create(AttributeOptionManagementInterface::class);
-        $items = $attributeOptionManagement->getItems(Product::ENTITY, $attributeCode);
+        /** @var AttributeOptionManagementInterface $optionManagement */
+        $optionManagement = $objectManager->create(AttributeOptionManagementInterface::class);
+        $items = $optionManagement->getItems(Product::ENTITY, $attributeCode);
 
         /** @var AttributeOptionLabelInterface $optionLabel */
         $optionLabel = $objectManager->create(AttributeOptionLabelInterface::class);
@@ -95,7 +95,7 @@ class OptionBuilder
         $option->setIsDefault(false);
 
         return new static(
-            $attributeOptionManagement,
+            $optionManagement,
             $option,
             $optionLabel,
             $attributeCode
@@ -172,7 +172,7 @@ class OptionBuilder
         $builder = clone $this;
 
         // add the option
-        $this->attributeOptionManagement->add(
+        $this->optionManagement->add(
             \Magento\Catalog\Model\Product::ENTITY,
             $builder->attributeCode,
             $builder->option

@@ -27,18 +27,18 @@ class OptionFixtureRollback
     /**
      * @var AttributeOptionManagementInterface
      */
-    private $attributeOptionManagement;
+    private $optionManagement;
 
     /**
      * OptionFixtureRollback constructor.
      *
      * @param Registry $registry
-     * @param AttributeOptionManagementInterface $attributeOptionManagement
+     * @param AttributeOptionManagementInterface $optionManagement
      */
-    public function __construct(Registry $registry, AttributeOptionManagementInterface $attributeOptionManagement)
+    public function __construct(Registry $registry, AttributeOptionManagementInterface $optionManagement)
     {
         $this->registry = $registry;
-        $this->attributeOptionManagement = $attributeOptionManagement;
+        $this->optionManagement = $optionManagement;
     }
 
     /**
@@ -69,7 +69,7 @@ class OptionFixtureRollback
         $this->registry->register('isSecureArea', true);
 
         foreach ($optionFixtures as $optionFixture) {
-            $this->attributeOptionManagement->delete(
+            $this->optionManagement->delete(
                 Product::ENTITY,
                 $optionFixture->getAttributeCode(),
                 $optionFixture->getOption()->getId()

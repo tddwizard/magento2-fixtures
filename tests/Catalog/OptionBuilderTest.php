@@ -21,8 +21,8 @@ class OptionBuilderTest extends TestCase
 {
     private $options = [];
 
-    /** @var AttributeOptionManagementInterface */
-    private $attributeOptionManagement;
+    /** @var AttributeOptionManagementoptionManagemente */
+    private $optionManagement;
 
     /** @var OptionResource */
     private $optionResourceModel;
@@ -33,7 +33,7 @@ class OptionBuilderTest extends TestCase
     protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
-        $this->attributeOptionManagement = $objectManager->get(AttributeOptionManagementInterface::class);
+        $this->optionManagement = $objectManager->get(AttributeOptionManagementInterface::class);
         $this->optionFactory = $objectManager->get(OptionFactory::class);
         $this->optionResourceModel = $objectManager->get(OptionResource::class);
     }
@@ -83,7 +83,7 @@ class OptionBuilderTest extends TestCase
         $option = $this->optionFactory->create();
         $this->optionResourceModel->load($option, $optionFixture->getOption()->getId());
 
-        $items = $this->attributeOptionManagement->getItems(Product::ENTITY, $userDefinedAttributeCode);
+        $items = $this->optionManagement->getItems(Product::ENTITY, $userDefinedAttributeCode);
 
         self::assertEquals($optionFixture->getOption()->getId(), $option->getId());
         $foundLabel = false;
