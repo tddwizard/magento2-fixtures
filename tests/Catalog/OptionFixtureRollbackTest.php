@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
+use TddWizard\Fixtures\Catalog\OptionBuilder;
+use TddWizard\Fixtures\Catalog\OptionFixture;
+use TddWizard\Fixtures\Catalog\OptionFixtureRollback;
 use Magento\Eav\Model\Entity\Attribute\OptionFactory;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option as OptionResource;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -31,11 +34,12 @@ class OptionFixtureRollbackTest extends TestCase
     /**
      * @magentoDataFixture Magento/Catalog/_files/dropdown_attribute.php
      */
-    public function testRollbackSingleOptionFixture()
+    public function testRollbackSingleOptionFixture(): void
     {
         $userDefinedAttributeCode = 'dropdown_attribute';
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(), $userDefinedAttributeCode
+            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            $userDefinedAttributeCode
         );
         OptionFixtureRollback::create()->execute($optionFixture);
 
@@ -48,14 +52,16 @@ class OptionFixtureRollbackTest extends TestCase
     /**
      * @magentoDataFixture Magento/Catalog/_files/dropdown_attribute.php
      */
-    public function testRollbackMultipleOptionFixtures()
+    public function testRollbackMultipleOptionFixtures(): void
     {
         $userDefinedAttributeCode = 'dropdown_attribute';
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(), $userDefinedAttributeCode
+            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            $userDefinedAttributeCode
         );
         $otherOptionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(), $userDefinedAttributeCode
+            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            $userDefinedAttributeCode
         );
         OptionFixtureRollback::create()->execute($optionFixture, $otherOptionFixture);
 

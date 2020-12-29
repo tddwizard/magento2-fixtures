@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
+use TddWizard\Fixtures\Catalog\OptionBuilder;
+use TddWizard\Fixtures\Catalog\OptionFixture;
+use TddWizard\Fixtures\Catalog\OptionFixtureRollback;
 use Magento\Catalog\Model\Product;
+use Magento\Eav\Api\AttributeOptionManagementInterface;
 use Magento\Eav\Model\Entity\Attribute\OptionFactory;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option as OptionResource;
-use TddWizard\Fixtures\Catalog\OptionFixtureRollback;
-use Magento\Eav\Api\AttributeOptionManagementInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +19,6 @@ use PHPUnit\Framework\TestCase;
  */
 class OptionBuilderTest extends TestCase
 {
-
     private $options = [];
 
     /** @var AttributeOptionManagementInterface */
@@ -31,10 +32,10 @@ class OptionBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManager = Bootstrap::getObjectManager();
-        $this->attributeOptionManagement = $this->objectManager->get(AttributeOptionManagementInterface::class);
-        $this->optionFactory = $this->objectManager->get(OptionFactory::class);
-        $this->optionResourceModel = $this->objectManager->get(OptionResource::class);
+        $objectManager = Bootstrap::getObjectManager();
+        $this->attributeOptionManagement = $objectManager->get(AttributeOptionManagementInterface::class);
+        $this->optionFactory = $objectManager->get(OptionFactory::class);
+        $this->optionResourceModel = $objectManager->get(OptionResource::class);
     }
 
     protected function tearDown(): void
@@ -49,11 +50,12 @@ class OptionBuilderTest extends TestCase
     /**
      * @magentoDataFixture Magento/Catalog/_files/dropdown_attribute.php
      */
-    public function testAddOption()
+    public function testAddOption(): void
     {
         $userDefinedAttributeCode = 'dropdown_attribute';
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(), $userDefinedAttributeCode
+            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            $userDefinedAttributeCode
         );
         $this->options[] = $optionFixture;
 
@@ -67,12 +69,13 @@ class OptionBuilderTest extends TestCase
     /**
      * @magentoDataFixture Magento/Catalog/_files/dropdown_attribute.php
      */
-    public function testAddOptionWithLabel()
+    public function testAddOptionWithLabel(): void
     {
         $userDefinedAttributeCode = 'dropdown_attribute';
         $label = uniqid('Label ', true);
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->withLabel($label)->build(), $userDefinedAttributeCode
+            OptionBuilder::anOption($userDefinedAttributeCode)->withLabel($label)->build(),
+            $userDefinedAttributeCode
         );
         $this->options[] = $optionFixture;
 
