@@ -13,7 +13,7 @@ echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' > ~/.phpenv/versions/$(phpenv
 echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 phpenv rehash;
 
-composer selfupdate
+composer selfupdate --1
 
 # clone main magento github repository
 git clone --branch $MAGENTO_VERSION --depth=1 https://github.com/magento/magento2
@@ -49,8 +49,11 @@ case $TEST_SUITE in
             SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION;
             CREATE DATABASE magento_integration_tests;
         '
-        cp etc/install-config-mysql.travis.php.dist etc/install-config-mysql.php
+        cp etc/install-config-mysql.php.dist etc/install-config-mysql.php
+        # Remove AMQP configuration
         sed -i '/amqp/d' etc/install-config-mysql.php
+        # Remove default root password
+        sed -i 's/123123q//' etc/install-config-mysql.php
 
         cd ../../..
         echo "Wait for ElasticSearch on port 9200..."
