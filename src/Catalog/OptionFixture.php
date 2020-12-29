@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Eav\Model\Entity\Attribute\Option as AttributeOption;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class OptionFixture
@@ -24,7 +25,7 @@ class OptionFixture
     /**
      * OptionFixture constructor.
      *
-     * @param int $optionId
+     * @param AttributeOption $option
      * @param string $attributeCode
      */
     public function __construct(AttributeOption $option, string $attributeCode)
@@ -56,7 +57,7 @@ class OptionFixture
     /**
      * Rollback the option(s).
      *
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function rollback(): void
     {

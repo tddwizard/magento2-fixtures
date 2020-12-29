@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace TddWizard\Fixtures\Catalog;
 
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
+use Magento\Catalog\Model\Product;
 use Magento\Eav\Api\AttributeOptionManagementInterface;
-use Magento\Eav\Api\Data\AttributeOptionInterface;
 use Magento\Eav\Api\Data\AttributeOptionLabelInterface;
 use Magento\Eav\Model\Entity\Attribute\Option as AttributeOption;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -71,22 +71,24 @@ class OptionBuilder
      *
      * @param string $attributeCode
      * @return OptionBuilder
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\StateException
      */
     public static function anOption(string $attributeCode): OptionBuilder
     {
         $objectManager = Bootstrap::getObjectManager();
         /** @var AttributeOptionManagementInterface $attributeOptionManagement */
         $attributeOptionManagement = $objectManager->create(AttributeOptionManagementInterface::class);
-        $items = $attributeOptionManagement->getItems();
+        $items = $attributeOptionManagement->getItems(Product::ENTITY, $attributeCode);
 
         /** @var AttributeOptionLabelInterface $optionLabel */
         $optionLabel = $objectManager->create(AttributeOptionLabelInterface::class);
         $label = uniqid('Name ', true);
-        $optionLabel->setStoreId(0); // TODO: handle better
+        $optionLabel->setStoreId(1);
         $optionLabel->setLabel($label);
 
-        /** @var AttributeOptionInterface $option */
-        $option = $objectManager->create(AttributeOptionInterface::class);
+        /** @var AttributeOption $option */
+        $option = $objectManager->create(AttributeOption::class);
         $option->setLabel($label);
         $option->setStoreLabels([$optionLabel]);
         $option->setSortOrder(count($items) + 1);
@@ -110,7 +112,7 @@ class OptionBuilder
     {
         $builder = clone $this;
         $builder->optionLabel->setLabel($label);
-        $builder->option->setStoreLabels([$builder->optionLabel]); // TODO: handle multistore
+        $builder->option->setStoreLabels([$builder->optionLabel]);
         $builder->option->setLabel($label);
 
         return $builder;
@@ -165,7 +167,7 @@ class OptionBuilder
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\StateException
      */
-    public function build(): int
+    public function build(): AttributeOption
     {
         $builder = clone $this;
 

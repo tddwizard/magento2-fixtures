@@ -46,8 +46,7 @@ class OptionFixtureRollback
      *
      * @return OptionFixtureRollback
      */
-    public static function create():
-    OptionFixtureRollback //phpcs:ignore Magento2.Functions.StaticFunction.StaticFunction
+    public static function create(): OptionFixtureRollback
     {
         $objectManager = Bootstrap::getObjectManager();
         return new self(
