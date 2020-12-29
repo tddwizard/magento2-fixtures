@@ -84,7 +84,7 @@ class OptionBuilder
         /** @var AttributeOptionLabelInterface $optionLabel */
         $optionLabel = $objectManager->create(AttributeOptionLabelInterface::class);
         $label = uniqid('Name ', true);
-        $optionLabel->setStoreId(1);
+        $optionLabel->setStoreId(0);
         $optionLabel->setLabel($label);
 
         /** @var AttributeOption $option */
