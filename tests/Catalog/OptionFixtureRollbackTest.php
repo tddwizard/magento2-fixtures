@@ -38,7 +38,7 @@ class OptionFixtureRollbackTest extends TestCase
     {
         $userDefinedAttributeCode = 'dropdown_attribute';
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            OptionBuilder::anOptionFor($userDefinedAttributeCode)->build(),
             $userDefinedAttributeCode
         );
         OptionFixtureRollback::create()->execute($optionFixture);
@@ -56,11 +56,11 @@ class OptionFixtureRollbackTest extends TestCase
     {
         $userDefinedAttributeCode = 'dropdown_attribute';
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            OptionBuilder::anOptionFor($userDefinedAttributeCode)->build(),
             $userDefinedAttributeCode
         );
         $otherOptionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            OptionBuilder::anOptionFor($userDefinedAttributeCode)->build(),
             $userDefinedAttributeCode
         );
         OptionFixtureRollback::create()->execute($optionFixture, $otherOptionFixture);

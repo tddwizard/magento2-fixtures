@@ -42,7 +42,7 @@ class OptionBuilderTest extends TestCase
     {
         if (!empty($this->options)) {
             foreach ($this->options as $optionFixture) {
-                OptionFixtureRollback::create()->execute($optionFixture);
+                $optionFixture->rollBack();
             }
         }
     }
@@ -54,7 +54,7 @@ class OptionBuilderTest extends TestCase
     {
         $userDefinedAttributeCode = 'dropdown_attribute';
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->build(),
+            OptionBuilder::anOptionFor($userDefinedAttributeCode)->build(),
             $userDefinedAttributeCode
         );
         $this->options[] = $optionFixture;
@@ -74,7 +74,7 @@ class OptionBuilderTest extends TestCase
         $userDefinedAttributeCode = 'dropdown_attribute';
         $label = uniqid('Label ', true);
         $optionFixture = new OptionFixture(
-            OptionBuilder::anOption($userDefinedAttributeCode)->withLabel($label)->build(),
+            OptionBuilder::anOptionFor($userDefinedAttributeCode)->withLabel($label)->build(),
             $userDefinedAttributeCode
         );
         $this->options[] = $optionFixture;

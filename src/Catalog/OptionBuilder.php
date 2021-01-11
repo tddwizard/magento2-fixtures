@@ -74,7 +74,7 @@ class OptionBuilder
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\StateException
      */
-    public static function anOption(string $attributeCode): OptionBuilder
+    public static function anOptionFor(string $attributeCode): OptionBuilder
     {
         $objectManager = Bootstrap::getObjectManager();
         /** @var AttributeOptionManagementInterface $optionManagement */
