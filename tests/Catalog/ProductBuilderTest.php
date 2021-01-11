@@ -220,13 +220,13 @@ class ProductBuilderTest extends TestCase
         $productFixture = new ProductFixture(
             $builder->build()
         );
-        $this->assertMatchesRegularExpression('/[0-9a-f]{32}/', $productFixture->getSku());
+        $this->assertRegExp('/[0-9a-f]{32}/', $productFixture->getSku());
         $this->products[] = $productFixture;
 
         $otherProductFixture = new ProductFixture(
             $builder->build()
         );
-        $this->assertMatchesRegularExpression('/[0-9a-f]{32}/', $otherProductFixture->getSku());
+        $this->assertRegExp('/[0-9a-f]{32}/', $otherProductFixture->getSku());
         $this->assertNotEquals($productFixture->getSku(), $otherProductFixture->getSku());
         $this->products[] = $otherProductFixture;
     }
@@ -234,10 +234,10 @@ class ProductBuilderTest extends TestCase
     public function testRandomSkuOnBuildWithoutSave()
     {
         $product = ProductBuilder::aSimpleProduct()->buildWithoutSave();
-        $this->assertMatchesRegularExpression('/[0-9a-f]{32}/', $product->getSku());
+        $this->assertRegExp('/[0-9a-f]{32}/', $product->getSku());
 
         $otherProduct = ProductBuilder::aSimpleProduct()->buildWithoutSave();
-        $this->assertMatchesRegularExpression('/[0-9a-f]{32}/', $otherProduct->getSku());
+        $this->assertRegExp('/[0-9a-f]{32}/', $otherProduct->getSku());
         $this->assertNotEquals($product->getSku(), $otherProduct->getSku());
     }
 
