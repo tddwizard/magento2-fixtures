@@ -314,6 +314,20 @@ class ProductBuilder
 
     /**
      * @return ProductInterface
+     */
+    public function buildWithoutSave() : ProductInterface
+    {
+        if (!$this->product->getSku()) {
+            $this->product->setSku(sha1(uniqid('', true)));
+        }
+        $this->product->setCustomAttribute('url_key', $this->product->getSku());
+        $this->product->setData('category_ids', $this->categoryIds);
+
+        return clone $this->product;
+    }
+
+    /**
+     * @return ProductInterface
      * @throws Exception
      */
     private function createProduct(): ProductInterface
