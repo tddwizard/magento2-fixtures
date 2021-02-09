@@ -17,7 +17,7 @@ class InvoiceFixture
         $this->invoice = $shipment;
     }
 
-    public function getInvoice(): int
+    public function getInvoice(): InvoiceInterface
     {
         return $this->invoice;
     }

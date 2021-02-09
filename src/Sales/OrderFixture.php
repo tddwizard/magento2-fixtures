@@ -17,7 +17,7 @@ class OrderFixture
         $this->order = $order;
     }
 
-    public function getOrder(): OrderInterface
+    public function getOrder(): Order
     {
         return $this->order;
     }
