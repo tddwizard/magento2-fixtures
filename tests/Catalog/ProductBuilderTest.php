@@ -231,6 +231,16 @@ class ProductBuilderTest extends TestCase
         $this->products[] = $otherProductFixture;
     }
 
+    public function testRandomSkuOnBuildWithoutSave()
+    {
+        $product = ProductBuilder::aSimpleProduct()->buildWithoutSave();
+        $this->assertRegExp('/[0-9a-f]{32}/', $product->getSku());
+
+        $otherProduct = ProductBuilder::aSimpleProduct()->buildWithoutSave();
+        $this->assertRegExp('/[0-9a-f]{32}/', $otherProduct->getSku());
+        $this->assertNotEquals($product->getSku(), $otherProduct->getSku());
+    }
+
     public function testProductCanBeLoadedWithCollection()
     {
         $productFixture = new ProductFixture(
