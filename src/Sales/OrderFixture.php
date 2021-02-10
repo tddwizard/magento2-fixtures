@@ -17,6 +17,11 @@ class OrderFixture
         $this->order = $order;
     }
 
+    public function getOrder(): Order
+    {
+        return $this->order;
+    }
+
     public function getId(): int
     {
         return (int) $this->order->getEntityId();
