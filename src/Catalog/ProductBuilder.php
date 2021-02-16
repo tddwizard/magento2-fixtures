@@ -5,6 +5,7 @@ namespace TddWizard\Fixtures\Catalog;
 
 use Exception;
 use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductWebsiteLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Api\ProductWebsiteLinkRepositoryInterface;
@@ -28,6 +29,11 @@ class ProductBuilder
      * @var ProductRepositoryInterface
      */
     private $productRepository;
+
+    /**
+     * @var ProductLinkInterfaceFactory
+     */
+    protected $productLinkFactory;
 
     /**
      * @var StockItemRepositoryInterface
@@ -67,10 +73,11 @@ class ProductBuilder
     /**
      * @var int[]
      */
-    private $categoryIds = [];
+    protected $categoryIds = [];
 
     /**
      * @param ProductRepositoryInterface $productRepository
+     * @param ProductLinkInterfaceFactory $productLinkFactory
      * @param StockItemRepositoryInterface $stockItemRepository
      * @param ProductWebsiteLinkRepositoryInterface $websiteLinkRepository
      * @param ProductWebsiteLinkInterfaceFactory $websiteLinkFactory
@@ -81,6 +88,7 @@ class ProductBuilder
      */
     final public function __construct(
         ProductRepositoryInterface $productRepository,
+        ProductLinkInterfaceFactory $productLinkFactory,
         StockItemRepositoryInterface $stockItemRepository,
         ProductWebsiteLinkRepositoryInterface $websiteLinkRepository,
         ProductWebsiteLinkInterfaceFactory $websiteLinkFactory,
@@ -90,6 +98,7 @@ class ProductBuilder
         array $storeSpecificValues
     ) {
         $this->productRepository = $productRepository;
+        $this->productLinkFactory = $productLinkFactory;
         $this->websiteLinkRepository = $websiteLinkRepository;
         $this->stockItemRepository = $stockItemRepository;
         $this->websiteLinkFactory = $websiteLinkFactory;
@@ -134,6 +143,7 @@ class ProductBuilder
 
         return new static(
             $objectManager->create(ProductRepositoryInterface::class),
+            $objectManager->create(ProductLinkInterfaceFactory::class),
             $objectManager->create(StockItemRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkRepositoryInterface::class),
             $objectManager->create(ProductWebsiteLinkInterfaceFactory::class),
