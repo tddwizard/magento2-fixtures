@@ -86,10 +86,24 @@ class AddressBuilder
         return $builder;
     }
 
+    public function withMiddlename(string $middlename): AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setMiddlename($middlename);
+        return $builder;
+    }
+
     public function withLastname(string $lastname): AddressBuilder
     {
         $builder = clone $this;
         $builder->address->setLastname($lastname);
+        return $builder;
+    }
+
+    public function withSuffix(string $suffix): AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setSuffix($suffix);
         return $builder;
     }
 
