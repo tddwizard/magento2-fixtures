@@ -124,8 +124,11 @@ class CustomerBuilderTest extends TestCase
             CustomerBuilder::aCustomer()
                 ->withAddresses(
                     AddressBuilder::anAddress()
+                        ->withPrefix('Sir')
                         ->withFirstname('Wasch')
+                        ->withMiddleName('H')
                         ->withLastname('Bär')
+                        ->withSuffix('Esquire')
                         ->withStreet('Trierer Str. 791')
                         ->withTelephone('555-666-777')
                         ->withCompany('integer_net')
@@ -140,8 +143,11 @@ class CustomerBuilderTest extends TestCase
         $this->customers[] = $customerFixture;
         $customer = $this->customerRepository->getById($customerFixture->getId());
         $address = $customer->getAddresses()[0];
+        $this->assertEquals('Sir', $address->getPrefix());
         $this->assertEquals('Wasch', $address->getFirstname());
+        $this->assertEquals('H', $address->getMiddlename());
         $this->assertEquals('Bär', $address->getLastname());
+        $this->assertEquals('Esquire', $address->getSuffix());
         $this->assertEquals(['Trierer Str. 791'], $address->getStreet());
         $this->assertEquals('555-666-777', $address->getTelephone());
         $this->assertEquals('integer_net', $address->getCompany());
