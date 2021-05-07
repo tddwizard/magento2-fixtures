@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Sales;
 
+use Magento\Sales\Api\Data\ShipmentCreationArgumentsExtensionFactory;
+use Magento\Sales\Api\Data\ShipmentCreationArgumentsExtensionInterface;
+use Magento\Sales\Api\Data\ShipmentCreationArgumentsInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentItemCreationInterfaceFactory;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterface;
@@ -51,16 +54,26 @@ class ShipmentBuilder
      * @var string[]
      */
     private $trackingNumbers;
+    /**
+     * @var string
+     */
+    private $sourceCode;
+    /**
+     * @var ShipmentCreationArgumentsExtensionFactory
+     */
+    private $shipmentCreationArgumentsExtensionFactory;
 
     final public function __construct(
         ShipmentItemCreationInterfaceFactory $itemFactory,
         ShipmentTrackCreationInterfaceFactory $trackFactory,
+        ShipmentCreationArgumentsExtensionFactory $shipmentCreationArgumentsExtensionFactory,
         ShipOrderInterface $shipOrder,
         ShipmentRepositoryInterface $shipmentRepository,
         Order $order
     ) {
         $this->itemFactory = $itemFactory;
         $this->trackFactory = $trackFactory;
+        $this->shipmentCreationArgumentsExtensionFactory = $shipmentCreationArgumentsExtensionFactory;
         $this->shipOrder = $shipOrder;
         $this->shipmentRepository = $shipmentRepository;
         $this->order = $order;
@@ -77,6 +90,7 @@ class ShipmentBuilder
         return new static(
             $objectManager->create(ShipmentItemCreationInterfaceFactory::class),
             $objectManager->create(ShipmentTrackCreationInterfaceFactory::class),
+            $objectManager->create(ShipmentCreationArgumentsExtensionFactory::class),
             $objectManager->create(ShipOrderInterface::class),
             $objectManager->create(ShipmentRepositoryInterface::class),
             $order
@@ -101,10 +115,20 @@ class ShipmentBuilder
         return $builder;
     }
 
+    public function withSource(string $sourceCode): ShipmentBuilder
+    {
+        $builder = clone $this;
+
+        $builder->sourceCode = $sourceCode;
+
+        return $builder;
+    }
+
     public function build(): ShipmentInterface
     {
         $shipmentItems = $this->buildShipmentItems();
         $tracks = $this->buildTracks();
+        $arguments = $this->buildArguments();
 
         $shipmentId = $this->shipOrder->execute(
             $this->order->getEntityId(),
@@ -112,7 +136,9 @@ class ShipmentBuilder
             false,
             false,
             null,
-            $tracks
+            $tracks,
+            [],
+            $arguments
         );
 
         $shipment = $this->shipmentRepository->get($shipmentId);
@@ -141,6 +167,17 @@ class ShipmentBuilder
             },
             $this->trackingNumbers
         );
+    }
+
+    private function buildArguments(): ShipmentCreationArgumentsInterface
+    {
+        /** @var ShipmentCreationArgumentsInterface $arguments */
+        $arguments = Bootstrap::getObjectManager()->create(ShipmentCreationArgumentsInterface::class);
+        if (isset($this->sourceCode)) {
+            $arguments->setExtensionAttributes($this->shipmentCreationArgumentsExtensionFactory->create());
+            $arguments->getExtensionAttributes()->setSourceCode($this->sourceCode);
+        }
+        return $arguments;
     }
 
     /**
