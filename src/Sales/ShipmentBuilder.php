@@ -147,6 +147,9 @@ class ShipmentBuilder
             $this->shipmentRepository->save($shipment);
         }
 
+        // force reload of associated shipments
+        $this->order->getShipmentsCollection()->clear();
+
         return $shipment;
     }
 
