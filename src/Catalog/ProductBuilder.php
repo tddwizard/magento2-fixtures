@@ -294,6 +294,21 @@ class ProductBuilder
     }
 
     /**
+     * @param string $key
+     * @param mixed $value
+     * @return ProductBuilder
+     */
+    public function withExtensionAttributes(string $key, $value): ProductBuilder
+    {
+        $builder = clone $this;
+        $extensionAttributes = $builder->product->getExtensionAttributes();
+        $extensionAttributes->setData($key, $value);
+        $builder->product->setExtensionAttributes($extensionAttributes);
+
+        return $builder;
+    }
+
+    /**
      * @return ProductInterface
      * @throws Exception
      */
