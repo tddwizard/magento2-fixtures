@@ -17,6 +17,11 @@ class InvoiceFixture
         $this->invoice = $shipment;
     }
 
+    public function getInvoice(): InvoiceInterface
+    {
+        return $this->invoice;
+    }
+
     public function getId(): int
     {
         return (int) $this->invoice->getEntityId();

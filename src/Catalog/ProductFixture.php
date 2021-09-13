@@ -17,6 +17,11 @@ class ProductFixture
         $this->product = $product;
     }
 
+    public function getProduct(): ProductInterface
+    {
+        return $this->product;
+    }
+
     public function getId(): int
     {
         return (int) $this->product->getId();
