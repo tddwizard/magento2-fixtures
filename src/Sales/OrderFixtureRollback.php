@@ -82,7 +82,11 @@ class OrderFixtureRollback
             array_walk(
                 $orderItems,
                 function (OrderItemInterface $orderItem) {
-                    $this->productRepository->deleteById($orderItem->getSku());
+                    try {
+                        $this->productRepository->deleteById($orderItem->getSku());
+                    } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                        // ignore if already deleted
+                    }
                 }
             );
         }

@@ -17,6 +17,11 @@ class ShipmentFixture
         $this->shipment = $shipment;
     }
 
+    public function getShipment(): ShipmentInterface
+    {
+        return $this->shipment;
+    }
+
     public function getId(): int
     {
         return (int) $this->shipment->getEntityId();

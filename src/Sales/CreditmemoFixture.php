@@ -17,6 +17,11 @@ class CreditmemoFixture
         $this->creditmemo = $creditmemo;
     }
 
+    public function getCreditmemo(): CreditmemoInterface
+    {
+        return $this->creditmemo;
+    }
+
     public function getId(): int
     {
         return (int) $this->creditmemo->getEntityId();

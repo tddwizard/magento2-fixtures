@@ -23,6 +23,11 @@ class CustomerFixture
         $this->customer = $customer;
     }
 
+    public function getCustomer(): CustomerInterface
+    {
+        return $this->customer;
+    }
+
     public function getDefaultShippingAddressId(): int
     {
         return (int) $this->customer->getDefaultShipping();
