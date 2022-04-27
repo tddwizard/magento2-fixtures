@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/9.2/phpunit.xsd"
+         colors="true"
+         columns="max"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         bootstrap="./framework/bootstrap.php"
+         stderr="true"
+>
+    <testsuites>
+        <testsuite name="IntegrationTests">
+            <directory suffix="Test.php">../../../vendor/%COMPOSER_NAME%/Test/Integration</directory>
+            <directory suffix="Test.php">../../../vendor/%COMPOSER_NAME%/tests/Integration</directory>
+            <directory suffix="Test.php">../../../vendor/%COMPOSER_NAME%/tests/integration</directory>
+            <directory suffix="Test.php">../../../vendor/%COMPOSER_NAME%/src/Test/Integration</directory>
+            <directory suffix="Test.php">../../../vendor/%COMPOSER_NAME%/src/tests/Integration</directory>
+            <directory suffix="Test.php">../../../vendor/%COMPOSER_NAME%/src/tests/integration</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <exclude>
+                <directory>../../../lib/internal/*/*/Test</directory>
+                <directory>../../../lib/internal/*/*/*/Test</directory>
+                <directory>../../../setup/src/*/*/Test</directory>
+                <directory>../../../vendor/*/*/Test</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <php>
+        <includePath>.</includePath>
+        <includePath>testsuite</includePath>
+        <ini name="date.timezone" value="America/Los_Angeles"/>
+        <ini name="xdebug.max_nesting_level" value="200"/>
+        <ini name="memory_limit" value="-1"/>
+        <const name="TESTS_INSTALL_CONFIG_FILE" value="etc/install-config-mysql.php"/>
+        <const name="TESTS_POST_INSTALL_SETUP_COMMAND_CONFIG_FILE" value="etc/post-install-setup-command-config.php"/>
+        <const name="TESTS_GLOBAL_CONFIG_FILE" value="etc/config-global.php"/>
+        <const name="TESTS_GLOBAL_CONFIG_DIR" value="../../../app/etc"/>
+        <const name="TESTS_CLEANUP" value="enabled"/>
+        <const name="TESTS_MEM_USAGE_LIMIT" value="8G"/>
+        <const name="TESTS_MEM_LEAK_LIMIT" value="0"/>
+        <const name="TESTS_EXTRA_VERBOSE_LOG" value="1"/>
+        <const name="TESTS_MAGENTO_MODE" value="developer"/>
+        <const name="TESTS_ERROR_LOG_LISTENER_LEVEL" value="-1"/>
+    </php>
+    <listeners>
+        <listener class="Magento\TestFramework\Event\PhpUnit"/>
+        <listener class="Magento\TestFramework\ErrorLog\Listener"/>
+    </listeners>
+    <logging>
+        <!-- need to specify absolute path to mounted directory, because Magento is installed in /tmp/m2 -->
+        <log type="junit" target="/github/workspace/var/test-results/integration.xml"/>
+        <!-- for phpunit 9.5 change to:
+        <junit outputFile="/github/workspace/var/test-results/integration.xml"/>
+        -->
+    </logging>
+</phpunit>
