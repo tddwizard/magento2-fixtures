@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Integration Test Results
-          path: var/test-results/integration-7.4-${{ matrix.magento-version }}.xml
+          path: var/test-results/integration.xml
   integration-tests-81:
     name: Magento 2 Integration Tests (PHP 8.1)
     runs-on: ubuntu-latest
@@ -128,7 +128,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Integration Test Results
-          path: var/test-results/integration-7.4-${{ matrix.magento-version }}.xml
+          path: var/test-results/integration.xml
 
   publish-test-results:
     name: "Publish Tests Results"
