@@ -33,9 +33,7 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
-        env:
-          COMPOSER_AUTH: '{"http-basic": { "repo.magento.com" : {"username": "${{ secrets.MAGENTO_MARKETPLACE_USERNAME }}", "password": "${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }}"} }}'
-        run: composer install --prefer-dist --no-progress
+        run: composer global config http-basic.repo.magento.com ${{ secrets.MAGENTO_MARKETPLACE_USERNAME }} ${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }} && composer install --prefer-dist --no-progress
 
       - name: Run PHPStan
         run: vendor/bin/phpstan --no-progress
@@ -69,9 +67,7 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
-        env:
-          COMPOSER_AUTH: '{"http-basic": { "repo.magento.com" : {"username": "${{ secrets.MAGENTO_MARKETPLACE_USERNAME }}", "password": "${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }}"} }}'
-        run: composer install --prefer-dist --no-progress
+        run: composer global config http-basic.repo.magento.com ${{ secrets.MAGENTO_MARKETPLACE_USERNAME }} ${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }} && composer install --prefer-dist --no-progress
 
       - name: Run test suite
         run: composer test
