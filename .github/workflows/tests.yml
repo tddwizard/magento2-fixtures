@@ -79,8 +79,9 @@ jobs:
           name: Unit Test Results
           path: var/test-results/unit-${{ matrix.php-version }}.xml
 
-  integration-tests:
-    name: Magento 2 Integration Tests
+  # cannot parameterize php version because of different ext-dn actions per version
+  integration-tests-74:
+    name: Magento 2 Integration Tests (php 7.4)
     runs-on: ubuntu-latest
 
     strategy:
@@ -89,10 +90,8 @@ jobs:
         include:
           - magento-version: 2.3
             magento-patch-version: 2.3.7
-            php-version: 7.4
           - magento-version: 2.4
             magento-patch-version: 2.4.4
-            php-version: 8.1
 
     services:
       mysql:
@@ -114,10 +113,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: M2 Integration Tests with Magento 2
-        uses: extdn/github-actions-m2/magento-integration-tests/${{ matrix.php-version }}@master
+        uses: extdn/github-actions-m2/magento-integration-tests/7.4@master
         with:
           module_name: TddWizard_Fixtures
           composer_name: tddwizard/magento2-fixtures
+          composer_version: 2
           ce_version: ${{ matrix.magento-patch-version }}
           phpunit_file: .github/phpunit9-integration.xml
       - name: Upload Integration Test Results
@@ -125,7 +125,51 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Integration Test Results
-          path: var/test-results/integration-${{ matrix.php-version }}-${{ matrix.magento-version }}.xml
+          path: var/test-results/integration-7.4-${{ matrix.magento-version }}.xml
+  integration-tests-81:
+    name: Magento 2 Integration Tests (PHP 8.1)
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        magento-version: [2.4]
+        include:
+          - magento-version: 2.4
+            magento-patch-version: 2.4.4
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --tmpfs /tmp:rw --tmpfs /var/lib/mysql:rw --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      es:
+        image: docker.io/wardenenv/elasticsearch:7.8
+        ports:
+          - 9200:9200
+        env:
+          'discovery.type': single-node
+          'xpack.security.enabled': false
+          ES_JAVA_OPTS: "-Xms64m -Xmx512m"
+        options: --health-cmd="curl localhost:9200/_cluster/health?wait_for_status=yellow&timeout=60s" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v2
+      - name: M2 Integration Tests with Magento 2
+        uses: extdn/github-actions-m2/magento-integration-tests/7.4@master
+        with:
+          module_name: TddWizard_Fixtures
+          composer_name: tddwizard/magento2-fixtures
+          composer_version: 2
+          ce_version: ${{ matrix.magento-patch-version }}
+          phpunit_file: .github/phpunit9-integration.xml
+      - name: Upload Integration Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Integration Test Results
+          path: var/test-results/integration-7.4-${{ matrix.magento-version }}.xml
 
   phpmd:
     name: Magento 2 Mess Detector
@@ -138,7 +182,8 @@ jobs:
     name: "Publish Tests Results"
     needs:
       - unit-tests
-      - integration-tests
+      - integration-tests-74
+      - integration-tests-81
     runs-on: ubuntu-latest
     if: always()
 
