@@ -7,36 +7,38 @@ on:
     branches: [ master ]
 
 jobs:
-  phpstan:
-
-    name: PHPStan Static Analysis
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Install dependencies
-        run: composer global config http-basic.repo.magento.com ${{ secrets.MAGENTO_MARKETPLACE_USERNAME }} ${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }} && composer install --prefer-dist --no-progress
-
-      - name: Run PHPStan
-        run: vendor/bin/phpstan --no-progress
+# disabled because MAGENTO_MARKETPLACE_USERNAME and MAGENTO_MARKETPLACE_PASSWORD repository secrets do not work:
+###########
+#  phpstan:
+#
+#    name: PHPStan Static Analysis
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Setup PHP
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: '8.1'
+#
+#      - name: Validate composer.json and composer.lock
+#        run: composer validate --strict
+#
+#      - name: Cache Composer packages
+#        id: composer-cache
+#        uses: actions/cache@v2
+#        with:
+#          path: vendor
+#          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-php-
+#
+#      - name: Install dependencies
+#        run: composer global config http-basic.repo.magento.com ${{ secrets.MAGENTO_MARKETPLACE_USERNAME }} ${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }} && composer install --prefer-dist --no-progress
+#
+#      - name: Run PHPStan
+#        run: vendor/bin/phpstan --no-progress
 
   # cannot parameterize php version because of different ext-dn actions per version
   integration-tests-74:
