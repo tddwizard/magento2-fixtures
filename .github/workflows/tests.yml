@@ -86,6 +86,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Integration Test Results
+          # filename is defined in phpunit9-integration.xml
+          # since it's the same every time, only one integration test result is published
           path: var/test-results/integration.xml
   integration-tests-81:
     name: Magento 2 Integration Tests (PHP 8.1)
