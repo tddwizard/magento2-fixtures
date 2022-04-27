@@ -38,47 +38,6 @@ jobs:
       - name: Run PHPStan
         run: vendor/bin/phpstan --no-progress
 
-  unit-tests:
-
-    name: Unit tests
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        php-version: [7.4, 8.1]
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          extensions: mbstring, intl
-          coverage: xdebug
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Install dependencies
-        run: composer global config http-basic.repo.magento.com ${{ secrets.MAGENTO_MARKETPLACE_USERNAME }} ${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }} && composer install --prefer-dist --no-progress
-
-      - name: Run test suite
-        run: composer test
-
-      - name: Upload Unit Test Results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: Unit Test Results
-          path: var/test-results/unit-${{ matrix.php-version }}.xml
-
   # cannot parameterize php version because of different ext-dn actions per version
   integration-tests-74:
     name: Magento 2 Integration Tests (php 7.4)
@@ -171,17 +130,9 @@ jobs:
           name: Integration Test Results
           path: var/test-results/integration-7.4-${{ matrix.magento-version }}.xml
 
-  phpmd:
-    name: Magento 2 Mess Detector
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: extdn/github-actions-m2/magento-mess-detector@master
-
   publish-test-results:
     name: "Publish Tests Results"
     needs:
-      - unit-tests
       - integration-tests-74
       - integration-tests-81
     runs-on: ubuntu-latest
