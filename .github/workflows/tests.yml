@@ -1,0 +1,154 @@
+name: Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+# disabled because MAGENTO_MARKETPLACE_USERNAME and MAGENTO_MARKETPLACE_PASSWORD repository secrets do not work:
+###########
+#  phpstan:
+#
+#    name: PHPStan Static Analysis
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Setup PHP
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: '8.1'
+#
+#      - name: Validate composer.json and composer.lock
+#        run: composer validate --strict
+#
+#      - name: Cache Composer packages
+#        id: composer-cache
+#        uses: actions/cache@v2
+#        with:
+#          path: vendor
+#          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-php-
+#
+#      - name: Install dependencies
+#        run: composer global config http-basic.repo.magento.com ${{ secrets.MAGENTO_MARKETPLACE_USERNAME }} ${{ secrets.MAGENTO_MARKETPLACE_PASSWORD }} && composer install --prefer-dist --no-progress
+#
+#      - name: Run PHPStan
+#        run: vendor/bin/phpstan --no-progress
+
+  # cannot parameterize php version because of different ext-dn actions per version
+  integration-tests-74:
+    name: Magento 2 Integration Tests (php 7.4)
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        magento-version: [2.3, 2.4]
+        include:
+          - magento-version: 2.3
+            magento-patch-version: 2.3.7
+          - magento-version: 2.4
+            magento-patch-version: 2.4.4
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --tmpfs /tmp:rw --tmpfs /var/lib/mysql:rw --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      es:
+        image: docker.io/wardenenv/elasticsearch:7.8
+        ports:
+          - 9200:9200
+        env:
+          'discovery.type': single-node
+          'xpack.security.enabled': false
+          ES_JAVA_OPTS: "-Xms64m -Xmx512m"
+        options: --health-cmd="curl localhost:9200/_cluster/health?wait_for_status=yellow&timeout=60s" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v2
+      - name: M2 Integration Tests with Magento 2
+        uses: extdn/github-actions-m2/magento-integration-tests/7.4@master
+        with:
+          module_name: TddWizard_Fixtures
+          composer_name: tddwizard/magento2-fixtures
+          composer_version: 2
+          ce_version: ${{ matrix.magento-patch-version }}
+          phpunit_file: .github/phpunit9-integration.xml
+      - name: Upload Integration Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Integration Test Results
+          # filename is defined in phpunit9-integration.xml
+          # since it's the same every time, only one integration test result is published
+          path: var/test-results/integration.xml
+  integration-tests-81:
+    name: Magento 2 Integration Tests (PHP 8.1)
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        magento-version: [2.4]
+        include:
+          - magento-version: 2.4
+            magento-patch-version: 2.4.4
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --tmpfs /tmp:rw --tmpfs /var/lib/mysql:rw --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      es:
+        image: docker.io/wardenenv/elasticsearch:7.8
+        ports:
+          - 9200:9200
+        env:
+          'discovery.type': single-node
+          'xpack.security.enabled': false
+          ES_JAVA_OPTS: "-Xms64m -Xmx512m"
+        options: --health-cmd="curl localhost:9200/_cluster/health?wait_for_status=yellow&timeout=60s" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v2
+      - name: M2 Integration Tests with Magento 2
+        uses: extdn/github-actions-m2/magento-integration-tests/7.4@master
+        with:
+          module_name: TddWizard_Fixtures
+          composer_name: tddwizard/magento2-fixtures
+          composer_version: 2
+          ce_version: ${{ matrix.magento-patch-version }}
+          phpunit_file: .github/phpunit9-integration.xml
+      - name: Upload Integration Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Integration Test Results
+          path: var/test-results/integration.xml
+
+  publish-test-results:
+    name: "Publish Tests Results"
+    needs:
+      - integration-tests-74
+      - integration-tests-81
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: artifacts/**/*.xml
