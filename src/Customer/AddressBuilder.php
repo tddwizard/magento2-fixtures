@@ -189,14 +189,7 @@ class AddressBuilder
     ): AddressInterface {
         $faker = FakerFactory::create($locale);
         $countryCode = substr($locale, -2);
-
-        try {
-            $region = $faker->province;
-        } catch (InvalidArgumentException $exception) {
-            $region = $faker->state;
-        }
-
-        $regionId = $objectManager->create(Region::class)->loadByName($region, $countryCode)->getId();
+        $regionId = $objectManager->create(Region::class)->loadByName($faker->state, $countryCode)->getId();
 
         /** @var AddressInterface $address */
         $address = $objectManager->create(AddressInterface::class);
