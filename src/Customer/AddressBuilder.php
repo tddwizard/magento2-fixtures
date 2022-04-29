@@ -134,6 +134,13 @@ class AddressBuilder
         return $builder;
     }
 
+    public function withVatId(int $vatId): AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setVatId($vatId);
+        return $builder;
+    }
+
     /**
      * @param mixed[] $values
      * @return AddressBuilder
@@ -161,7 +168,7 @@ class AddressBuilder
         return clone $this->address;
     }
 
-    public static function anAddress() : AddressBuilder
+    public static function anAddress(string $locale = 'de_DE') : AddressBuilder
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var AddressInterface $address */
@@ -178,4 +185,11 @@ class AddressBuilder
             ->setRegionId(1);
         return new self($objectManager->create(AddressRepositoryInterface::class), $address);
     }
+    public static function aCompanyAddress(
+        string $locale = 'de_DE',
+        string $vatId = '1234567890'
+    ): AddressBuilder {
+        return self::anAddress($locale)->withVatId($vatId);
+    }
+
 }
