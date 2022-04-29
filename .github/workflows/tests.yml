@@ -79,7 +79,7 @@ jobs:
           module_name: TddWizard_Fixtures
           composer_name: tddwizard/magento2-fixtures
           composer_version: 2
-          ce_version: ${{ matrix.magento-patch-version }}
+          ce_version: ${{ matrix.magento-patch-version }} # TODO why is this ignored and 2.4.3-p1 installed?
           phpunit_file: .github/phpunit9-integration.xml
       - name: Upload Integration Test Results
         if: always()
@@ -125,7 +125,7 @@ jobs:
           module_name: TddWizard_Fixtures
           composer_name: tddwizard/magento2-fixtures
           composer_version: 2
-          ce_version: ${{ matrix.magento-patch-version }}
+          ce_version: ${{ matrix.magento-patch-version }} # TODO why is this ignored and 2.4.3-p1 installed?
           phpunit_file: .github/phpunit9-integration.xml
       - name: Upload Integration Test Results
         if: always()
