@@ -141,11 +141,8 @@ class BundleProductBuilder extends ProductBuilder
      */
     protected function prepareProductForSave(ProductInterface $product): void
     {
-        if (!$product->getSku()) {
-            $product->setSku(sha1(uniqid('', true)));
-        }
-        $product->setCustomAttribute('url_key', $product->getSku());
-        $product->setData('category_ids', $this->categoryIds);
+        parent::prepareProductForSave($product);
+
         if (!$this->bundleOptionsData) {
             return;
         }
