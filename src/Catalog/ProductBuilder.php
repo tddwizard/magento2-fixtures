@@ -352,6 +352,17 @@ class ProductBuilder
     }
 
     /**
+     * To be overridden by child classes.
+     *
+     * @param ProductInterface $product
+     * @return void
+     */
+    protected function prepareProductForSave(ProductInterface $product): void
+    {
+        // do nothing
+    }
+
+    /**
      * @return ProductInterface
      * @throws Exception
      */
@@ -363,6 +374,7 @@ class ProductBuilder
         }
         $builder->product->setCustomAttribute('url_key', $builder->product->getSku());
         $builder->product->setData('category_ids', $builder->categoryIds);
+        $this->prepareProductForSave($builder->product);
         $product = $builder->productRepository->save($builder->product);
         foreach ($builder->websiteIds as $websiteId) {
             $websiteLink = $builder->websiteLinkFactory->create();
