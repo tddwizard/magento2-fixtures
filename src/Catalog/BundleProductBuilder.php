@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TddWizard\Fixtures\Catalog;
 
+use Magento\Bundle\Api\Data\OptionInterface as BundleOptionInterface;
 use Magento\Bundle\Model\Product\Price;
 use Magento\Bundle\Model\Product\Type as BundleProductType;
 use Magento\Catalog\Api\Data\ProductInterface;
@@ -48,10 +49,10 @@ class BundleProductBuilder extends ProductBuilder
             ->addData(
                 [
                     'price_type' => Price::PRICE_TYPE_DYNAMIC,
-                    'sku_type' => 1, // TODO: find constants for this?
-                    'weight_type' => 0, // TODO: find constants for this?
-                    'price_view' => 0, // TODO: find constants for this?
-                    'shipment_type' => 0, // TODO: find constants for this?
+                    'sku_type' => 1, // dynamic
+                    'weight_type' => 1, // dynamic
+                    'price_view' => 0, // range
+                    'shipment_type' => 1, // ship together
                     'tax_class_id' => 1
                 ]
             );
@@ -80,24 +81,114 @@ class BundleProductBuilder extends ProductBuilder
     }
 
     /**
-     * @param int $priceType
-     * @return BundleProductBuilder
+     * @return self
      */
-    public function withPriceType(int $priceType): self
+    public function withDynamicPrice(): self
     {
         $builder = clone $this;
-        $builder->product->setData('price_type', $priceType);
+        $builder->product->setData('price_type', 1);
         return $builder;
     }
 
     /**
-     * @param int $skuType
-     * @return BundleProductBuilder
+     * @param float $price
+     * @return self
      */
-    public function withSkuType(int $skuType): self
+    public function withFixedPrice(float $price): self
     {
         $builder = clone $this;
-        $builder->product->setData('sku_type', $skuType);
+        $builder->product->setData('price_type', 0);
+        $builder->product->setPrice($price);
+        return $builder;
+    }
+
+    /**
+     * @return self
+     */
+    public function withDynamicSku(): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('sku_type', 1);
+        return $builder;
+    }
+
+    /**
+     * @param string $sku
+     * @return self
+     */
+    public function withFixedSku(string $sku): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('sku_type', 0);
+        $builder->product->setSku($sku);
+        return $builder;
+    }
+
+    /**
+     * @return self
+     */
+    public function withDynamicWeight(): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('weight_type', 1);
+
+        return $builder;
+    }
+
+    /**
+     * @param float $weight
+     * @return self
+     */
+    public function withFixedWeight(float $weight): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('weight_type', 0);
+        $builder->product->setWeight($weight);
+
+        return $builder;
+    }
+
+    /**
+     * @return self
+     */
+    public function withShipItemsTogether(): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('shipment_type', 1);
+
+        return $builder;
+    }
+
+    /**
+     * @return self
+     */
+    public function withShipItemsSeparately(): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('shipment_type', 0);
+
+        return $builder;
+    }
+
+    /**
+     * @return self
+     */
+    public function withPriceViewAsRange(): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('price_view', 0);
+
+        return $builder;
+    }
+
+    /**
+     * @return self
+     */
+    public function withPriceViewAsLowAs(): self
+    {
+        $builder = clone $this;
+        $builder->product->setData('price_view', 1);
+
         return $builder;
     }
 
@@ -107,12 +198,12 @@ class BundleProductBuilder extends ProductBuilder
      *
      * @param array $bundleOptionsData
      * @param array $bundleSelectionsData
-     * @return BundleProductBuilder
+     * @return self
      */
     public function withBundleOptionsData(
         array $bundleOptionsData,
         array $bundleSelectionsData = []
-    ): BundleProductBuilder {
+    ): self {
         $builder = clone $this;
 
         /** @var PrepareBundleLinks $prepareBundleLinks */
@@ -123,8 +214,8 @@ class BundleProductBuilder extends ProductBuilder
     }
 
     /**
-     * @param \Magento\Bundle\Api\Data\OptionInterface[] $bundleProductOptions
-     * @return BundleProductBuilder
+     * @param BundleOptionInterface[] $bundleProductOptions
+     * @return self
      */
     public function withBundleOptions(array $bundleProductOptions): self
     {
