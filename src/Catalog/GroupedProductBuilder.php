@@ -102,5 +102,6 @@ class GroupedProductBuilder extends ProductBuilder
 
         // set relations
         $product->setProductLinks($productLinks);
+        $product->setStockData(['use_config_manage_stock' => 1, 'is_in_stock' => 1]);
     }
 }
