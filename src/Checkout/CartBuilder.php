@@ -6,6 +6,7 @@ namespace TddWizard\Fixtures\Checkout;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Model\Cart;
+use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -26,12 +27,17 @@ class CartBuilder
      * @var DataObject[][] Array in the form [sku => [buyRequest]] (multiple requests per sku are possible)
      */
     private $addToCartRequests;
+    
+    private $customerAddress = false;
 
-    final public function __construct(ProductRepositoryInterface $productRepository, Cart $cart)
-    {
+    public function __construct(
+        ProductRepositoryInterface $productRepository,
+        AddressRepositoryInterface $addressRepository,
+        Cart $cart
+    ) {
         $this->productRepository = $productRepository;
+        $this->addressRepository = $addressRepository;
         $this->cart = $cart;
-        $this->addToCartRequests = [];
     }
 
     public static function forCurrentSession(): CartBuilder
@@ -39,6 +45,7 @@ class CartBuilder
         $objectManager = Bootstrap::getObjectManager();
         return new static(
             $objectManager->create(ProductRepositoryInterface::class),
+            $objectManager->create(AddressRepositoryInterface::class),
             $objectManager->create(Cart::class)
         );
     }
@@ -74,6 +81,19 @@ class CartBuilder
     }
 
     /**
+     * Added.
+     *
+     * @return CartBuilder
+     */
+    public function withDefaultCustomerAddress(): CartBuilder
+    {
+        $result = clone $this;
+        $result->customerAddress = true;
+
+        return $result;
+    }
+
+    /**
      * @return Cart
      * @throws LocalizedException
      */
@@ -86,6 +106,27 @@ class CartBuilder
                 $this->cart->addProduct($product, $requestInfo);
             }
         }
+
+        // added
+        if ($this->customerAddress && $this->cart->getQuote()->getCustomerId()) {
+            $billingAddress = $this->cart->getQuote()->getBillingAddress();
+
+            $billingAddress->importCustomerAddressData(
+                $this->addressRepository->getById(
+                    (int)$this->cart->getQuote()->getCustomer()->getDefaultBilling()
+                )
+            );
+
+            if (!$this->cart->getQuote()->isVirtual()) {
+                $shippingAddress = $this->cart->getQuote()->getShippingAddress();
+                $shippingAddress->importCustomerAddressData(
+                    $this->addressRepository->getById(
+                        (int)$this->cart->getQuote()->getCustomer()->getDefaultShipping()
+                    )
+                );
+            }
+        }
+
         $this->cart->save();
         return $this->cart;
     }
