@@ -27,8 +27,16 @@ class CartBuilder
      * @var DataObject[][] Array in the form [sku => [buyRequest]] (multiple requests per sku are possible)
      */
     private $addToCartRequests;
-    
-    private $customerAddress = false;
+
+    /**
+     * @var bool
+     */
+    private $useDefaultCustomerAddresses = false;
+
+    /**
+     * @var AddressRepositoryInterface
+     */
+    private $addressRepository;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -69,7 +77,7 @@ class CartBuilder
      *
      * @param string $sku
      * @param int $qty
-     * @param mixed[] $request
+     * @param array[] $request
      * @return CartBuilder
      */
     public function withProductRequest($sku, $qty = 1, $request = []): CartBuilder
@@ -88,7 +96,7 @@ class CartBuilder
     public function withDefaultCustomerAddress(): CartBuilder
     {
         $result = clone $this;
-        $result->customerAddress = true;
+        $result->useDefaultCustomerAddresses = true;
 
         return $result;
     }
@@ -108,9 +116,8 @@ class CartBuilder
         }
 
         // added
-        if ($this->customerAddress && $this->cart->getQuote()->getCustomerId()) {
+        if ($this->useDefaultCustomerAddresses && $this->cart->getQuote()->getCustomerId()) {
             $billingAddress = $this->cart->getQuote()->getBillingAddress();
-
             $billingAddress->importCustomerAddressData(
                 $this->addressRepository->getById(
                     (int)$this->cart->getQuote()->getCustomer()->getDefaultBilling()
