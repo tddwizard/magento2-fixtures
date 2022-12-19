@@ -46,6 +46,7 @@ class CartBuilder
         $this->productRepository = $productRepository;
         $this->addressRepository = $addressRepository;
         $this->cart = $cart;
+        $this->addToCartRequests = [];
     }
 
     public static function forCurrentSession(): CartBuilder
