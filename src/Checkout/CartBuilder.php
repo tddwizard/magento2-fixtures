@@ -6,6 +6,7 @@ namespace TddWizard\Fixtures\Checkout;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Model\Cart;
+use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -27,9 +28,23 @@ class CartBuilder
      */
     private $addToCartRequests;
 
-    final public function __construct(ProductRepositoryInterface $productRepository, Cart $cart)
-    {
+    /**
+     * @var bool
+     */
+    private $useDefaultCustomerAddresses = false;
+
+    /**
+     * @var AddressRepositoryInterface
+     */
+    private $addressRepository;
+
+    public function __construct(
+        ProductRepositoryInterface $productRepository,
+        AddressRepositoryInterface $addressRepository,
+        Cart $cart
+    ) {
         $this->productRepository = $productRepository;
+        $this->addressRepository = $addressRepository;
         $this->cart = $cart;
         $this->addToCartRequests = [];
     }
@@ -39,6 +54,7 @@ class CartBuilder
         $objectManager = Bootstrap::getObjectManager();
         return new static(
             $objectManager->create(ProductRepositoryInterface::class),
+            $objectManager->create(AddressRepositoryInterface::class),
             $objectManager->create(Cart::class)
         );
     }
@@ -62,7 +78,7 @@ class CartBuilder
      *
      * @param string $sku
      * @param int $qty
-     * @param mixed[] $request
+     * @param array[] $request
      * @return CartBuilder
      */
     public function withProductRequest($sku, $qty = 1, $request = []): CartBuilder
@@ -70,6 +86,19 @@ class CartBuilder
         $result = clone $this;
         $requestInfo = array_merge(['qty' => $qty], $request);
         $result->addToCartRequests[$sku][] = new DataObject($requestInfo);
+        return $result;
+    }
+
+    /**
+     * Added.
+     *
+     * @return CartBuilder
+     */
+    public function withDefaultCustomerAddress(): CartBuilder
+    {
+        $result = clone $this;
+        $result->useDefaultCustomerAddresses = true;
+
         return $result;
     }
 
@@ -86,6 +115,26 @@ class CartBuilder
                 $this->cart->addProduct($product, $requestInfo);
             }
         }
+
+        // added
+        if ($this->useDefaultCustomerAddresses && $this->cart->getQuote()->getCustomerId()) {
+            $billingAddress = $this->cart->getQuote()->getBillingAddress();
+            $billingAddress->importCustomerAddressData(
+                $this->addressRepository->getById(
+                    (int)$this->cart->getQuote()->getCustomer()->getDefaultBilling()
+                )
+            );
+
+            if (!$this->cart->getQuote()->isVirtual()) {
+                $shippingAddress = $this->cart->getQuote()->getShippingAddress();
+                $shippingAddress->importCustomerAddressData(
+                    $this->addressRepository->getById(
+                        (int)$this->cart->getQuote()->getCustomer()->getDefaultShipping()
+                    )
+                );
+            }
+        }
+
         $this->cart->save();
         return $this->cart;
     }
