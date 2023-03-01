@@ -72,6 +72,13 @@ class AddressBuilder
         return $builder;
     }
 
+    public function withCustomerId(int $customerId): AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setCustomerId($customerId);
+        return $builder;
+    }
+
     public function withPrefix(string $prefix): AddressBuilder
     {
         $builder = clone $this;
@@ -107,10 +114,13 @@ class AddressBuilder
         return $builder;
     }
 
-    public function withStreet(string $street): AddressBuilder
+    public function withStreet(string|array $street): AddressBuilder
     {
         $builder = clone $this;
-        $builder->address->setStreet((array)$street);
+        if (!\is_array($street)) {
+            $street = (array)$street;
+        }
+        $builder->address->setStreet($street);
         return $builder;
     }
 
