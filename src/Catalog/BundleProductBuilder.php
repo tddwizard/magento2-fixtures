@@ -86,7 +86,7 @@ class BundleProductBuilder extends ProductBuilder
     public function withDynamicPrice(): self
     {
         $builder = clone $this;
-        $builder->product->setData('price_type', 1);
+        $builder->product->setData('price_type', Price::PRICE_TYPE_DYNAMIC);
         return $builder;
     }
 
@@ -97,7 +97,7 @@ class BundleProductBuilder extends ProductBuilder
     public function withFixedPrice(float $price): self
     {
         $builder = clone $this;
-        $builder->product->setData('price_type', 0);
+        $builder->product->setData('price_type', Price::PRICE_TYPE_FIXED);
         $builder->product->setPrice($price);
         return $builder;
     }
@@ -108,7 +108,7 @@ class BundleProductBuilder extends ProductBuilder
     public function withDynamicSku(): self
     {
         $builder = clone $this;
-        $builder->product->setData('sku_type', 1);
+        $builder->product->setData('sku_type', 0);
         return $builder;
     }
 
@@ -119,7 +119,7 @@ class BundleProductBuilder extends ProductBuilder
     public function withFixedSku(string $sku): self
     {
         $builder = clone $this;
-        $builder->product->setData('sku_type', 0);
+        $builder->product->setData('sku_type', 1);
         $builder->product->setSku($sku);
         return $builder;
     }
