@@ -156,6 +156,13 @@ class AddressBuilder
         return $builder;
     }
 
+    public function withVatId(string $vatId) : AddressBuilder
+    {
+        $builder = clone $this;
+        $builder->address->setVatId($vatId);
+        return $builder;
+    }
+
     /**
      * @param mixed[] $values
      * @return AddressBuilder
