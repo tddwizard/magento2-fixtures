@@ -170,16 +170,19 @@ $quote = $cart->getQuote();
 Checkout is supported for logged in customers. To create an order, you can simulate the checkout as follows, given a customer fixture with default shipping and billing addresses and a product fixture:
 
 ```php
-$this->customerFixture->login();
+$customerFixture = new CustomerFixture(CustomerBuilder::aCustomer()->withAddresses(
+  AddressBuilder::anAddress()->asDefaultBilling(),
+  AddressBuilder::anAddress()->asDefaultShipping()
+)->build());
+$customerFixture->login();
+
 $checkout = CustomerCheckout::fromCart(
   CartBuilder::forCurrentSession()
-    ->withSimpleProduct(
-      $productFixture->getSku()
-    )
+    ->withProductRequest(ProductBuilder::aVirtualProduct()->build()->getSku())
     ->build()
 );
-$order = $checkout->placeOrder();
 
+$order = $checkout->placeOrder();
 ```
 
 It will try to select the default addresses and the first available shipping and payment methods.
