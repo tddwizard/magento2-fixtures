@@ -42,7 +42,7 @@
         "magento/module-payment": "^100.3",
         "magento/module-quote": "^101.1",
         "magento/module-sales": "^102.0|^103.0",
-        "fakerphp/faker": "^1.9.1"
+        "fakerphp/faker": "^1.14.0"
     },
     "require-dev": {
         "ext-json": "*",
@@ -52,5 +52,11 @@
         "phpro/grumphp": "^0.19.0",
         "phpstan/phpstan": "^0.12.0",
         "squizlabs/php_codesniffer": "^3.3.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "magento/composer-dependency-version-audit-plugin": true,
+            "phpro/grumphp": true
+        }
     }
 }

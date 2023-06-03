@@ -191,9 +191,9 @@ class AddressBuilder
         $countryCode = substr($locale, -2);
 
         try {
-            $region = $faker->province;
+            $region = $faker->province();
         } catch (InvalidArgumentException $exception) {
-            $region = $faker->state;
+            $region = $faker->state();
         }
 
         $regionId = $objectManager->create(Region::class)->loadByName($region, $countryCode)->getId();
@@ -201,14 +201,14 @@ class AddressBuilder
         /** @var AddressInterface $address */
         $address = $objectManager->create(AddressInterface::class);
         $address
-            ->setTelephone($faker->phoneNumber)
-            ->setPostcode($faker->postcode)
+            ->setTelephone($faker->phoneNumber())
+            ->setPostcode($faker->postcode())
             ->setCountryId($countryCode)
-            ->setCity($faker->city)
-            ->setCompany($faker->company)
-            ->setStreet([$faker->streetAddress])
-            ->setLastname($faker->lastName)
-            ->setFirstname($faker->firstName)
+            ->setCity($faker->city())
+            ->setCompany($faker->company())
+            ->setStreet([$faker->streetAddress()])
+            ->setLastname($faker->lastName())
+            ->setFirstname($faker->firstName())
             ->setRegionId($regionId);
 
         return $address;
