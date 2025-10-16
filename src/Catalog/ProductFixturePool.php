@@ -14,7 +14,7 @@ class ProductFixturePool
      */
     private $productFixtures = [];
 
-    public function add(ProductInterface $product, string $key = null): void
+    public function add(ProductInterface $product, ?string $key = null): void
     {
         if ($key === null) {
             $this->productFixtures[] = new ProductFixture($product);

@@ -84,7 +84,7 @@ class CustomerFixture
         return $this->customer->getEmail();
     }
 
-    public function login(Session $session = null): void
+    public function login(?Session $session = null): void
     {
         if ($session === null) {
             $objectManager = Bootstrap::getObjectManager();
@@ -94,7 +94,7 @@ class CustomerFixture
         $session->setCustomerId($this->getId());
     }
 
-    public function logout(Session $session = null): void
+    public function logout(?Session $session = null): void
     {
         if ($session === null) {
             $objectManager = Bootstrap::getObjectManager();

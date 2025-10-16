@@ -172,7 +172,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withName(string $name, int $storeId = null): ProductBuilder
+    public function withName(string $name, ?int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -200,7 +200,7 @@ class ProductBuilder
         return $builder;
     }
 
-    public function withVisibility(int $visibility, int $storeId = null): ProductBuilder
+    public function withVisibility(int $visibility, ?int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         if ($storeId) {
@@ -280,7 +280,7 @@ class ProductBuilder
      * @param int|null $storeId
      * @return ProductBuilder
      */
-    public function withCustomAttributes(array $values, int $storeId = null): ProductBuilder
+    public function withCustomAttributes(array $values, ?int $storeId = null): ProductBuilder
     {
         $builder = clone $this;
         foreach ($values as $code => $value) {

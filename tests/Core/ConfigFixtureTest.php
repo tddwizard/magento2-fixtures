@@ -104,7 +104,7 @@ class ConfigFixtureTest extends TestCase
         $this->scopeConfig->setValue($path, $websiteValue, ScopeInterface::SCOPE_WEBSITE);
     }
 
-    private function assertConfigValue($expectedValue, string $path, string $scope, string $scopeCode = null): void
+    private function assertConfigValue($expectedValue, string $path, string $scope, ?string $scopeCode = null): void
     {
         $this->assertEquals(
             $expectedValue,

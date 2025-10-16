@@ -14,7 +14,7 @@ class OrderFixturePool
      */
     private $orderFixtures = [];
 
-    public function add(Order $order, string $key = null): void
+    public function add(Order $order, ?string $key = null): void
     {
         if ($key === null) {
             $this->orderFixtures[] = new OrderFixture($order);
@@ -29,7 +29,7 @@ class OrderFixturePool
      * @param string|null $key
      * @return OrderFixture
      */
-    public function get(string $key = null): OrderFixture
+    public function get(?string $key = null): OrderFixture
     {
         if ($key === null) {
             $key = \array_key_last($this->orderFixtures);

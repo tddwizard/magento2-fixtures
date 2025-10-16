@@ -14,7 +14,7 @@ class CustomerFixturePool
      */
     private $customerFixtures = [];
 
-    public function add(CustomerInterface $customer, string $key = null): void
+    public function add(CustomerInterface $customer, ?string $key = null): void
     {
         if ($key === null) {
             $this->customerFixtures[] = new CustomerFixture($customer);
@@ -29,7 +29,7 @@ class CustomerFixturePool
      * @param string|null $key
      * @return CustomerFixture
      */
-    public function get(string $key = null): CustomerFixture
+    public function get(?string $key = null): CustomerFixture
     {
         if ($key === null) {
             $key = \array_key_last($this->customerFixtures);

@@ -13,7 +13,7 @@ class InvoiceFixturePool
      */
     private $invoiceFixtures = [];
 
-    public function add(InvoiceInterface $invoice, string $key = null): void
+    public function add(InvoiceInterface $invoice, ?string $key = null): void
     {
         if ($key === null) {
             $this->invoiceFixtures[] = new InvoiceFixture($invoice);
@@ -28,7 +28,7 @@ class InvoiceFixturePool
      * @param string|null $key
      * @return InvoiceFixture
      */
-    public function get(string $key = null): InvoiceFixture
+    public function get(?string $key = null): InvoiceFixture
     {
         if ($key === null) {
             $key = \array_key_last($this->invoiceFixtures);
