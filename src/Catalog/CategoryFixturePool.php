@@ -14,7 +14,7 @@ class CategoryFixturePool
      */
     private $categoryFixtures = [];
 
-    public function add(CategoryInterface $category, string $key = null): void
+    public function add(CategoryInterface $category, ?string $key = null): void
     {
         if ($key === null) {
             $this->categoryFixtures[] = new CategoryFixture($category);

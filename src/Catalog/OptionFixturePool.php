@@ -17,7 +17,7 @@ class OptionFixturePool
      */
     private $optionFixtures = [];
 
-    public function add(AttributeOption $option, string $attributecode, string $key = null): void
+    public function add(AttributeOption $option, string $attributecode, ?string $key = null): void
     {
         if ($key === null) {
             $this->optionFixtures[] = new OptionFixture($option, $attributecode);
@@ -32,7 +32,7 @@ class OptionFixturePool
      * @param string|null $key
      * @return OptionFixture
      */
-    public function get(string $key = null): OptionFixture
+    public function get(?string $key = null): OptionFixture
     {
         if ($key === null) {
             $key = \array_key_last($this->optionFixtures);

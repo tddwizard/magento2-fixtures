@@ -13,7 +13,7 @@ class ShipmentFixturePool
      */
     private $shipmentFixtures = [];
 
-    public function add(ShipmentInterface $shipment, string $key = null): void
+    public function add(ShipmentInterface $shipment, ?string $key = null): void
     {
         if ($key === null) {
             $this->shipmentFixtures[] = new ShipmentFixture($shipment);
@@ -28,7 +28,7 @@ class ShipmentFixturePool
      * @param string|null $key
      * @return ShipmentFixture
      */
-    public function get(string $key = null): ShipmentFixture
+    public function get(?string $key = null): ShipmentFixture
     {
         if ($key === null) {
             $key = \array_key_last($this->shipmentFixtures);
