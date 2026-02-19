@@ -170,13 +170,16 @@ class CustomerCheckout
         $reloadedQuote = $this->quoteRepository->get($this->cart->getQuote()->getId());
         // Collect missing totals, like shipping
         $reloadedQuote->collectTotals();
-        $order = $this->quoteManagement->submit($reloadedQuote);
-        if (! $order instanceof Order) {
-            $returnType = is_object($order) ? get_class($order) : gettype($order);
-            throw new \RuntimeException('QuoteManagement::submit() returned ' . $returnType . ' instead of Order');
+        try {
+            $order = $this->quoteManagement->submit($reloadedQuote);
+            if (! $order instanceof Order) {
+                $returnType = is_object($order) ? get_class($order) : gettype($order);
+                throw new \RuntimeException('QuoteManagement::submit() returned ' . $returnType . ' instead of Order');
+            }
+            return $order;
+        } finally {
+            $this->cart->getCheckoutSession()->clearQuote();
         }
-        $this->cart->getCheckoutSession()->clearQuote();
-        return $order;
     }
 
     /**
